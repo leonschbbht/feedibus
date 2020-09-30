@@ -27,3 +27,15 @@ resource "azurerm_virtual_machine" "feedibus-production-vm" {
     environment = var.environment
   }
 }
+
+resource "azurerm_public_ip" "feedibus-public-ip" {
+  name                = "PublicIP-001"
+  resource_group_name = var.resource-group-name
+  location            = var.location
+  allocation_method   = "Static"
+
+  tags = {
+    location = var.location
+    environment = var.environment
+  }
+}
