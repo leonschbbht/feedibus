@@ -24,7 +24,7 @@ resource "azurerm_network_interface" "feedibus-interface" {
   }
 }
 
-resource "azurerm_network_security_group" "http-rule" {
+resource "azurerm_network_security_group" "feedibus-security-group" {
   name                = "acceptanceTestSecurityGroup1"
   location            = var.resource-group-location
   resource_group_name = var.resource-group-name
@@ -62,4 +62,9 @@ resource "azurerm_network_security_group" "http-rule" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+}
+
+resource "azurerm_network_interface_security_group_association" "feedibus-security-group-association" {
+  network_interface_id = azurerm_network_interface.feedibus-interface.id
+  network_security_group_id = azurerm_network_security_group.feedibus-security-group.id
 }
