@@ -24,7 +24,7 @@ resource "azurerm_network_interface" "feedibus-interface" {
   }
 }
 
-resource "azurerm_network_security_group" "ssh-rule" {
+resource "azurerm_network_security_group" "http-rule" {
   name                = "acceptanceTestSecurityGroup1"
   location            = var.resource-group-location
   resource_group_name = var.resource-group-name
@@ -40,13 +40,6 @@ resource "azurerm_network_security_group" "ssh-rule" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-}
-
-resource "azurerm_network_security_group" "http-rule" {
-  name                = "acceptanceTestSecurityGroup1"
-  location            = var.resource-group-location
-  resource_group_name = var.resource-group-name
-
   security_rule {
     name                       = "HTTP"
     priority                   = 100
@@ -58,15 +51,8 @@ resource "azurerm_network_security_group" "http-rule" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-}
-
-resource "azurerm_network_security_group" "https-rule" {
-  name                = "acceptanceTestSecurityGroup1"
-  location            = var.resource-group-location
-  resource_group_name = var.resource-group-name
-
   security_rule {
-    name                       = "HTTP"
+    name                       = "HTTPS"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
