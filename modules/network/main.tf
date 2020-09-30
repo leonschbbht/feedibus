@@ -25,7 +25,7 @@ resource "azurerm_network_interface" "feedibus-interface" {
 }
 
 resource "azurerm_network_security_group" "feedibus-security-group" {
-  name                = "acceptanceTestSecurityGroup1"
+  name                = "feedibus-security-group"
   location            = var.resource-group-location
   resource_group_name = var.resource-group-name
 
