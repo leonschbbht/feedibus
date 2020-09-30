@@ -10,6 +10,7 @@ module "machine" {
   location = var.location
   network-interface-id = module.network.network-interface-id
   resource-group-name = module.general.resource-group-name
+  environment = var.environment
 }
 
 module "network" {
