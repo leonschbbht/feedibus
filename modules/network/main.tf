@@ -20,6 +20,7 @@ resource "azurerm_network_interface" "feedibus-interface" {
     name = "ip-configuration"
     subnet_id = azurerm_subnet.feedibus-subnet.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id = var.public-ip-id
   }
 }
 

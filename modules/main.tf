@@ -20,4 +20,5 @@ module "network" {
   environment = var.environment
   resource-group-name = module.general.resource-group-name
   resource-group-location = module.general.ressource-group-location
+  public-ip-id = module.machine.public-ip-id
 }
