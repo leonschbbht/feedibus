@@ -9,7 +9,7 @@ resource "azurerm_virtual_machine" "feedibus-production-vm" {
   }
   storage_os_disk {
     create_option = "FromImage"
-    name = "default"
+    name = "feedibus-production-storage"
   }
   os_profile {
     computer_name  = "feedibus-production"
