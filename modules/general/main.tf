@@ -12,7 +12,7 @@ resource "azurerm_storage_account" "ami-storage-account" {
   account_replication_type = "LRS"
   account_tier = "Standard"
   location = var.location
-  name = "ami-storage-account-feedibus-001001"
+  name = "amistoragefeedibus"
   resource_group_name = azurerm_resource_group.feedibus-production
 
   tags = {
