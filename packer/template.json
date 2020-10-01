@@ -35,6 +35,10 @@
     {
       "type": "shell",
       "script": "packer/scripts/remove-ansible.sh"
+    },
+    {
+      "type": "shell",
+      "script": "packer/scripts/enable-docker-compose.sh"
     }
   ],
   "variables": {
