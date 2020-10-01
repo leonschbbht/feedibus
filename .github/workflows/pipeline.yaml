@@ -22,8 +22,6 @@ jobs:
 
       - name: "Terraform code validation"
         run: terraform validate -no-color
-      - name: "Taint Current VM"
-        run: terraform taint module.modules.module.machine.azurerm_virtual_machine.feedibus-production-vm
       - name: "Terraform Plan"
         run: terraform plan -out=plan.tfplan -no-color
         env:
