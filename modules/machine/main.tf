@@ -3,6 +3,7 @@ resource "azurerm_virtual_machine" "feedibus-production-vm" {
   name = "feedibus-production-vm"
   network_interface_ids = [var.network-interface-id]
   resource_group_name = var.resource-group-name
+  delete_os_disk_on_termination = true
   vm_size = "Standard_B1ls"
   storage_image_reference {
     id = data.azurerm_image.feedibus-production-baseimage-data.id
