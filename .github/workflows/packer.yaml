@@ -5,7 +5,6 @@ jobs:
   packer:
     runs-on: ubuntu-latest
     name: packer
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -14,6 +13,7 @@ jobs:
         uses: operatehappy/packer-github-actions@master
         with:
           command: fix
+          target: packer/template.json
 
       - name: Validate Template
         uses: operatehappy/packer-github-actions@master
