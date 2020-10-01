@@ -13,7 +13,7 @@
       "image_sku": "18.04-LTS",
       "location": "UK South",
       "os_type": "Linux",
-      "resource_group_name": "packerdemo",
+      "resource_group_name": "feedibus-production",
       "storage_account": "virtualmachines",
       "subscription_id": "{{user `subscription_id`}}",
       "tenant_id": "{{user `tenant_id`}}",
