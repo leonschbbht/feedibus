@@ -5,10 +5,7 @@ resource "azurerm_virtual_machine" "feedibus-production-vm" {
   resource_group_name = var.resource-group-name
   vm_size = "Standard_B1ls"
   storage_image_reference {
-    publisher = "Canonical"
-    offer = "UbuntuServer"
-    sku = "18.04-LTS"
-    version = "latest"
+    id = data.azurerm_image.feedibus-production-baseimage-data.id
   }
   storage_os_disk {
     create_option = "FromImage"
@@ -38,4 +35,9 @@ resource "azurerm_public_ip" "feedibus-public-ip" {
     location = var.location
     environment = var.environment
   }
+}
+
+data "azurerm_image" "feedibus-production-baseimage-data" {
+  name = "feedibus-production-baseimage"
+  resource_group_name = var.resource-group-name
 }
