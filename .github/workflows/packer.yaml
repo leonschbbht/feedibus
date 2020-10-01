@@ -32,7 +32,7 @@ jobs:
         uses: operatehappy/packer-github-actions@master
         with:
           command: build
-          arguments: "-color=false -on-error=abort"
+          arguments: "-color=false -on-error=abort -force"
           target: packer/template.json
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
