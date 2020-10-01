@@ -10,9 +10,6 @@
     state: present
 - name: Update apt and install docker-ce
   apt: update_cache=yes name=docker-ce state=latest
-- name: Install Docker Module
-  pip:
-    name: docker
 - name: Pull default Docker image
   docker_image:
     name: "nginx:latest"
