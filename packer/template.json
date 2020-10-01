@@ -30,17 +30,12 @@
       "type": "ansible-local",
       "playbook_file": "../ansible/site.yml",
       "role_paths": [
-        "../ansible/roles/openjdk",
-        "../ansible/roles/nexus",
-        "../ansible/roles/nginx",
-        "../ansible/roles/awscli",
-        "../ansible/roles/init-skript"
-      ],
-      "group_vars": "../ansible/group_vars"
+        "../ansible/roles/docker"
+      ]
     },
     {
       "type": "shell",
-      "script": "packer/scripts/enable-ansible.sh"
+      "script": "packer/scripts/remove-ansible.sh"
     }
   ],
   "variables": {
