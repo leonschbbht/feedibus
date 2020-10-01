@@ -14,11 +14,12 @@
       "location": "UK South",
       "os_type": "Linux",
       "resource_group_name": "feedibus-production",
-      "storage_account": "amistoragefeedibus",
+      "managed_image_name": "feedibus-production-baseimage",
       "subscription_id": "{{user `subscription_id`}}",
       "tenant_id": "{{user `tenant_id`}}",
       "type": "azure-arm",
-      "vm_size": "Standard_B1ms"
+      "vm_size": "Standard_B1ms",
+      "async_resourcegroup_delete": true
     }
   ],
   "provisioners": [
