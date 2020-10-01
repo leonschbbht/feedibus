@@ -13,7 +13,7 @@ resource "azurerm_storage_account" "ami-storage-account" {
   account_tier = "Standard"
   location = var.location
   name = "amistoragefeedibus"
-  resource_group_name = azurerm_resource_group.feedibus-production
+  resource_group_name = azurerm_resource_group.feedibus-production.name
 
   tags = {
     environment = var.environment
