@@ -24,7 +24,7 @@
   "provisioners": [
     {
       "type": "shell",
-      "script": "../scripts/enable-ansible.sh"
+      "script": "/packer/scripts/enable-ansible.sh"
     },
     {
       "type": "ansible-local",
