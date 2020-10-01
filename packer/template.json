@@ -28,9 +28,9 @@
     },
     {
       "type": "ansible-local",
-      "playbook_file": "../ansible/site.yml",
+      "playbook_file": "ansible/site.yml",
       "role_paths": [
-        "../ansible/roles/docker"
+        "ansible/roles/docker"
       ]
     },
     {
