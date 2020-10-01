@@ -14,7 +14,7 @@
       "location": "UK South",
       "os_type": "Linux",
       "resource_group_name": "feedibus-production",
-      "storage_account": "virtualmachines",
+      "storage_account": "amistoragefeedibus",
       "subscription_id": "{{user `subscription_id`}}",
       "tenant_id": "{{user `tenant_id`}}",
       "type": "azure-arm",
