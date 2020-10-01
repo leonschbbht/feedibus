@@ -4,8 +4,6 @@
       "azure_tags": {
         "dept": "engineering"
       },
-      "capture_container_name": "images",
-      "capture_name_prefix": "packer",
       "client_id": "{{user `client_id`}}",
       "client_secret": "{{user `client_secret`}}",
       "image_offer": "UbuntuServer",
