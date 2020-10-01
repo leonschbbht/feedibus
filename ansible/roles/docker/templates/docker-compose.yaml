@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  database:
+    image: onnythunder/bundestag-database
+    container_name: database
+  backend:
+    environment:
+      - DB_HOSTNAME=database
+    image: onnythunder/bundestag-backend
+    container_name: backend
+  frontend:
+    environment:
+      - DB_HOSTNAME=database
+    image: onnythunder/bundestag-frontend
+    container_name: frontend
+    ports:
+      - 80:8080
