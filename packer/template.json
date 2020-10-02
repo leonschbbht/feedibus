@@ -11,12 +11,15 @@
       "image_sku": "18.04-LTS",
       "location": "UK South",
       "os_type": "Linux",
-      "managed_image_resource_group_name": "feedibus-production",
-      "managed_image_name": "feedibus-production-baseimage",
+      "resource_group_name": "feedibus-production",
+      "storage_account": "amistoragefeedibus",
       "subscription_id": "{{user `subscription_id`}}",
       "tenant_id": "{{user `tenant_id`}}",
       "type": "azure-arm",
       "vm_size": "Standard_B1ms",
+      "temp_compute_name": "packer-image-provisioner",
+      "temp_resource_group_name": "packer-image-provisioner-group",
+      "capture_name_prefix": "feedibus-base-image-",
       "async_resourcegroup_delete": true
     }
   ],
