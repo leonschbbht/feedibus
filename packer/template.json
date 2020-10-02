@@ -13,6 +13,7 @@
       "os_type": "Linux",
       "resource_group_name": "feedibus-production",
       "storage_account": "amistoragefeedibus",
+      "capture_container_name": "feedibus-images",
       "subscription_id": "{{user `subscription_id`}}",
       "tenant_id": "{{user `tenant_id`}}",
       "type": "azure-arm",
