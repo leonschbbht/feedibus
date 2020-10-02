@@ -20,7 +20,7 @@
       "vm_size": "Standard_B1ms",
       "temp_compute_name": "packer-image-provisioner",
       "temp_resource_group_name": "packer-image-provisioner-group",
-      "capture_name_prefix": "feedibus-base-image-",
+      "capture_name_prefix": "feedibus-base-image",
       "async_resourcegroup_delete": true
     }
   ],
