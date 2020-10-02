@@ -7,3 +7,17 @@ resource "azurerm_resource_group" "feedibus-production" {
     environment = var.environment
   }
 }
+
+resource "azurerm_storage_account" "ami-storage-account" {
+  account_replication_type = "LRS"
+  account_tier = "Standard"
+  location = var.location
+  name = "amistoragefeedibus"
+  resource_group_name = azurerm_resource_group.feedibus-production.name
+
+  tags = {
+    environment = var.environment
+    tfmangaged = var.tfmanaged
+    location = var.location
+  }
+}
