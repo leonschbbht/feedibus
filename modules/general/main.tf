@@ -30,11 +30,10 @@ resource "azurerm_key_vault" "feedibus-secrets" {
   resource_group_name = azurerm_resource_group.feedibus-production.name
   sku_name = "premium"
   tenant_id = data.azurerm_client_config.current-config.tenant_id
-
+  soft_delete_enabled = true
   access_policy {
     object_id = data.azurerm_client_config.current-config.object_id
     tenant_id = data.azurerm_client_config.current-config.tenant_id
-
     key_permissions = [
     "create",
     "get",
