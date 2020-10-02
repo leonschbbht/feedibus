@@ -33,7 +33,7 @@ resource "azurerm_network_security_group" "feedibus-security-group" {
     name                       = "SSH"
     priority                   = 110
     direction                  = "Inbound"
-    access                     = "Deny"
+    access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"

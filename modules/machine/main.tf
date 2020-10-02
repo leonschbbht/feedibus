@@ -3,14 +3,14 @@ resource "azurerm_virtual_machine" "feedibus-production-vm" {
   name = "feedibus-production-vm"
   network_interface_ids = [var.network-interface-id]
   resource_group_name = var.resource-group-name
-  delete_os_disk_on_termination = true
+  delete_os_disk_on_termination = false
   vm_size = "Standard_B1ls"
   storage_image_reference {
     id = data.azurerm_image.feedibus-production-baseimage-data.id
   }
   storage_os_disk {
-    create_option = "FromImage"
-    name = "feedibus-production-storage"
+    create_option = "Attach"
+    name = azurerm_managed_disk.feedibus-production-storage.name
   }
   os_profile {
     computer_name  = "feedibus-production"
@@ -41,4 +41,13 @@ resource "azurerm_public_ip" "feedibus-public-ip" {
 data "azurerm_image" "feedibus-production-baseimage-data" {
   name = "feedibus-production-baseimage"
   resource_group_name = var.resource-group-name
+}
+
+resource "azurerm_managed_disk" "feedibus-production-storage" {
+  create_option = "FromImage"
+  location = var.location
+  image_reference_id = data.azurerm_image.feedibus-production-baseimage-data.id
+  name = "feedibus-production-storage"
+  resource_group_name = var.resource-group-name
+  storage_account_type = "Standard_LRS"
 }
