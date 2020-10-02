@@ -46,7 +46,7 @@ data "azurerm_image" "feedibus-production-baseimage-data" {
 resource "azurerm_managed_disk" "feedibus-production-storage" {
   create_option = "FromImage"
   location = var.location
-  image_reference_id = data.azurerm_image.feedibus-production-baseimage-data.name
+  image_reference_id = data.azurerm_image.feedibus-production-baseimage-data.id
   name = "feedibus-production-storage"
   resource_group_name = var.resource-group-name
   storage_account_type = "Standard_LRS"
