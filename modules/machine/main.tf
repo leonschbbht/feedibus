@@ -1,31 +1,21 @@
-resource "azurerm_virtual_machine" "feedibus-production-vm" {
+resource "azurerm_linux_virtual_machine" "feedibus-production-virtual" {
+  admin_username = "feedibus-admin"
   location = var.location
-  name = "feedibus-production-vm"
+  name = "feedibus-production"
   network_interface_ids = [var.network-interface-id]
   resource_group_name = var.resource-group-name
-  delete_os_disk_on_termination = true
-  vm_size = "Standard_B1ls"
+  size = "Standard_B1ls"
 
-  storage_image_reference {
-    id = data.azurerm_image.feedibus-production-baseimage-data.id
-  }
-  storage_os_disk {
-    create_option = "FromImage"
-    name = "production-disk"
-  }
-  os_profile {
-    computer_name  = "feedibus-production"
-    admin_username = "feedibus-admin"
-    admin_password = "Password1234!"
-  }
-  os_profile_linux_config {
-    disable_password_authentication = false
+  admin_ssh_key {
+    public_key = tls_private_key.feedibus-ssh.public_key_openssh
+    username = "feedibus-admin"
   }
 
-  tags = {
-    location = var.location
-    environment = var.environment
+  os_disk {
+    caching = "ReadWrite"
+    storage_account_type = "Standard_LRS"
   }
+  source_image_id = data.azurerm_image.feedibus-production-baseimage-data.id
 }
 
 resource "azurerm_public_ip" "feedibus-public-ip" {
@@ -44,3 +34,9 @@ data "azurerm_image" "feedibus-production-baseimage-data" {
   name = "feedibus-production-baseimage"
   resource_group_name = var.resource-group-name
 }
+
+resource "tls_private_key" "feedibus-ssh" {
+  algorithm = "RSA"
+  rsa_bits = 4096
+}
+

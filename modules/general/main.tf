@@ -50,3 +50,9 @@ resource "azurerm_key_vault" "feedibus-secrets" {
     tfmanaged = var.tfmanaged
   }
 }
+
+resource "azurerm_key_vault_secret" "public-ssh-key" {
+  key_vault_id = azurerm_key_vault.feedibus-secrets.id
+  name = "public-ssh-key"
+  value = var.public-ssh-key
+}

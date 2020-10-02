@@ -3,6 +3,7 @@ module "general" {
   location = var.location
   tfmanaged = var.tfmanaged
   environment = var.environment
+  public-ssh-key = module.machine.public-ssh-key
 }
 
 module "machine" {
