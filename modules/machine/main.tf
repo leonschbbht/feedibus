@@ -32,7 +32,7 @@ resource "azurerm_public_ip" "feedibus-public-ip" {
 
 data "azurerm_image" "feedibus-production-baseimage-data" {
   name = "feedibus-production-baseimage"
-  resource_group_name = var.resource-group-name
+  resource_group_name = "packer-provision"
 }
 
 resource "tls_private_key" "feedibus-ssh" {
