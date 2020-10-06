@@ -47,19 +47,9 @@ resource "azurerm_key_vault" "feedibus-secrets" {
     "restore",
     "sign",
     "update",
-    "verify",
+    "verify"
     ]
-    secret_permissions = [
-    "set",
-    "get",
-    "delete",
-    "create",
-    "list",
-    "purge",
-    "recover",
-    "regeneratekey",
-    "update"
-    ]
+    secret_permissions = ["backup", "delete", "get", "list", "purge", "recover", "restore", "set"]
   }
   tags = {
     environment = var.environment
