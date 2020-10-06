@@ -11,7 +11,7 @@
       "image_sku": "18.04-LTS",
       "location": "UK South",
       "os_type": "Linux",
-      "managed_image_resource_group_name": "feedibus-production",
+      "managed_image_resource_group_name": "packer-provision",
       "managed_image_name": "feedibus-production-baseimage",
       "subscription_id": "{{user `subscription_id`}}",
       "tenant_id": "{{user `tenant_id`}}",
