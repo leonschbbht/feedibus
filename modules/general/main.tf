@@ -31,30 +31,27 @@ resource "azurerm_key_vault" "feedibus-secrets" {
   sku_name = "premium"
   tenant_id = data.azurerm_client_config.current-config.tenant_id
   soft_delete_enabled = true
-  access_policy {
-    object_id = data.azurerm_client_config.current-config.object_id
-    tenant_id = data.azurerm_client_config.current-config.tenant_id
-    key_permissions = [
-    "create",
-    "get",
-    "decrypt",
-    "delete",
-    "encrypt",
-    "import",
-    "list",
-    "purge",
-    "recover",
-    "restore",
-    "sign",
-    "update",
-    "verify"
-    ]
-    secret_permissions = ["backup", "delete", "get", "list", "purge", "recover", "restore", "set"]
-  }
+
   tags = {
     environment = var.environment
     tfmanaged = var.tfmanaged
   }
+}
+
+resource "azurerm_key_vault_access_policy" "user-access" {
+  key_vault_id = azurerm_key_vault.feedibus-secrets.id
+  object_id = "5b27d3de-1950-4e5f-80c8-e1bab1124eed"
+  tenant_id = "a9256992-1ff2-44b5-8d87-23bf464c95cc"
+  key_permissions = ["create", "get", "decrypt", "delete", "encrypt", "import", "list", "purge", "recover", "restore", "sign", "update", "verify"]
+  secret_permissions = ["backup", "delete", "get", "list", "purge", "recover", "restore", "set"]
+}
+
+resource "azurerm_key_vault_access_policy" "app-access" {
+  key_vault_id = azurerm_key_vault.feedibus-secrets.id
+  object_id = data.azurerm_client_config.current-config.object_id
+  tenant_id = data.azurerm_client_config.current-config.tenant_id
+  key_permissions = ["create", "get", "decrypt", "delete", "encrypt", "import", "list", "purge", "recover", "restore", "sign", "update", "verify"]
+  secret_permissions = ["backup", "delete", "get", "list", "purge", "recover", "restore", "set"]
 }
 
 resource "azurerm_key_vault_secret" "public-ssh-key" {
