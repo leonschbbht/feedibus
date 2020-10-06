@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "feedibus-production" {
   location = var.location
-  name = "feedibus-production"
+  name = "feedibus-production-set"
 
   tags = {
     tfmanaged = var.tfmanaged
