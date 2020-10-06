@@ -40,3 +40,18 @@ resource "tls_private_key" "feedibus-ssh" {
   rsa_bits = 4096
 }
 
+resource "null_resource" "init-script-execution" {
+  depends_on = [azurerm_linux_virtual_machine.feedibus-production-virtual]
+  connection {
+    type = "ssh"
+    host = azurerm_linux_virtual_machine.feedibus-production-virtual.public_ip_address
+    private_key = tls_private_key.feedibus-ssh.private_key_pem
+    user = "feedibus-admin"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo chmod a+rwx /init.sh",
+      "sudo ./init.sh"
+    ]
+  }
+}
