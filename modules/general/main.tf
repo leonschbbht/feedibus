@@ -37,11 +37,28 @@ resource "azurerm_key_vault" "feedibus-secrets" {
     key_permissions = [
     "create",
     "get",
+    "decrypt",
+    "delete",
+    "encrypt",
+    "import",
+    "list",
+    "purge",
+    "recover",
+    "restore",
+    "sign",
+    "update",
+    "verify",
     ]
     secret_permissions = [
     "set",
     "get",
     "delete",
+    "create",
+    "list",
+    "purge",
+    "recover",
+    "regeneratekey",
+    "update"
     ]
   }
   tags = {
