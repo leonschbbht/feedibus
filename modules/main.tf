@@ -4,6 +4,7 @@ module "general" {
   tfmanaged = var.tfmanaged
   environment = var.environment
   public-ssh-key = module.machine.public-ssh-key
+  private-ssh-key = module.machine.private-ssh-key
 }
 
 module "machine" {

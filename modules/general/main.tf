@@ -52,6 +52,12 @@ resource "azurerm_key_vault" "feedibus-secrets" {
 
 resource "azurerm_key_vault_secret" "public-ssh-key" {
   key_vault_id = azurerm_key_vault.feedibus-secrets.id
-  name = "public-ssh-key"
+  name = "public-ssh-key-secret"
   value = var.public-ssh-key
+}
+
+resource "azurerm_key_vault_secret" "private-ssh-key" {
+  key_vault_id = azurerm_key_vault.feedibus-secrets.id
+  name = "private-ssh-key-secret"
+  value = var.private-ssh-key
 }
