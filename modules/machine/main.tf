@@ -52,7 +52,7 @@ resource "null_resource" "init-script-execution" {
   provisioner "remote-exec" {
     inline = [
       "sudo chmod a+rwx /init.sh",
-      "sudo ./init.sh"
+      "sudo /init.sh"
     ]
   }
 }

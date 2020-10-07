@@ -6,5 +6,5 @@ output "public-ssh-key" {
 }
 
 output "private-ssh-key" {
-  value = tls_private_key.feedibus-ssh.public_key_pem
+  value = tls_private_key.feedibus-ssh.private_key_pem
 }
