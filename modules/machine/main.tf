@@ -8,6 +8,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "feedibus-production-virtual"
   upgrade_mode = "Automatic"
   network_interface {
     name = "feedibus-production-scale-set-network-interface"
+    primary = true
     ip_configuration {
       name = "feedibus-production-ip-config"
       subnet_id = var.subnet-id
