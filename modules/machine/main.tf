@@ -13,7 +13,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "feedibus-production-virtual"
       name = "feedibus-production-ip-config"
       subnet_id = var.subnet-id
       public_ip_address {
-        name = "feedibus-production-scale-set-public-ip"
+        name = azurerm_public_ip.feedibus-public-ip.name
       }
     }
   }
