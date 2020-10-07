@@ -18,3 +18,7 @@
   template:
     src: templates/init.sh
     dest: /init.sh
+- name: install iptables-persistent
+  apt:
+    name: iptables-persistent
+    state: latest
