@@ -11,7 +11,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "feedibus-production-virtual"
     primary = true
     ip_configuration {
       subnet_id = var.subnet-id
-      name = "config-for-${var.subnet-id}}"
+      name = "config-for-subnet"
     }
   }
   admin_ssh_key {
