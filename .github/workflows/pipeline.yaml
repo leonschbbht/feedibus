@@ -20,17 +20,18 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-      - name: "Terraform code validation"
-        run: terraform validate -no-color
-      - name: "Terraform Plan"
-        run: terraform plan -out=plan.tfplan -no-color
+      - name: "taint null ressource | Remote execution provisioner"
+        run: terraform taint -allow-missing module.modules.module.machine.null_resource.init-script-execution
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-      - name: "taint null ressource | Remote execution provisioner"
-        run: terraform taint -allow-missing module.modules.module.machine.null_resource.init-script-execution
+
+      - name: "Terraform code validation"
+        run: terraform validate -no-color
+      - name: "Terraform Plan"
+        run: terraform plan -out=plan.tfplan -no-color
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}

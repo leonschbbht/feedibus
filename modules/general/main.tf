@@ -26,7 +26,7 @@ data "azurerm_client_config" "current-config" {}
 
 resource "azurerm_key_vault" "feedibus-secrets" {
   location = var.location
-  name = "feedibus-secrets"
+  name = "feedibus-secrets-vaul"
   resource_group_name = azurerm_resource_group.feedibus-production.name
   sku_name = "standard"
   tenant_id = data.azurerm_client_config.current-config.tenant_id
