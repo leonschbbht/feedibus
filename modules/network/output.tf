@@ -7,3 +7,7 @@ output "subnet-id" {
 output "security-group-id" {
   value = azurerm_network_security_group.feedibus-security-group.id
 }
+
+output "network-interface-name" {
+  value = azurerm_network_interface.feedibus-interface.name
+}

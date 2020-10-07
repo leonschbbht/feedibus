@@ -7,14 +7,11 @@ resource "azurerm_linux_virtual_machine_scale_set" "feedibus-production-virtual"
   sku = "Standard_B1ls"
   upgrade_mode = "Automatic"
   network_interface {
-    name = "feedibus-production-scale-set-network-interface"
+    name = var.network-interface-name
     primary = true
     ip_configuration {
-      name = "feedibus-production-ip-config"
       subnet_id = var.subnet-id
-      public_ip_address {
-        name = azurerm_public_ip.feedibus-public-ip.name
-      }
+      name = "config-for-${var.subnet-id}}"
     }
   }
   admin_ssh_key {
