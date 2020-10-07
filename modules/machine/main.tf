@@ -5,11 +5,11 @@ resource "azurerm_linux_virtual_machine_scale_set" "feedibus-production-virtual"
   name = "feedibus-production"
   resource_group_name = var.resource-group-name
   sku = "Standard_B1ls"
+  upgrade_mode = "Automatic"
   network_interface {
     name = "feedibus-production-scale-set-network-interface"
     ip_configuration {
       name = "feedibus-production-ip-config"
-      application_security_group_ids = [var.security-group-id]
       subnet_id = var.subnet-id
       public_ip_address {
         name = "feedibus-production-scale-set-public-ip"
@@ -28,6 +28,63 @@ resource "azurerm_linux_virtual_machine_scale_set" "feedibus-production-virtual"
   source_image_id = data.azurerm_image.feedibus-production-baseimage-data.id
 }
 
+resource "azurerm_monitor_autoscale_setting" "feedibus-autoscale-policy" {
+  location = var.location
+  name = "feedibus-autoscale-policy"
+  resource_group_name = var.resource-group-name
+  target_resource_id = azurerm_linux_virtual_machine_scale_set.feedibus-production-virtual.id
+  profile {
+    name = "DefaultScaleProfile"
+    capacity {
+      default = 1
+      maximum = 10
+      minimum = 1
+    }
+    rule {
+      metric_trigger {
+        metric_name = "Percentage CPU"
+        metric_resource_id = azurerm_linux_virtual_machine_scale_set.feedibus-production-virtual.id
+        operator = "GreaterThan"
+        statistic = "Average"
+        threshold = 80
+        time_aggregation = "Average"
+        time_grain = "PT1M"
+        time_window = "PT10M"
+      }
+      scale_action {
+        cooldown = "PT1M"
+        direction = "Increase"
+        type = "ChangeCount"
+        value = 1
+      }
+    }
+    rule {
+      metric_trigger {
+        metric_name = "Percentage CPU"
+        metric_resource_id = azurerm_linux_virtual_machine_scale_set.feedibus-production-virtual.id
+        operator = "LessThan"
+        statistic = "Average"
+        threshold = 30
+        time_aggregation = "Average"
+        time_grain = "PT1M"
+        time_window = "PT5M"
+      }
+      scale_action {
+        cooldown = "PT1M"
+        direction = "Decrease"
+        type = "ChangeCount"
+        value = 1
+      }
+    }
+  }
+  notification {
+    email {
+      send_to_subscription_administrator = true
+      send_to_subscription_co_administrator = true
+      custom_emails = ["j.huemmelink@gmail.com"]
+    }
+  }
+}
 
 resource "azurerm_public_ip" "feedibus-public-ip" {
   name                = "PublicIP-001"
