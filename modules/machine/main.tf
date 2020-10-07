@@ -1,12 +1,21 @@
-
-resource "azurerm_linux_virtual_machine" "feedibus-production-virtual" {
+resource "azurerm_linux_virtual_machine_scale_set" "feedibus-production-virtual" {
   admin_username = "feedibus-admin"
+  instances = 1
   location = var.location
   name = "feedibus-production"
-  network_interface_ids = [var.network-interface-id]
   resource_group_name = var.resource-group-name
-  size = "Standard_B1ls"
-
+  sku = "Standard_B1ls"
+  network_interface {
+    name = "feedibus-production-scale-set-network-interface"
+    ip_configuration {
+      name = "feedibus-production-ip-config"
+      application_security_group_ids = [var.security-group-id]
+      subnet_id = var.subnet-id
+      public_ip_address {
+        name = "feedibus-production-scale-set-public-ip"
+      }
+    }
+  }
   admin_ssh_key {
     public_key = tls_private_key.feedibus-ssh.public_key_openssh
     username = "feedibus-admin"
@@ -18,6 +27,7 @@ resource "azurerm_linux_virtual_machine" "feedibus-production-virtual" {
   }
   source_image_id = data.azurerm_image.feedibus-production-baseimage-data.id
 }
+
 
 resource "azurerm_public_ip" "feedibus-public-ip" {
   name                = "PublicIP-001"
@@ -42,10 +52,10 @@ resource "tls_private_key" "feedibus-ssh" {
 }
 
 resource "null_resource" "init-script-execution" {
-  depends_on = [azurerm_linux_virtual_machine.feedibus-production-virtual]
+  depends_on = [azurerm_linux_virtual_machine_scale_set.feedibus-production-virtual]
   connection {
     type = "ssh"
-    host = azurerm_linux_virtual_machine.feedibus-production-virtual.public_ip_address
+    host = azurerm_public_ip.feedibus-public-ip.ip_address
     private_key = tls_private_key.feedibus-ssh.private_key_pem
     user = "feedibus-admin"
   }

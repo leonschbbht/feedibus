@@ -14,6 +14,8 @@ module "machine" {
   resource-group-name = module.general.resource-group-name
   environment = var.environment
   image-storage-account-id = module.general.image-storage-account-id
+  subnet-id = module.network.subnet-id
+  security-group-id = module.network.security-group-id
 }
 
 module "network" {
