@@ -1,5 +1,5 @@
+
 resource "azurerm_linux_virtual_machine" "feedibus-production-virtual" {
-  depends_on = ["module.modules.module.general.azurerm_key_vault.feedibus-secrets"]
   admin_username = "feedibus-admin"
   location = var.location
   name = "feedibus-production"
