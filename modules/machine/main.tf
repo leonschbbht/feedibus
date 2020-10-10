@@ -1,19 +1,12 @@
-resource "azurerm_linux_virtual_machine_scale_set" "feedibus-production-virtual" {
+
+resource "azurerm_linux_virtual_machine" "feedibus-production-virtual" {
   admin_username = "feedibus-admin"
-  instances = 1
   location = var.location
   name = "feedibus-production"
+  network_interface_ids = [var.network-interface-id]
   resource_group_name = var.resource-group-name
-  sku = "Standard_B1ls"
-  upgrade_mode = "Automatic"
-  network_interface {
-    name = var.network-interface-name
-    primary = true
-    ip_configuration {
-      subnet_id = var.subnet-id
-      name = "config-for-subnet"
-    }
-  }
+  size = "Standard_B1ls"
+
   admin_ssh_key {
     public_key = tls_private_key.feedibus-ssh.public_key_openssh
     username = "feedibus-admin"
@@ -24,64 +17,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "feedibus-production-virtual"
     storage_account_type = "Standard_LRS"
   }
   source_image_id = data.azurerm_image.feedibus-production-baseimage-data.id
-}
-
-resource "azurerm_monitor_autoscale_setting" "feedibus-autoscale-policy" {
-  location = var.location
-  name = "feedibus-autoscale-policy"
-  resource_group_name = var.resource-group-name
-  target_resource_id = azurerm_linux_virtual_machine_scale_set.feedibus-production-virtual.id
-  profile {
-    name = "DefaultScaleProfile"
-    capacity {
-      default = 1
-      maximum = 10
-      minimum = 1
-    }
-    rule {
-      metric_trigger {
-        metric_name = "Percentage CPU"
-        metric_resource_id = azurerm_linux_virtual_machine_scale_set.feedibus-production-virtual.id
-        operator = "GreaterThan"
-        statistic = "Average"
-        threshold = 80
-        time_aggregation = "Average"
-        time_grain = "PT1M"
-        time_window = "PT10M"
-      }
-      scale_action {
-        cooldown = "PT1M"
-        direction = "Increase"
-        type = "ChangeCount"
-        value = 1
-      }
-    }
-    rule {
-      metric_trigger {
-        metric_name = "Percentage CPU"
-        metric_resource_id = azurerm_linux_virtual_machine_scale_set.feedibus-production-virtual.id
-        operator = "LessThan"
-        statistic = "Average"
-        threshold = 30
-        time_aggregation = "Average"
-        time_grain = "PT1M"
-        time_window = "PT5M"
-      }
-      scale_action {
-        cooldown = "PT1M"
-        direction = "Decrease"
-        type = "ChangeCount"
-        value = 1
-      }
-    }
-  }
-  notification {
-    email {
-      send_to_subscription_administrator = true
-      send_to_subscription_co_administrator = true
-      custom_emails = ["j.huemmelink@gmail.com"]
-    }
-  }
 }
 
 resource "azurerm_public_ip" "feedibus-public-ip" {
@@ -107,10 +42,10 @@ resource "tls_private_key" "feedibus-ssh" {
 }
 
 resource "null_resource" "init-script-execution" {
-  depends_on = [azurerm_linux_virtual_machine_scale_set.feedibus-production-virtual]
+  depends_on = [azurerm_linux_virtual_machine.feedibus-production-virtual]
   connection {
     type = "ssh"
-    host = azurerm_public_ip.feedibus-public-ip.ip_address
+    host = azurerm_linux_virtual_machine.feedibus-production-virtual.public_ip_address
     private_key = tls_private_key.feedibus-ssh.private_key_pem
     user = "feedibus-admin"
   }
