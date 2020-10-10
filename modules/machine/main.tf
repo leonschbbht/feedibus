@@ -5,7 +5,7 @@ resource "azurerm_linux_virtual_machine" "feedibus-production-virtual" {
   name = "feedibus-production"
   network_interface_ids = [var.network-interface-id]
   resource_group_name = var.resource-group-name
-  size = "Standard_B1ls"
+  size = "Standard_B1s"
 
   admin_ssh_key {
     public_key = tls_private_key.feedibus-ssh.public_key_openssh
