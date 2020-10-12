@@ -37,7 +37,13 @@ function start_docker {
   docker-compose pull -q && docker-compose up -d
 }
 
+function install_certbot {
+  echo "Installiere Certbot"
+  certbot -n --nginx --redirect --agree-tos --email leon.schoenhoff@bbht.de -d nexus.bbht.de
+}
+
 echo "Diese skript führt abschließende Schritte für die Vorbereitung der Cloudumgebung aus"
 
 configure_firewall
+install_certbot
 start_docker

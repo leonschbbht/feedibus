@@ -1,0 +1,9 @@
+- name: Add certbot repository
+  apt_repository:
+    repo: ppa:certbot/certbot
+    update_cache: yes
+    state: present
+- name: install Let's Encrypt Certbot
+  apt:
+    name: certbot,python-certbot-nginx
+    state: latest
