@@ -1,8 +1,8 @@
 version: "3.8"
 services:
   main:
-    image: nginx:latest
-    container_name: nginx:1.19-alpine
+    image: nginx:alpine
+    container_name: nginx
     ports:
     - 80:80
 #version: "3.8"

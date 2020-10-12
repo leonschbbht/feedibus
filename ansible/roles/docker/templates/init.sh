@@ -34,7 +34,7 @@ function start_docker {
   echo "Starte Docker Umgebung"
   service docker start
   cd /opt
-  docker-compose pull -q && docker-compose up -q
+  docker-compose pull -q && docker-compose up -d
 }
 
 echo "Diese skript führt abschließende Schritte für die Vorbereitung der Cloudumgebung aus"
