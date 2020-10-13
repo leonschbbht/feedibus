@@ -19,6 +19,7 @@ jobs:
           run: docker push onnythunder/feedibus-database:prod
   dependency:
     name: "Wait for docker image to become ready"
+    needs: docker
     runs-on: ubuntu-latest
     steps:
         - name: "Wait 20s Timeout"
@@ -26,6 +27,7 @@ jobs:
   terraform:
       name: "Run and deploy terraform configuraiton"
       runs-on: ubuntu-latest
+      needs: [docker, dependency]
       steps:
       - uses: actions/checkout@v2
         with:
