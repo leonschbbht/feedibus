@@ -1,0 +1,76 @@
+name: "Deploy new Version of Database to live environment"
+on:
+  release:
+    types: [published]
+    branches:
+      - terraform-infrastructure
+jobs:
+  docker:
+    name: "Build deployment version of Docker image"
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v2
+        - name: Login to DockerHub
+          run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USER }} --password-stdin
+        - name: Build Docker image
+          run: docker build --build-arg password=${{secrets.DATABASE_PASSWORD}} ./ --tag onnythunder/feedibus-database:prod
+        - name: Push to DockerHub
+          run: docker push onnythunder/feedibus-database:prod
+  dependency:
+    name: "Wait for docker image to become ready"
+    runs-on: ubuntu-latest
+    steps:
+        - name: "Wait 20s Timeout"
+          run: sleep 20
+    terraform:
+        name: "Run and deploy terraform configuraiton"
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+            with:
+                ref: terraform-infrastructure
+        - uses: hashicorp/setup-terraform@v1
+            with:
+            terraform_version: 0.13.4
+        - name: "Terraform initialization"
+            run: terraform init
+            env:
+                ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+                ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
+                ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+                ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+        - name: "taint null resource | Remote execution provisioner"
+            run: terraform taint -allow-missing module.modules.module.machine.null_resource.init-script-execution
+            env:
+                ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+                ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
+                ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+                ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+        - name: "taint virtual machine | re-run initialization script afterwards"
+            run: terraform taint -allow-missing module.modules.module.machine.azurerm_linux_virtual_machine.feedibus-production-virtual
+            env:
+                ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+                ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
+                ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+                ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+        - name: "Terraform code validation"
+            run: terraform validate
+        - name: "Terraform Plan"
+            run: terraform plan -out=plan.tfplan
+            env:
+                ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+                ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
+                ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+                ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+        - name: "Apply Terraform Configuration"
+            run: terraform apply -auto-approve plan.tfplan
+            env:
+                ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+                ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
+                ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+                ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
