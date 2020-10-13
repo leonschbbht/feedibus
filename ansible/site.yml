@@ -8,3 +8,4 @@
   roles:
     - docker
     - certbot
+    - initial-script

@@ -1,0 +1,4 @@
+- name: add init.sh templates
+  template:
+    src: templates/init.sh
+    dest: /init.sh

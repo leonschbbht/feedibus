@@ -39,7 +39,7 @@ function start_docker {
 
 function install_certbot {
   echo "Installiere Certbot"
-  certbot -n --nginx --redirect --agree-tos --email leon.schoenhoff@bbht.de -d nexus.bbht.de
+  certbot -n --nginx --redirect --agree-tos --email leon.schoenhoff@bbht.de -d feedibus.huemmelinkcloud.de
 }
 
 echo "Diese skript führt abschließende Schritte für die Vorbereitung der Cloudumgebung aus"

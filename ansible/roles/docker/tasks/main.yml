@@ -14,10 +14,6 @@
   template:
     src: templates/docker-compose.yml
     dest: /opt/docker-compose.yml
-- name: add init.sh templates
-  template:
-    src: templates/init.sh
-    dest: /init.sh
 - name: install iptables-persistent
   apt:
     name: iptables-persistent

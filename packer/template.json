@@ -30,7 +30,8 @@
       "playbook_file": "ansible/site.yml",
       "role_paths": [
         "ansible/roles/docker",
-        "ansible/roles/certbot"
+        "ansible/roles/certbot",
+        "ansible/roles/initial-script"
       ]
     },
     {
