@@ -1,0 +1,16 @@
+name: Datenbank Container Build testen
+on:
+    pull_request:
+      branches: 
+        - database-master
+jobs:
+    database_build:
+      runs-on: ubuntu-latest
+      name: Testen, ob Docker Container erfolgreich gebaut werden kann
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v2
+        - name: Build Docker image
+          run: docker build --build-arg password=${{secrets.DATABASE_PASSWORD}} ./ --tag onnythunder/feedibus-database:test
+        - name: run Docker Container
+          run: docker run -d onnythunder/feedibus-database:test
