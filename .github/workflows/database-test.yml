@@ -13,4 +13,6 @@ jobs:
         - name: Build Docker image
           run: docker build --build-arg password=${{secrets.DATABASE_PASSWORD}} ./ --tag onnythunder/feedibus-database:test
         - name: run Docker Container
-          run: docker run -d onnythunder/feedibus-database:test
+          run: docker run -d -p 5432:5432 --name feedibus-database onnythunder/feedibus-database:test
+        - name: get status of Container
+          run: sleep 15 && if docker ps | grep feedibus-database; then echo "Erfolgreich. Test abgeschossen"; else echo "Fehler. Lauffähigkeit konnte nicht festgestellt werden" && exit 1; fi
