@@ -23,54 +23,54 @@ jobs:
     steps:
         - name: "Wait 20s Timeout"
           run: sleep 20
-    terraform:
-        name: "Run and deploy terraform configuraiton"
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v2
-          with:
+  terraform:
+      name: "Run and deploy terraform configuraiton"
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v2
+        with:
           ref: terraform-infrastructure
-        - uses: hashicorp/setup-terraform@v1
-          with:
+      - uses: hashicorp/setup-terraform@v1
+        with:
           terraform_version: 0.13.4
-        - name: "Terraform initialization"
-          run: terraform init
-          env:
-              ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-              ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
-              ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-              ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      - name: "Terraform initialization"
+        run: terraform init
+        env:
+            ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+            ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
+            ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+            ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-        - name: "taint null resource | Remote execution provisioner"
-          run: terraform taint -allow-missing module.modules.module.machine.null_resource.init-script-execution
-          env:
-              ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-              ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
-              ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-              ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      - name: "taint null resource | Remote execution provisioner"
+        run: terraform taint -allow-missing module.modules.module.machine.null_resource.init-script-execution
+        env:
+            ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+            ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
+            ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+            ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-        - name: "taint virtual machine | re-run initialization script afterwards"
-          run: terraform taint -allow-missing module.modules.module.machine.azurerm_linux_virtual_machine.feedibus-production-virtual
-          env:
-              ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-              ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
-              ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-              ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      - name: "taint virtual machine | re-run initialization script afterwards"
+        run: terraform taint -allow-missing module.modules.module.machine.azurerm_linux_virtual_machine.feedibus-production-virtual
+        env:
+            ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+            ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
+            ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+            ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-        - name: "Terraform code validation"
-          run: terraform validate
-        - name: "Terraform Plan"
-          run: terraform plan -out=plan.tfplan
-          env:
-              ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-              ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
-              ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-              ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      - name: "Terraform code validation"
+        run: terraform validate
+      - name: "Terraform Plan"
+        run: terraform plan -out=plan.tfplan
+        env:
+            ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+            ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
+            ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+            ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-        - name: "Apply Terraform Configuration"
-          run: terraform apply -auto-approve plan.tfplan
-          env:
-              ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-              ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
-              ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-              ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      - name: "Apply Terraform Configuration"
+        run: terraform apply -auto-approve plan.tfplan
+        env:
+            ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+            ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
+            ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+            ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
