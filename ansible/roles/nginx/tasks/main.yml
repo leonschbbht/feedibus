@@ -1,0 +1,17 @@
+- name: Add nginx official repository for apt
+  apt_repository:
+    repo: ppa:nginx/stable
+    update_cache: yes
+    state: present
+- name: ensure nginx is at the latest version
+  apt:
+    name: nginx
+    state: latest
+- name: replace nginx templates
+  template:
+    src: templates/nginx.conf
+    dest: /etc/nginx/nginx.conf
+- name: start nginx
+  service:
+    name: nginx
+    state: started

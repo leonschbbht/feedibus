@@ -31,7 +31,8 @@
       "role_paths": [
         "ansible/roles/docker",
         "ansible/roles/certbot",
-        "ansible/roles/initial-script"
+        "ansible/roles/initial-script",
+        "ansible/roles/nginx"
       ]
     },
     {

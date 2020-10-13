@@ -9,3 +9,4 @@
     - docker
     - certbot
     - initial-script
+    - nginx
