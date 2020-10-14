@@ -46,6 +46,15 @@ resource "azurerm_key_vault_access_policy" "user-access" {
   secret_permissions = ["backup", "delete", "get", "list", "purge", "recover", "restore", "set"]
 }
 
+// Zugriff für Jan
+resource "azurerm_key_vault_access_policy" "user-access-secondary" {
+  key_vault_id = azurerm_key_vault.feedibus-secrets.id
+  object_id = "76e98acf-3db4-4177-a5ed-032242844b2b"
+  tenant_id = "a9256992-1ff2-44b5-8d87-23bf464c95cc"
+  key_permissions = ["create", "get", "decrypt", "delete", "encrypt", "import", "list", "purge", "recover", "restore", "sign", "update", "verify"]
+  secret_permissions = ["backup", "delete", "get", "list", "purge", "recover", "restore", "set"]
+}
+
 resource "azurerm_key_vault_access_policy" "app-access" {
   key_vault_id = azurerm_key_vault.feedibus-secrets.id
   object_id = data.azurerm_client_config.current-config.object_id

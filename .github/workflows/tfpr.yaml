@@ -1,6 +1,6 @@
 name: "Terraform Infrastructure validation"
 on:
-  push:
+  pull_request:
     branches:
       - terraform-infrastructure
 jobs:

@@ -28,3 +28,10 @@ module "network" {
   resource-group-location = module.general.ressource-group-location
   public-ip-id = module.machine.public-ip-id
 }
+
+module "metric" {
+  source = "./metric"
+  resource-group-name = module.general.resource-group-name
+  feedibus-production-vm-id = module.machine.feedibus-production-vm-id
+  location = var.location
+}

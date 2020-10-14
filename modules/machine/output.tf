@@ -8,3 +8,7 @@ output "public-ssh-key" {
 output "private-ssh-key" {
   value = tls_private_key.feedibus-ssh.private_key_pem
 }
+
+output "feedibus-production-vm-id" {
+  value = azurerm_linux_virtual_machine.feedibus-production-virtual.id
+}

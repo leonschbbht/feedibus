@@ -10,3 +10,6 @@
 
 * Automatisches generieren von SSH-RSA Schlüsselparen wird gewährleistet
 * Initiales Skript wird durch remote Executioner ausgeführt
+
+## v0.3
+* E-Mail Benachrichtigung wird bei überschreiten bestimmter Grenzwerte automatisch versendet
