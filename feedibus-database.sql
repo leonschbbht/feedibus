@@ -1,1 +1,8 @@
-CREATE DATABASE feedibus
+CREATE DATABASE feedibus;
+
+DROP TABLE IF EXISTS testtable;
+
+CREATE TABLE testtable (
+    id SERIAL NOT NULL PRIMARY KEY,
+    val VARCHAR
+);
