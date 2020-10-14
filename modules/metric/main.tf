@@ -19,33 +19,15 @@ resource "azurerm_monitor_action_group" "metric-alert-group" {
 resource "azurerm_monitor_metric_alert" "cpu-perc-alert" {
     name = "CPU-Percentage-Alert"
     resource_group_name = var.resource-group-name
-    scopes = []
+    scopes = [var.feedibus-production-vm-id]
     description = "Metric alert will be triggered when CPU percentage is > 80% for > 5 min"
 
     criteria {
-        metric_namespace = []
-        metric_name = ""
-        aggregation = "Average"
+        metric_namespace = "Microsoft.ClassicCompute/virtualMachines"
+        metric_name = "Percentage CPU"
+        aggregation = "Maximum"
         operator = "GreaterThan"
         threshold = "80"
-    }
-    action {
-        action_group_id = azurerm_monitor_action_group.metric-alert-group.id
-    }
-}
-
-resource "azurerm_monitor_metric_alert" "ram-perc-alert" {
-    name = "RAM-Percentage-Alert"
-    resource_group_name = var.resource-group-name
-    scopes = []
-    description = "Metric alert will be triggered when RAM percentage is > 80% for > 5 min"
-
-    criteria {
-        metric_namespace = []
-        metric_name = ""
-        aggregation = "Average"
-        operator = "GreaterThan"
-        threshold = "70"
     }
     action {
         action_group_id = azurerm_monitor_action_group.metric-alert-group.id

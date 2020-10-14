@@ -32,5 +32,6 @@ module "network" {
 module "metric" {
   source = "./metric"
   resource-group-name = module.general.resource-group-name
+  feedibus-production-vm-id = module.machine.feedibus-production-vm-id
   location = var.location
 }
