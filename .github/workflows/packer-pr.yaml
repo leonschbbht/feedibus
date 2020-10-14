@@ -1,6 +1,6 @@
-name: Packer provisioning
+name: "Packer: CI - Test Configuration"
 on:
-  push:
+  pull_request:
 jobs:
   packer:
     runs-on: ubuntu-latest
@@ -21,18 +21,6 @@ jobs:
         with:
           command: validate
           arguments: -syntax-only
-          target: packer/template.json
-        env:
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-
-      - name: Build Artifact
-        uses: operatehappy/packer-github-actions@master
-        with:
-          command: build
-          arguments: "-color=false -on-error=abort -force"
           target: packer/template.json
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
