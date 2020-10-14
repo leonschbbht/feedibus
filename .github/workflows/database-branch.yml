@@ -1,4 +1,4 @@
-name: Datenbank Container bereitstellen
+name: "Database: Build - Push dev Version to Docker Hub"
 on:
     push:
       branches: 

@@ -1,4 +1,4 @@
-name: Datenbank Container Build testen
+name: "Database: CI - Test Docker Configuration"
 on:
     pull_request:
       branches: 

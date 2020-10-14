@@ -1,4 +1,4 @@
-name: "Deploy new Version of Database to live environment"
+name: "Database: CD - Deploy latest version of Database"
 on:
   release:
     types: [published]
