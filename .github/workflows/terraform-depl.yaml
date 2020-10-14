@@ -1,28 +1,38 @@
-name: "Terraform Infrastructure validation"
+name: "Terraform: CD - Deploy latest version"
 on:
-  pull_request:
+  release:
+    types: [published]
     branches:
       - terraform-infrastructure
 jobs:
   terraform:
-    name: "Run and validate terraform"
+    name: "run and deploy terraform config"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 0.13.4
-      - name: "Terraform initialization"
+      - name: "Preparation..."
         run: terraform init
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-      - name: "Terraform code validation"
+
+      - name: "validate"
         run: terraform validate
       - name: "Terraform Plan"
-        run: terraform plan
+        run: terraform plan -out=plan.tfplan
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+      - name: "Deploy"
+        run: terraform apply -auto-approve plan.tfplan
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}

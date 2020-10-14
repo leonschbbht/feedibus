@@ -1,4 +1,4 @@
-name: "Terraform Infrastructure validation"
+name: "Terraform: output plan"
 on:
   push:
     branches:
