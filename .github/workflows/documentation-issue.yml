@@ -1,0 +1,22 @@
+name: Auto Assign documentation tickets to Project
+
+on:
+  issues:
+    types: [opened, labeled]
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  assign_one_project:
+    runs-on: ubuntu-latest
+    name: Assign to One Project
+    steps:
+
+    - name: Assign issues and pull requests with `documentation` label to project 4
+      uses: srggrs/assign-one-project-github-action@1.2.0
+      if: |
+        contains(github.event.issue.labels.*.name, 'documentation') ||
+        contains(github.event.pull_request.labels.*.name, 'documentation')
+      with:
+        project: 'https://github.com/leonschbbht/feedibus/projects/4'
+        column_name: 'ToDo'
