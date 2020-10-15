@@ -9,3 +9,9 @@
     * Docker-Compose
     * Docker-Compose File zum automatisierten Deployment
     * Initialisierungsskripte
+## v0.2
+* Zusätzlich werden folgende Elemente installiert
+    * nginx
+    * nginx.conf
+    * certbot
+    * Generierung von Zertifikaten
