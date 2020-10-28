@@ -16,4 +16,5 @@ module "modules" {
   location = var.location
   tfmanaged = var.tfmanaged
   environment = var.environment
+  dockertoken = var.dockertoken
 }

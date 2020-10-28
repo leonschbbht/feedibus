@@ -17,6 +17,7 @@ module "machine" {
   subnet-id = module.network.subnet-id
   security-group-id = module.network.security-group-id
   network-interface-name = module.network.network-interface-name
+  dockertoken = var.dockertoken
 }
 
 module "network" {
