@@ -15,3 +15,5 @@
     * nginx.conf
     * certbot
     * Generierung von Zertifikaten
+## v0.3
+* Updated init script to include secret password for private docker repository

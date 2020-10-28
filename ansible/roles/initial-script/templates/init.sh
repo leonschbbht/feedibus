@@ -42,9 +42,15 @@ function install_certbot {
   certbot -n --nginx --redirect --agree-tos --email leon.schoenhoff@bbht.de -d feedibus.huemmelinkcloud.de
 }
 
+function docker_login {
+  echo "Creating docker session"
+  echo $1 | docker login docker.pkg.github.com -u leonschbbht --password-stdin
+}
+
 echo "Diese skript führt abschließende Schritte für die Vorbereitung der Cloudumgebung aus"
 
 configure_firewall
 service nexus start
 install_certbot
+docker_login
 start_docker
