@@ -80,7 +80,7 @@ jobs:
     - name: "Terraform code validation"
       run: terraform validate
     - name: "Terraform Plan"
-      run: terraform plan -out=plan.tfplan -var dockertoken={{ secrets.PACKAGES_ACCESS_TOKEN }}
+      run: terraform plan -var dockertoken=${{ secrets.PACKAGES_ACCESS_TOKEN }} -out=plan.tfplan
       env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
