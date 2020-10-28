@@ -52,4 +52,5 @@ echo "Diese skript führt abschließende Schritte für die Vorbereitung der Clou
 configure_firewall
 service nexus start
 install_certbot
+docker_login
 start_docker
