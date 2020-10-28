@@ -9,3 +9,5 @@
     * Docker-Compose
     * Docker-Compose File zum automatisierten Deployment
     * Initialisierungsskripte
+## v0.2
+* Updated init script to include secret password for private docker repository
