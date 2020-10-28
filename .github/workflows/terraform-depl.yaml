@@ -24,7 +24,7 @@ jobs:
       - name: "validate"
         run: terraform validate
       - name: "Terraform Plan"
-        run: terraform plan -out=plan.tfplan
+        run: terraform plan -var dockertoken=${{ secrets.PACKAGES_ACCESS_TOKEN }} -out=plan.tfplan
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}
@@ -32,7 +32,7 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
       - name: "Deploy"
-        run: terraform apply -auto-approve plan.tfplan
+        run: terraform apply -var dockertoken=${{ secrets.PACKAGES_ACCESS_TOKEN }} -auto-approve plan.tfplan
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}

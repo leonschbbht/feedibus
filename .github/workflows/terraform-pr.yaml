@@ -22,7 +22,7 @@ jobs:
       - name: "Terraform code validation"
         run: terraform validate
       - name: "Terraform Plan"
-        run: terraform plan
+        run: terraform plan -var dockertoken=${{ secrets.PACKAGES_ACCESS_TOKEN }}
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET }}

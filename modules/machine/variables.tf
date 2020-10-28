@@ -6,3 +6,4 @@ variable "image-storage-account-id" {}
 variable "subnet-id" {}
 variable "security-group-id" {}
 variable "network-interface-name" {}
+variable "dockertoken" {}

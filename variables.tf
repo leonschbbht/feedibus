@@ -1,3 +1,5 @@
+variable "dockertoken" {}
+
 variable "location" {
   default = "UK South"
 }
