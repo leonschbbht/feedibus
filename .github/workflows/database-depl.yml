@@ -12,11 +12,11 @@ jobs:
         - name: Checkout Repository
           uses: actions/checkout@v2
         - name: Login to DockerHub
-          run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USER }} --password-stdin
+          run: echo ${{ secrets.PACKAGES_ACCESS_TOKEN }} | docker login docker.pkg.github.com -u leonschbbht --password-stdin
         - name: Build Docker image
-          run: docker build --build-arg password=${{secrets.DATABASE_PASSWORD}} ./ --tag onnythunder/feedibus-database:prod
+          run: docker build --build-arg password=${{secrets.DATABASE_PASSWORD}} ./ --tag docker.pkg.github.com/leonschbbht/feedibus/database
         - name: Push to DockerHub
-          run: docker push onnythunder/feedibus-database:prod
+          run: docker push docker.pkg.github.com/leonschbbht/feedibus/database
   dependency:
     name: "Wait for docker image to become ready"
     needs: docker

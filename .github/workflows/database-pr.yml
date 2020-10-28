@@ -11,7 +11,7 @@ jobs:
         - name: Checkout Repository
           uses: actions/checkout@v2
         - name: Build Docker image
-          run: docker build --build-arg password=${{secrets.DATABASE_PASSWORD}} ./ --tag onnythunder/feedibus-database:test
+          run: docker build --build-arg password=roottoor ./ --tag onnythunder/feedibus-database:test
         - name: run Docker Container
           run: docker run -d -p 5432:5432 --name feedibus-database onnythunder/feedibus-database:test
         - name: get status of Container
