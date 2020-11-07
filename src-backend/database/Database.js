@@ -15,7 +15,7 @@ class Database {
     async createUser (name, email, password) {
         const user = new User(0, name, email, '', '');
         await user.setNewPassword(password);
-        const id = await this._con('users')
+        const id = await this._con('user')
             .insert({
                 name: user.name,
                 email: user.email,
@@ -39,7 +39,7 @@ class Database {
     async getUserById (id) {
         const resultArray = await this._con
             .select('*')
-            .from('users')
+            .from('user')
             .where('id', id)
             .returning('*')
             .catch(() => null);
@@ -57,7 +57,7 @@ class Database {
     async getUserByEmail (email) {
         const resultArray = await this._con
             .select('*')
-            .from('users')
+            .from('user')
             .where('email', email)
             .returning('*')
             .catch(() => null);
@@ -74,7 +74,7 @@ class Database {
      */
     async saveUser (user) {
         if (user instanceof User) {
-            const id = this._con('users')
+            const id = this._con('user')
                 .where('id', user.id)
                 .update({
                     name: user.name,
