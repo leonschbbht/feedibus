@@ -1,5 +1,8 @@
 # Feedibus
 
+_Projekt von:_
+_Simon Hanesch, Jan Hümmelink, Janek Lüdiger und Leon Schönhoff_
+
 ## Anforderungen
 1. [node.js](https://nodejs.org/en/download/)
 2. npm
