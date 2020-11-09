@@ -7,7 +7,8 @@
   "scripts": {
     "lint": "eslint --ext .js --ext .vue . --f codeframe",
     "fix": "eslint --ext .js --ext .vue . --f codeframe --fix",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "migrate": "knex migrate:up"
   },
   "main": "app.js",
   "dependencies": {
