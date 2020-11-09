@@ -6,7 +6,8 @@
   "author": "Feedibus-Team",
   "scripts": {
     "lint": "eslint --ext .js --ext .vue . --f codeframe",
-    "fix": "eslint --ext .js --ext .vue . --f codeframe --fix"
+    "fix": "eslint --ext .js --ext .vue . --f codeframe --fix",
+    "build": "webpack --config webpack.config.js"
   },
   "main": "app.js",
   "dependencies": {
