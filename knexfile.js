@@ -5,7 +5,7 @@ module.exports = {
         host: 'localhost',
         database: 'feedibus',
         user: 'postgres',
-        password: ''
+        password: process.env.POSTGRES_PASSWORD
     },
     pool: {
         min: 2,
