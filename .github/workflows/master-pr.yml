@@ -1,0 +1,24 @@
+name: "Master: CI - Lint Code and execute tests"
+on:
+    pull_request:
+      branches: 
+        - master
+jobs:
+    database_build:
+      runs-on: ubuntu-latest
+      name: Lint Code | Unit Tests ausführen
+      steps:
+        - name: Setup Node
+          uses: actions/setup-node@v1
+          with:
+            node-version: '14'
+        - name: Checkout Repository
+          uses: actions/checkout@v2
+        - name: Abhängigkeiten installieren
+          run: npm install
+        - name: Lint Code
+          run: npm run fix
+        - name: Test Lint
+          run: npm run lint
+        - name: Unit Tests ausführen
+          run: echo "Unittests werden aktuell nicht unterstützt"
