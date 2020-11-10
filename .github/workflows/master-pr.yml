@@ -9,7 +9,7 @@ jobs:
       name: Lint Code | Unit Tests ausführen
       steps:
         - name: Setup Node
-          uses: actions/setup-node
+          uses: actions/setup-node@v1
         - name: Checkout Repository
           uses: actions/checkout@v2
         - name: Abhängigkeiten installieren
