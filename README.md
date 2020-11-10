@@ -27,7 +27,7 @@ Dazu müssen ggf. die benötigten Treiber nachinstalliert werden.
 | DBMS           | Treiber    | Installations Befehl   |
 |----------------|------------|------------------------|
 | SQLite3        | *sqlite3*  | `npm install sqlite3`  |
-| MySQL/ MairaDB | *mysql2*   | `npm install mysql2`   |
+| MySQL/ MariaDB | *mysql2*   | `npm install mysql2`   |
 | MSSQL          | *mssql*    | `npm install mssql`    |
 | Oracle         | *oracledb* | `npm install oracledb` |
 
