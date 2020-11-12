@@ -1,4 +1,4 @@
-name: Auto Assign documentation tickets to Project
+name: Auto Assign Issues to Product Backlog
 
 on:
   issues:
