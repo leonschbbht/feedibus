@@ -8,11 +8,10 @@ env:
 jobs:
   assign_one_project:
     runs-on: ubuntu-latest
-    name: Assign to One Project
+    name: Assign to Sprint Backlog
     steps:
-
-    - name: Assign issues to Scrum Board
-      uses: srggrs/assign-one-project-github-action@1.2.0
+    - uses: alex-page/github-project-automation-plus@v0.3.0
       with:
-          project: 'https://github.com/leonschbbht/feedibus/projects/1'
-          column_name: 'Sprint Backlog'
+        project: 'Scrum Board'
+        column: 'Sprint Backlog'
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
