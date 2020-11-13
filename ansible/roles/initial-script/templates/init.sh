@@ -34,6 +34,7 @@ function start_docker {
   echo "Starte Docker Umgebung"
   service docker start
   cd /opt
+  docker-compose stop
   docker-compose pull -q && docker-compose up -d
 }
 
@@ -50,7 +51,6 @@ function docker_login {
 echo "Diese skript führt abschließende Schritte für die Vorbereitung der Cloudumgebung aus"
 
 configure_firewall
-service nexus start
 install_certbot
 docker_login $1
 start_docker
