@@ -10,3 +10,5 @@ services:
     container_name: node-master
     ports:
     - 8081:3000
+    environment:
+    - POSTGRES_HOSTNAME=database
