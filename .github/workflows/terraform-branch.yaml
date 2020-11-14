@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - terraform-infrastructure
+      - terraform-infrastructure-test
 jobs:
   terraform:
     name: "Run and validate terraform"
