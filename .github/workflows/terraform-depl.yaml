@@ -4,6 +4,7 @@ on:
     types: [published]
     branches:
       - terraform-infrastructure
+      - terraform-infrastructure-test
 jobs:
   terraform:
     name: "run and deploy terraform config"
