@@ -1,0 +1,93 @@
+<template>
+  <v-app>
+    <v-main>
+      <Header />
+      <Filter />
+      <Card
+        v-for="newsItem in news"
+        :key="newsItem.title"
+        :title="newsItem.title"
+        :img="newsItem.img"
+        :source="newsItem.source"
+        :date="newsItem.date"
+        :text="newsItem.text"
+        :link="newsItem.link"
+        :categories="newsItem.categories"
+        class="newsCard"
+      />
+      <Footer />
+    </v-main>
+  </v-app>
+</template>
+
+<script>
+import Header from "./components/Header.vue";
+import Card from "./components/Card.vue";
+import Footer from "./components/Footer.vue";
+import Filter from "./components/Filter.vue";
+export default {
+  name: "App",
+  components: {
+    Header,
+    Card,
+    Footer,
+    Filter,
+  },
+  data() {
+    return {
+      news: [
+        {
+          title: "Innenminister Caffier tritt zurück",
+          img:
+            "https://www.tagesschau.de/multimedia/bilder/caffier-111~_v-modPremium.jpg",
+          source: "Tagesschau.de",
+          date: "17.11.2020 17:51",
+          text:
+            "Mecklenburg-Vorpommerns Innenminister Caffier ist zurückgetreten. Er war wegen eines umstrittenen Waffenkaufs unter Druck geraten. Sein Landtagsmandat will der CDU-Politiker behalten.",
+          link: "https://www.tagesschau.de/inland/caffier-ruecktritt-103.html",
+          categories: ["Politik", "Leitmedien"],
+        },
+        {
+          title: "Geht das jetzt immer so weiter?",
+          img:
+            "https://img.zeit.de/wissen/gesundheit/2020-11/corona-politik-impfung-lockdown-kontaktverfolgung-pandemiekontrolle-strategien-bild/wide__820x461__desktop",
+          source: "Zeit.de",
+          date: "17.11.2020 15:03",
+          text:
+            " Die Politik wird die Corona-Regeln wohl bald noch einmal verschärfen. Doch was kommt danach? Drei mögliche Langzeitstrategien, die die Politik ergreifen könnte. Eine Analyse von Jakob Simmank, Florian Schumann und Philipp Daum",
+          link:
+            "https://www.zeit.de/wissen/gesundheit/2020-11/corona-politik-impfung-lockdown-kontaktverfolgung-pandemiekontrolle-strategien",
+          categories: ["Corona", "Leitmedien"],
+        },
+        {
+          title: "Elektroautokäufer sollen bis 2025 Zuschuss bekommen",
+          img:
+            "https://media1.faz.net/ppmedia/aktuell/wirtschaft/4185919099/1.7056839/format_top1_breit/vw-produktion-in-zwickau.jpg",
+          source: "faz.net",
+          date: "17.11.2020 15:18",
+          text:
+            "Längere Förderung für E-Autos, zahlreiche neue Ladestationen und mehr: Die Regierung plant eine Reihe von Maßnahmen, um die deutsche Autolandschaft zu transformieren. ",
+          link:
+            "https://www.faz.net/aktuell/wirtschaft/elektroautokaeufer-sollen-bis-2025-einen-zuschuss-kriegen-17056821.html",
+          categories: ["Politik", "Leitmedien"],
+        },
+        {
+          title: "Einfach Uff: ALLE Apple M1 ausprobiert!",
+          img: "http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg",
+          source: "youtube / alexibexi",
+          date: "17.11.2020",
+          text:
+            "Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1",
+          link: "https://www.youtube.com/watch?v=xSRI2_z-QwE",
+          categories: ["Unterhaltung"],
+        },
+      ],
+    };
+  },
+};
+</script>
+<style scoped>
+.newsCard {
+  margin: 50px;
+}
+</style>
