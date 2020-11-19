@@ -10,7 +10,7 @@
             dense
         >
             <v-list-item-group
-               :value="group"
+                :value="group"
                 active-class="primary--text text--primary-4"
                 @input="setGroup($event)"
             >
@@ -55,7 +55,7 @@ export default {
         changeDrawer (value) {
             this.$emit('update:drawer', value);
         },
-        setGroup( value){
+        setGroup (value) {
             this.group = value;
             this.$emit('update:drawer', false);
         }
