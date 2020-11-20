@@ -4,7 +4,7 @@ module.exports = class Job {
      * @param {string} type
      * @param {string} url
      */
-    constructor(id, type, url) {
+    constructor (id, type, url) {
         this._id = id;
         this._type = type;
         this._url = url;
@@ -13,42 +13,42 @@ module.exports = class Job {
     /**
      * @returns {number}
      */
-    get id() {
+    get id () {
         return this._id;
     }
 
     /**
      * @param {number} value
      */
-    set id(value) {
+    set id (value) {
         this._id = value;
     }
 
     /**
      * @returns {string}
      */
-    get type() {
+    get type () {
         return this._type;
     }
 
     /**
      * @param {string} value
      */
-    set type(value) {
+    set type (value) {
         this._type = value;
     }
 
     /**
      * @returns {string}
      */
-    get url() {
+    get url () {
         return this._url;
     }
 
     /**
      * @param {string} value
      */
-    set url(value) {
+    set url (value) {
         this._url = value;
     }
 }

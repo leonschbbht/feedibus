@@ -4,7 +4,7 @@ module.exports = class Subscription {
      * @param {number} userId
      * @param {number} jobId
      */
-    constructor(id, userId, jobId) {
+    constructor (id, userId, jobId) {
         this._id = id;
         this._userId = userId;
         this._jobId = jobId;
@@ -13,42 +13,42 @@ module.exports = class Subscription {
     /**
      * @returns {number}
      */
-    get id() {
+    get id () {
         return this._id;
     }
 
     /**
      * @param {number} value
      */
-    set id(value) {
+    set id (value) {
         this._id = value;
     }
 
     /**
      * @returns {number}
      */
-    get userId() {
+    get userId () {
         return this._userId;
     }
 
     /**
      * @param {number} value
      */
-    set userId(value) {
+    set userId (value) {
         this._userId = value;
     }
 
     /**
      * @returns {number}
      */
-    get jobId() {
+    get jobId () {
         return this._jobId;
     }
 
     /**
      * @param {number} value
      */
-    set jobId(value) {
+    set jobId (value) {
         this._jobId = value;
     }
 }

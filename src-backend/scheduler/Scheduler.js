@@ -2,35 +2,23 @@ const Job = require('../model/Job');
 const Message = require('../model/Message');
 const AbstractRunner = require('../runner/AbstractRunner');
 const { CYCLE_TIME } = require('../../config');
-const Database = require('../database/Database');
-const RssRunner = require('../runner/RssRunner');
 const RunnerMap = require('../runner/RunnerMap');
 const db = require('../database/Database');
 
 module.exports = class Scheduler {
-
-    /**
-     * @type {Job[]}
-     * @private
-     */
-    _jobs = [];
-
-    /**
-     * @type {Job[]}
-     * @private
-     */
-    _finishedJob = [];
-
-    constructor() {
+    constructor () {
+        this._jobs = [];
+        this._finishedJob = [];
         this._db = db;
     }
 
     async loadJobs () {
         const jobs = await this._db.getAllJobs();
-       jobs.forEach(job => this._jobs.push(job));
+        jobs.forEach(job => this._jobs.push(job));
     }
 
-    async executeJobs() {
+    async executeJobs () {
+        console.log('this = ', this);
         const startTime = Date.now();
         while (this._jobs.length > 0) {
             /**
@@ -75,7 +63,7 @@ module.exports = class Scheduler {
      * @param {string} type
      * @return {AbstractRunner|null}
      */
-    determineRunnerByType(type) {
+    determineRunnerByType (type) {
         if (type in RunnerMap) {
             return RunnerMap[type];
         }
@@ -86,10 +74,11 @@ module.exports = class Scheduler {
      * @param {number} id
      * @return {Promise<void>}
      */
-    registerNewJobById = async (id) => {
-        const job = await this._db.getJobById(id);
-        if (job) {
-            this._jobs.push(job);
-        }
+    async registerNewJobById (id) {
+        this._db.getJobById(id).then(job => {
+            if (job) {
+                this._jobs.push(job);
+            }
+        });
     }
 }

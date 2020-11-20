@@ -1,4 +1,3 @@
-const AbstractRunner = require('./AbstractRunner');
 const RssRunner = require('./RssRunner');
 
 /**

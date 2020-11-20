@@ -5,7 +5,7 @@ module.exports = class Tag {
      * @param {string} name
      * @param {string} color
      */
-    constructor(id, userId, name, color) {
+    constructor (id, userId, name, color) {
         this._id = id;
         this._userId = userId;
         this._name = name;
@@ -15,56 +15,56 @@ module.exports = class Tag {
     /**
      * @returns {number}
      */
-    get id() {
+    get id () {
         return this._id;
     }
 
     /**
      * @param {number} value
      */
-    set id(value) {
+    set id (value) {
         this._id = value;
     }
 
     /**
      * @returns {number}
      */
-    get userId() {
+    get userId () {
         return this._userId;
     }
 
     /**
      * @param {number} value
      */
-    set userId(value) {
+    set userId (value) {
         this._userId = value;
     }
 
     /**
      * @returns {string}
      */
-    get name() {
+    get name () {
         return this._name;
     }
 
     /**
      * @param {string} value
      */
-    set name(value) {
+    set name (value) {
         this._name = value;
     }
 
     /**
      * @returns {string}
      */
-    get color() {
+    get color () {
         return this._color;
     }
 
     /**
      * @param {string} value
      */
-    set color(value) {
+    set color (value) {
         this._color = value;
     }
 }

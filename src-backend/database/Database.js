@@ -114,7 +114,7 @@ class Database {
      * @param {number} id
      * @return {Promise<Job|null>}
      */
-    async getJobById(id) {
+    async getJobById (id) {
         const resultArray = await this._con
             .select('*')
             .from('job')
@@ -133,7 +133,7 @@ class Database {
      * @param {string} url
      * @return {Promise<Job|null>}
      */
-    async getJobByTypeAndUrl(type, url) {
+    async getJobByTypeAndUrl (type, url) {
         const resultArray = await this._con
             .select('*')
             .from('job')
@@ -244,7 +244,7 @@ class Database {
      * @param {string} identifier
      * @return {Promise<null|Message>}
      */
-    async getMessageByJobIdAndIdentifier(jobId, identifier) {
+    async getMessageByJobIdAndIdentifier (jobId, identifier) {
         const resultArray = await this._con('message')
             .select('*')
             .where({

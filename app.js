@@ -1,6 +1,5 @@
 const Server = require('./src-backend/server/Server');
 const config = require('./config.js');
-const path = require('path');
 const { Worker } = require('worker_threads');
 
 const server = new Server();
@@ -13,5 +12,5 @@ server.setNewJobCallback(function (id) {
 })
 server.run(config.PORT);
 
-//worker.on('message', message => console.log(message));
-//worker.postMessage('ping');
+// worker.on('message', message => console.log(message));
+// worker.postMessage('ping');

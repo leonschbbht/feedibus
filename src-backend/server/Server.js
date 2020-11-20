@@ -16,15 +16,15 @@ module.exports = class Server {
     /**
      * @param jobId
      */
-    _newJobCallback = jobId => {
+    _newJobCallback (jobId) {
         console.log('New Job ', jobId);
-    };
+    }
 
     /**
      * @param {function} callback
      */
-    setNewJobCallback(callback) {
-        if (typeof callback === 'function'){
+    setNewJobCallback (callback) {
+        if (typeof callback === 'function') {
             this._newJobCallback = callback;
         } else {
             console.log('callback is not an function');
@@ -41,9 +41,15 @@ module.exports = class Server {
         this.app.use(expressSession(sessionConfig))
         this.app.use(this.loadUserFromSession);
         this.app.use(express.static(path.resolve(__dirname, '../../public')));
-        this.app.post('/login', this.urlencodedBodyParser, this.login);
-        this.app.post('/register', this.urlencodedBodyParser, this.register);
-        this.app.post('/subscribe', this.urlencodedBodyParser, this.createNewSubscription);
+        this.app.post('/login', this.urlencodedBodyParser, (req, res) => {
+            this.login(req, res)
+        });
+        this.app.post('/register', this.urlencodedBodyParser, (req, res) => {
+            this.register(req, res)
+        });
+        this.app.post('/subscribe', this.urlencodedBodyParser, (req, res) => {
+            this.createNewSubscription(req, res)
+        });
 
         this.app.listen(port);
     }
@@ -96,7 +102,7 @@ module.exports = class Server {
         next();
     }
 
-    createNewSubscription = async (req, res) => {
+    async createNewSubscription (req, res) {
         if (
             'type' in req.body && typeof req.body.type === 'string' &&
             'url' in req.body && typeof req.body.url === 'string' &&

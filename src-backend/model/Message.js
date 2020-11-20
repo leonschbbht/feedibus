@@ -1,5 +1,3 @@
-const knex = require('knex');
-
 module.exports = class Message {
     /**
      * @param {number} id
@@ -12,7 +10,7 @@ module.exports = class Message {
      * @param {Date} time
      * @param {string} identifier
      */
-    constructor(
+    constructor (
         id,
         jobId,
         headline,
@@ -37,126 +35,126 @@ module.exports = class Message {
     /**
      * @returns {number}
      */
-    get id() {
+    get id () {
         return this._id;
     }
 
     /**
      * @param {number} value
      */
-    set id(value) {
+    set id (value) {
         this._id = value;
     }
 
     /**
      * @returns {number}
      */
-    get jobId() {
+    get jobId () {
         return this._jobId;
     }
 
     /**
      * @param {number} value
      */
-    set jobId(value) {
+    set jobId (value) {
         this._jobId = value;
     }
 
     /**
      * @returns {string|null}
      */
-    get headline() {
+    get headline () {
         return this._headline;
     }
 
     /**
      * @param {string|null} value
      */
-    set headline(value) {
+    set headline (value) {
         this._headline = value;
     }
 
     /**
      * @returns {string|null}
      */
-    get text() {
+    get text () {
         return this._text;
     }
 
     /**
      * @param {string|null} value
      */
-    set text(value) {
+    set text (value) {
         this._text = value;
     }
 
     /**
      * @returns {string|null}
      */
-    get imageUrl() {
+    get imageUrl () {
         return this._imageUrl;
     }
 
     /**
      * @param {string|null} value
      */
-    set imageUrl(value) {
+    set imageUrl (value) {
         this._imageUrl = value;
     }
 
     /**
      * @returns {string|null}
      */
-    get author() {
+    get author () {
         return this._author;
     }
 
     /**
      * @param {string|null} value
      */
-    set author(value) {
+    set author (value) {
         this._author = value;
     }
 
     /**
      * @returns {string}
      */
-    get sourceUrl() {
+    get sourceUrl () {
         return this._sourceUrl;
     }
 
     /**
      * @param {string} value
      */
-    set sourceUrl(value) {
+    set sourceUrl (value) {
         this._sourceUrl = value;
     }
 
     /**
      * @returns {Date}
      */
-    get time() {
+    get time () {
         return this._time;
     }
 
     /**
      * @param {Date} value
      */
-    set time(value) {
+    set time (value) {
         this._time = value;
     }
 
     /**
      * @returns {string}
      */
-    get identifier() {
+    get identifier () {
         return this._identifier;
     }
 
     /**
      * @param {string} value
      */
-    set identifier(value) {
+    set identifier (value) {
         this._identifier = value;
     }
 }
