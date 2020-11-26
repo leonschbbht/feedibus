@@ -1,8 +1,11 @@
 <template>
   <v-card class="mx-auto" :max-width="[$vuetify.breakpoint.mobile ? '100%' : '60%']">
-    <v-img class="white--text align-end" height="300px" :src="img">
+    <v-img v-if="img"  class="white--text align-end" height="300px" :src="img">
       <v-card-title class="title">{{ title }}</v-card-title>
     </v-img>
+    <div v-else class="white--text accent">
+      <v-card-title class="title">{{ title }}</v-card-title>
+    </div>
     <v-toolbar dense flat class="secondary white--text">
       <v-icon color ='white'>mdi-access-point</v-icon>
       <v-toolbar-title>{{ source }}</v-toolbar-title> <v-spacer />
