@@ -3,18 +3,25 @@
     <v-main>
       <Header />
       <Filter />
+      <v-data-iterator
+      :items="news"
+      :pagination.sync="pagination"
+      >
+      <template v-slot:default="props">
       <Card
-        v-for="newsItem in news"
-        :key="newsItem.title"
-        :title="newsItem.title"
-        :img="newsItem.img"
-        :source="newsItem.source"
-        :date="newsItem.date"
-        :text="newsItem.text"
-        :link="newsItem.link"
-        :categories="newsItem.categories"
+         v-for="item in props.items"
+        :key="item.title"
+        :title="item.title"
+        :img="item.img"
+        :source="item.source"
+        :date="item.date"
+        :text="item.text"
+        :link="item.link"
+        :categories="item.categories"
         class="newsCard"
       />
+      </template>
+      </v-data-iterator>
       <Footer />
     </v-main>
   </v-app>
@@ -35,17 +42,18 @@ export default {
   },
   data() {
     return {
+    pagination: {
+      rowsPerPage: 4
+    },
       news: [
         {
           title: "Innenminister Caffier tritt zurück",
-          img:
-            "https://www.tagesschau.de/multimedia/bilder/caffier-111~_v-modPremium.jpg",
           source: "Tagesschau.de",
           date: "17.11.2020 17:51",
           text:
             "Mecklenburg-Vorpommerns Innenminister Caffier ist zurückgetreten. Er war wegen eines umstrittenen Waffenkaufs unter Druck geraten. Sein Landtagsmandat will der CDU-Politiker behalten.",
           link: "https://www.tagesschau.de/inland/caffier-ruecktritt-103.html",
-          categories: ["Politik", "Leitmedien"],
+          categories: ["Politick", "Leitmedien"],
         },
         {
           title: "Geht das jetzt immer so weiter?",
@@ -81,6 +89,46 @@ export default {
           link: "https://www.youtube.com/watch?v=xSRI2_z-QwE",
           categories: ["Unterhaltung"],
         },
+        {
+          title: "Einfach Uff: ALLE Apple M1 ausprobiert!",
+          img: "http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg",
+          source: "youtube / alexibexi",
+          date: "17.11.2020",
+          text:
+            "Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1",
+          link: "https://www.youtube.com/watch?v=xSRI2_z-QwE",
+          categories: ["Unterhaltung"],
+        },
+        {
+          title: "Einfach Uff: ALLE Apple M1 ausprobiert!",
+          img: "http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg",
+          source: "youtube / alexibexi",
+          date: "17.11.2020",
+          text:
+            "Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1",
+          link: "https://www.youtube.com/watch?v=xSRI2_z-QwE",
+          categories: ["Unterhaltung"],
+        },
+        {
+          title: "Einfach Uff: ALLE Apple M1 ausprobiert!",
+          img: "http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg",
+          source: "youtube / alexibexi",
+          date: "17.11.2020",
+          text:
+            "Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1",
+          link: "https://www.youtube.com/watch?v=xSRI2_z-QwE",
+          categories: ["Unterhaltung"],
+        },
+        {
+          title: "Einfach Uff: ALLE Apple M1 ausprobiert!",
+          img: "http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg",
+          source: "youtube / alexibexi",
+          date: "17.11.2020",
+          text:
+            "Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1",
+          link: "https://www.youtube.com/watch?v=xSRI2_z-QwE",
+          categories: ["Unterhaltung"],
+        }
       ],
     };
   },

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" max-width="60%">
+  <v-card class="mx-auto" :max-width="[$vuetify.breakpoint.mobile ? '100%' : '60%']">
     <v-img class="white--text align-end" height="300px" :src="img">
       <v-card-title class="title">{{ title }}</v-card-title>
     </v-img>
@@ -46,6 +46,11 @@ export default {
 }
 .title{
   text-shadow: 0px 0px 20px black;
-
+}
+.mobile{
+  max-width: 100%;
+}
+.desktop{
+  max-width: 60%;
 }
 </style>
