@@ -6,7 +6,51 @@
       <v-data-iterator
       :items="news"
       :pagination.sync="pagination"
+        :sort-by="sortBy.toLowerCase()"
+        :sort-desc="sortDesc"
       >
+      <template v-slot:header>
+          <v-toolbar
+            dark
+            color="secondary"
+            class="toolBar"
+          >
+            <template>
+              <v-spacer></v-spacer>
+              <v-select
+                v-model="sortBy"
+                flat
+                solo-inverted
+                hide-details
+                :items="keys"
+                prepend-inner-icon="mdi-magnify"
+                label="Sortieren nach"
+              ></v-select>
+              <v-spacer></v-spacer>
+              <v-btn-toggle
+                v-model="sortDesc"
+                mandatory
+              >
+                <v-btn
+                  large
+                  depressed
+                  color="accent"
+                  :value="false"
+                >
+                  <v-icon>mdi-arrow-up</v-icon>
+                </v-btn>
+                <v-btn
+                  large
+                  depressed
+                  color="accent"
+                  :value="true"
+                >
+                  <v-icon>mdi-arrow-down</v-icon>
+                </v-btn>
+              </v-btn-toggle>
+            </template>
+          </v-toolbar>
+        </template>
       <template v-slot:default="props">
       <Card
          v-for="item in props.items"
@@ -45,6 +89,16 @@ export default {
     pagination: {
       rowsPerPage: 4
     },
+     search: '',
+     filter:{},
+     sortDesc: true,
+     page: 1,
+     itemsPerPage: 4,
+     sortBy: 'date',
+     keys:[{text:"Titel", value:"Title"},
+     {text:"Quelle", value:"Source"},
+     {text:"Datum", value:"Date"}
+       ],
       news: [
         {
           title: "Innenminister Caffier tritt zurück",
@@ -132,10 +186,18 @@ export default {
       ],
     };
   },
+  computed: {
+    filteredKeys () {
+      return this.keys.filter(key => key !== 'Name')
+    },
+  },
+
 };
 </script>
 <style scoped>
 .newsCard {
   margin: 50px;
+}
+.toolBar{
 }
 </style>
