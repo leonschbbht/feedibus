@@ -13,12 +13,13 @@ module.exports = class Scheduler {
     }
 
     async loadJobs () {
-        const jobs = await this._db.getAllJobs();
-        jobs.forEach(job => this._jobs.push(job));
+        //const jobs = await this._db.getAllJobs();
+        //jobs.forEach(job => this._jobs.push(job));
+        this._jobs.push(new Job(0, 'twitter', 'https://twitter.com/realdonaldtrump'))
+
     }
 
     async executeJobs () {
-        console.log('this = ', this);
         const startTime = Date.now();
         while (this._jobs.length > 0) {
             /**
@@ -33,7 +34,11 @@ module.exports = class Scheduler {
                 continue;
             }
             const messages = await runner.runJob(job);
-            await this.insertMessagesIntoDb(messages);
+            //await this.insertMessagesIntoDb(messages);
+            // const sortedMsg = messages.sort((a, b) => {
+            //    a.time - b.time;
+            //})
+            //console.log(sortedMsg);
             this._finishedJob.push(job);
         }
         const finishingTime = Date.now();

@@ -1,0 +1,1097 @@
+{
+  "1313054270942597122": {
+    "created_at": "Mon Oct 05 09:51:48 +0000 2020",
+    "id_str": "1313054270942597122",
+    "full_text": "#Herbstzeit bedeutet in der #Landwirtschaft oft #Erntejahr wechseln: wie das in DELOS einfach und schnell funktioniert, zeigen wir Euch hier in unserem DELOS QuickTipp auf Youtube – inkl. Übernahme Eurer Flächen auch aus Unterbetrieben.\n\nhttps://t.co/ZhIbCVMTcG",
+    "display_text_range": [
+      0,
+      261
+    ],
+    "entities": {
+      "hashtags": [
+        {
+          "text": "Herbstzeit",
+          "indices": [
+            0,
+            11
+          ]
+        },
+        {
+          "text": "Landwirtschaft",
+          "indices": [
+            28,
+            43
+          ]
+        },
+        {
+          "text": "Erntejahr",
+          "indices": [
+            48,
+            58
+          ]
+        }
+      ],
+      "urls": [
+        {
+          "url": "https://t.co/ZhIbCVMTcG",
+          "expanded_url": "https://www.youtube.com/watch?v=zoQbHY9sXzw",
+          "display_url": "youtube.com/watch?v=zoQbHY…",
+          "indices": [
+            238,
+            261
+          ]
+        }
+      ]
+    },
+    "source": "<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>",
+    "user_id_str": "1306590790345318400",
+    "retweet_count": 3,
+    "favorite_count": 3,
+    "reply_count": 0,
+    "quote_count": 0,
+    "conversation_id_str": "1313054270942597122",
+    "possibly_sensitive_editable": true,
+    "card": {
+      "name": "player",
+      "url": "https://t.co/ZhIbCVMTcG",
+      "card_type_url": "http://card-type-url-is-deprecated.invalid",
+      "binding_values": {
+        "vanity_url": {
+          "type": "STRING",
+          "string_value": "youtube.com",
+          "scribe_key": "vanity_url"
+        },
+        "player_url": {
+          "type": "STRING",
+          "string_value": "https://www.youtube.com/embed/zoQbHY9sXzw"
+        },
+        "app_is_free": {
+          "type": "STRING",
+          "string_value": "true"
+        },
+        "app_price_currency": {
+          "type": "STRING",
+          "string_value": "USD"
+        },
+        "app_price_amount": {
+          "type": "STRING",
+          "string_value": "0.0"
+        },
+        "domain": {
+          "type": "STRING",
+          "string_value": "www.youtube.com"
+        },
+        "app_num_ratings": {
+          "type": "STRING",
+          "string_value": "17,472,387"
+        },
+        "app_star_rating": {
+          "type": "STRING",
+          "string_value": "4.69901"
+        },
+        "app_name": {
+          "type": "STRING",
+          "string_value": "YouTube: Watch, Listen, Stream"
+        },
+        "player_width": {
+          "type": "STRING",
+          "string_value": "1280"
+        },
+        "player_height": {
+          "type": "STRING",
+          "string_value": "720"
+        },
+        "site": {
+          "type": "USER",
+          "user_value": {
+            "id_str": "10228272",
+            "path": []
+          },
+          "scribe_key": "publisher_id"
+        },
+        "title": {
+          "type": "STRING",
+          "string_value": "DELOS QuickTipp – Wechseln in das neue Erntejahr"
+        },
+        "description": {
+          "type": "STRING",
+          "string_value": "So einfach wechseln Sie mit DELOS in das neue Erntejahr und übertragen ganz leicht gewünschte Flächen – auch aus Ihren Unterbetrieben."
+        },
+        "player_image_small": {
+          "type": "IMAGE",
+          "image_value": {
+            "url": "https://pbs.twimg.com/card_img/1328669568169029633/JsPf0dwf?format=jpg&name=144x144",
+            "width": 144,
+            "height": 81
+          }
+        },
+        "player_image": {
+          "type": "IMAGE",
+          "image_value": {
+            "url": "https://pbs.twimg.com/card_img/1328669568169029633/JsPf0dwf?format=jpg&name=280x280",
+            "width": 280,
+            "height": 158
+          }
+        },
+        "player_image_large": {
+          "type": "IMAGE",
+          "image_value": {
+            "url": "https://pbs.twimg.com/card_img/1328669568169029633/JsPf0dwf?format=jpg&name=800x320_1",
+            "width": 569,
+            "height": 320
+          }
+        },
+        "player_image_x_large": {
+          "type": "IMAGE",
+          "image_value": {
+            "url": "https://pbs.twimg.com/card_img/1328669568169029633/JsPf0dwf?format=png&name=2048x2048_2_exp",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "player_image_color": {
+          "type": "IMAGE_COLOR",
+          "image_color_value": {
+            "palette": [
+              {
+                "percentage": 53.63,
+                "rgb": {
+                  "red": 254,
+                  "green": 241,
+                  "blue": 229
+                }
+              },
+              {
+                "percentage": 35.2,
+                "rgb": {
+                  "red": 37,
+                  "green": 63,
+                  "blue": 88
+                }
+              },
+              {
+                "percentage": 8.84,
+                "rgb": {
+                  "red": 231,
+                  "green": 198,
+                  "blue": 154
+                }
+              },
+              {
+                "percentage": 1.67,
+                "rgb": {
+                  "red": 141,
+                  "green": 155,
+                  "blue": 167
+                }
+              },
+              {
+                "percentage": 0.2,
+                "rgb": {
+                  "red": 143,
+                  "green": 34,
+                  "blue": 89
+                }
+              }
+            ]
+          }
+        },
+        "player_image_original": {
+          "type": "IMAGE",
+          "image_value": {
+            "url": "https://pbs.twimg.com/card_img/1328669568169029633/JsPf0dwf?format=jpg&name=orig",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "card_url": {
+          "type": "STRING",
+          "string_value": "https://t.co/ZhIbCVMTcG",
+          "scribe_key": "card_url"
+        }
+      },
+      "users": {
+        "10228272": {
+          "id_str": "10228272",
+          "name": "YouTube",
+          "screen_name": "YouTube",
+          "location": "San Bruno, CA",
+          "description": "Like and subscribe.",
+          "url": "https://t.co/qkVaJFk2CG",
+          "entities": {
+            "url": {
+              "urls": [
+                {
+                  "url": "https://t.co/qkVaJFk2CG",
+                  "expanded_url": "https://www.youtube.com/",
+                  "display_url": "youtube.com",
+                  "indices": [
+                    0,
+                    23
+                  ]
+                }
+              ]
+            },
+            "description": {}
+          },
+          "followers_count": 72428369,
+          "fast_followers_count": 0,
+          "normal_followers_count": 72428369,
+          "friends_count": 1154,
+          "listed_count": 78814,
+          "created_at": "Tue Nov 13 21:43:46 +0000 2007",
+          "favourites_count": 5128,
+          "verified": true,
+          "statuses_count": 29387,
+          "media_count": 11378,
+          "is_translation_enabled": true,
+          "profile_image_url_https": "https://pbs.twimg.com/profile_images/1308106203860529152/yOwTDF9G_normal.jpg",
+          "profile_banner_url": "https://pbs.twimg.com/profile_banners/10228272/1600711798",
+          "profile_image_extensions_alt_text": null,
+          "profile_image_extensions_media_availability": null,
+          "profile_image_extensions_media_color": {
+            "palette": [
+              {
+                "rgb": {
+                  "red": 255,
+                  "green": 255,
+                  "blue": 255
+                },
+                "percentage": 70.88
+              },
+              {
+                "rgb": {
+                  "red": 254,
+                  "green": 0,
+                  "blue": 0
+                },
+                "percentage": 27.69
+              },
+              {
+                "rgb": {
+                  "red": 252,
+                  "green": 180,
+                  "blue": 178
+                },
+                "percentage": 0.86
+              },
+              {
+                "rgb": {
+                  "red": 254,
+                  "green": 87,
+                  "blue": 90
+                },
+                "percentage": 0.37
+              },
+              {
+                "rgb": {
+                  "red": 250,
+                  "green": 132,
+                  "blue": 130
+                },
+                "percentage": 0.15
+              }
+            ]
+          },
+          "profile_image_extensions": {
+            "mediaStats": {
+              "r": {
+                "missing": null
+              },
+              "ttl": -1
+            }
+          },
+          "profile_banner_extensions_alt_text": null,
+          "profile_banner_extensions_media_availability": null,
+          "profile_banner_extensions_media_color": {
+            "palette": [
+              {
+                "rgb": {
+                  "red": 211,
+                  "green": 207,
+                  "blue": 223
+                },
+                "percentage": 33.39
+              },
+              {
+                "rgb": {
+                  "red": 152,
+                  "green": 179,
+                  "blue": 231
+                },
+                "percentage": 8.85
+              },
+              {
+                "rgb": {
+                  "red": 208,
+                  "green": 182,
+                  "blue": 141
+                },
+                "percentage": 5.45
+              },
+              {
+                "rgb": {
+                  "red": 221,
+                  "green": 166,
+                  "blue": 186
+                },
+                "percentage": 4.34
+              },
+              {
+                "rgb": {
+                  "red": 163,
+                  "green": 201,
+                  "blue": 188
+                },
+                "percentage": 3.45
+              }
+            ]
+          },
+          "profile_banner_extensions": {
+            "mediaStats": {
+              "r": {
+                "missing": null
+              },
+              "ttl": -1
+            }
+          },
+          "profile_link_color": "C9191D",
+          "pinned_tweet_ids": [],
+          "pinned_tweet_ids_str": [],
+          "has_custom_timelines": true,
+          "advertiser_account_type": "promotable_user",
+          "advertiser_account_service_levels": [
+            "dso",
+            "dso",
+            "dso",
+            "dso",
+            "dso"
+          ],
+          "profile_interstitial_type": "",
+          "business_profile_state": "none",
+          "translator_type": "regular",
+          "ext": {
+            "highlightedLabel": {
+              "r": {
+                "ok": {}
+              },
+              "ttl": -1
+            }
+          }
+        }
+      },
+      "card_platform": {
+        "platform": {
+          "device": {
+            "name": "Swift",
+            "version": "12"
+          },
+          "audience": {
+            "name": "production"
+          }
+        }
+      }
+    },
+    "lang": "de"
+  },
+  "1309431420029489153": {
+    "created_at": "Fri Sep 25 09:55:53 +0000 2020",
+    "id_str": "1309431420029489153",
+    "full_text": "Hier habt Ihr den direkten Draht zu News rund um DELOS – die Software für perfekte landwirtschaftliche Dokumentation nährstoffrelevanter Daten gemäß Düngeverordnung 2020.\n\nBleibt mit uns in Verbindung!\n\n#stoffstrombilanz #Düngebedarf #ackerschlagkartei\n\nhttps://t.co/RsIAsn94nX https://t.co/5NVJrhtYM8",
+    "display_text_range": [
+      0,
+      277
+    ],
+    "entities": {
+      "hashtags": [
+        {
+          "text": "stoffstrombilanz",
+          "indices": [
+            203,
+            220
+          ]
+        },
+        {
+          "text": "Düngebedarf",
+          "indices": [
+            221,
+            233
+          ]
+        },
+        {
+          "text": "ackerschlagkartei",
+          "indices": [
+            234,
+            252
+          ]
+        }
+      ],
+      "urls": [
+        {
+          "url": "https://t.co/RsIAsn94nX",
+          "expanded_url": "http://www.delos.biz",
+          "display_url": "delos.biz",
+          "indices": [
+            254,
+            277
+          ]
+        }
+      ],
+      "media": [
+        {
+          "id_str": "1309431414765563904",
+          "indices": [
+            278,
+            301
+          ],
+          "media_url": "http://pbs.twimg.com/media/EiwI7x7WsAAbEVl.jpg",
+          "media_url_https": "https://pbs.twimg.com/media/EiwI7x7WsAAbEVl.jpg",
+          "url": "https://t.co/5NVJrhtYM8",
+          "display_url": "pic.twitter.com/5NVJrhtYM8",
+          "expanded_url": "https://twitter.com/DelosSoftware/status/1309431420029489153/photo/1",
+          "type": "photo",
+          "original_info": {
+            "width": 940,
+            "height": 600,
+            "focus_rects": [
+              {
+                "x": 0,
+                "y": 0,
+                "h": 526,
+                "w": 940
+              },
+              {
+                "x": 340,
+                "y": 0,
+                "h": 600,
+                "w": 600
+              },
+              {
+                "x": 414,
+                "y": 0,
+                "h": 600,
+                "w": 526
+              },
+              {
+                "x": 625,
+                "y": 0,
+                "h": 600,
+                "w": 300
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "h": 600,
+                "w": 940
+              }
+            ]
+          },
+          "sizes": {
+            "small": {
+              "w": 680,
+              "h": 434,
+              "resize": "fit"
+            },
+            "thumb": {
+              "w": 150,
+              "h": 150,
+              "resize": "crop"
+            },
+            "large": {
+              "w": 940,
+              "h": 600,
+              "resize": "fit"
+            },
+            "medium": {
+              "w": 940,
+              "h": 600,
+              "resize": "fit"
+            }
+          }
+        }
+      ]
+    },
+    "extended_entities": {
+      "media": [
+        {
+          "id_str": "1309431414765563904",
+          "indices": [
+            278,
+            301
+          ],
+          "media_url": "http://pbs.twimg.com/media/EiwI7x7WsAAbEVl.jpg",
+          "media_url_https": "https://pbs.twimg.com/media/EiwI7x7WsAAbEVl.jpg",
+          "url": "https://t.co/5NVJrhtYM8",
+          "display_url": "pic.twitter.com/5NVJrhtYM8",
+          "expanded_url": "https://twitter.com/DelosSoftware/status/1309431420029489153/photo/1",
+          "type": "photo",
+          "original_info": {
+            "width": 940,
+            "height": 600,
+            "focus_rects": [
+              {
+                "x": 0,
+                "y": 0,
+                "h": 526,
+                "w": 940
+              },
+              {
+                "x": 340,
+                "y": 0,
+                "h": 600,
+                "w": 600
+              },
+              {
+                "x": 414,
+                "y": 0,
+                "h": 600,
+                "w": 526
+              },
+              {
+                "x": 625,
+                "y": 0,
+                "h": 600,
+                "w": 300
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "h": 600,
+                "w": 940
+              }
+            ]
+          },
+          "sizes": {
+            "small": {
+              "w": 680,
+              "h": 434,
+              "resize": "fit"
+            },
+            "thumb": {
+              "w": 150,
+              "h": 150,
+              "resize": "crop"
+            },
+            "large": {
+              "w": 940,
+              "h": 600,
+              "resize": "fit"
+            },
+            "medium": {
+              "w": 940,
+              "h": 600,
+              "resize": "fit"
+            }
+          },
+          "media_key": "3_1309431414765563904",
+          "ext_alt_text": null,
+          "ext_media_availability": {
+            "status": "available"
+          },
+          "ext_media_color": {
+            "palette": [
+              {
+                "rgb": {
+                  "red": 255,
+                  "green": 255,
+                  "blue": 255
+                },
+                "percentage": 90.33
+              },
+              {
+                "rgb": {
+                  "red": 114,
+                  "green": 132,
+                  "blue": 153
+                },
+                "percentage": 5.98
+              },
+              {
+                "rgb": {
+                  "red": 243,
+                  "green": 188,
+                  "blue": 209
+                },
+                "percentage": 2.29
+              },
+              {
+                "rgb": {
+                  "red": 220,
+                  "green": 61,
+                  "blue": 115
+                },
+                "percentage": 0.84
+              },
+              {
+                "rgb": {
+                  "red": 229,
+                  "green": 126,
+                  "blue": 151
+                },
+                "percentage": 0.55
+              }
+            ]
+          },
+          "ext": {
+            "mediaStats": {
+              "r": "Missing",
+              "ttl": -1
+            }
+          }
+        }
+      ]
+    },
+    "source": "<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>",
+    "user_id_str": "1306590790345318400",
+    "retweet_count": 1,
+    "favorite_count": 1,
+    "reply_count": 0,
+    "quote_count": 0,
+    "conversation_id_str": "1309431420029489153",
+    "possibly_sensitive_editable": true,
+    "lang": "de"
+  },
+  "1327194615317991424": {
+    "created_at": "Fri Nov 13 10:20:29 +0000 2020",
+    "id_str": "1327194615317991424",
+    "full_text": "Winterzeit ist Bürozeit!\nKeine Lust oder keine Zeit?\n\nWir unterstützen Dich gerne und erstellen für Dich alle notwendigen Unterlagen wie #Stoffstrombilanz, #Düngebedarfsermittlung und helfen Dir auch bei der #Schlagdokumentation! https://t.co/narFBhkGDa",
+    "display_text_range": [
+      0,
+      229
+    ],
+    "entities": {
+      "hashtags": [
+        {
+          "text": "Stoffstrombilanz",
+          "indices": [
+            137,
+            154
+          ]
+        },
+        {
+          "text": "Düngebedarfsermittlung",
+          "indices": [
+            156,
+            179
+          ]
+        },
+        {
+          "text": "Schlagdokumentation",
+          "indices": [
+            208,
+            228
+          ]
+        }
+      ],
+      "media": [
+        {
+          "id_str": "1327194335646019585",
+          "indices": [
+            230,
+            253
+          ],
+          "media_url": "http://pbs.twimg.com/media/EmskN2wXcAEzR3L.jpg",
+          "media_url_https": "https://pbs.twimg.com/media/EmskN2wXcAEzR3L.jpg",
+          "url": "https://t.co/narFBhkGDa",
+          "display_url": "pic.twitter.com/narFBhkGDa",
+          "expanded_url": "https://twitter.com/DelosSoftware/status/1327194615317991424/photo/1",
+          "type": "photo",
+          "original_info": {
+            "width": 1080,
+            "height": 1350,
+            "focus_rects": [
+              {
+                "x": 0,
+                "y": 406,
+                "h": 605,
+                "w": 1080
+              },
+              {
+                "x": 0,
+                "y": 168,
+                "h": 1080,
+                "w": 1080
+              },
+              {
+                "x": 0,
+                "y": 93,
+                "h": 1231,
+                "w": 1080
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "h": 1350,
+                "w": 675
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "h": 1350,
+                "w": 1080
+              }
+            ]
+          },
+          "sizes": {
+            "thumb": {
+              "w": 150,
+              "h": 150,
+              "resize": "crop"
+            },
+            "small": {
+              "w": 544,
+              "h": 680,
+              "resize": "fit"
+            },
+            "medium": {
+              "w": 960,
+              "h": 1200,
+              "resize": "fit"
+            },
+            "large": {
+              "w": 1080,
+              "h": 1350,
+              "resize": "fit"
+            }
+          }
+        },
+        {
+          "id_str": "1327194335654326272",
+          "indices": [
+            230,
+            253
+          ],
+          "media_url": "http://pbs.twimg.com/media/EmskN2yWMAAQmDF.jpg",
+          "media_url_https": "https://pbs.twimg.com/media/EmskN2yWMAAQmDF.jpg",
+          "url": "https://t.co/narFBhkGDa",
+          "display_url": "pic.twitter.com/narFBhkGDa",
+          "expanded_url": "https://twitter.com/DelosSoftware/status/1327194615317991424/photo/1",
+          "type": "photo",
+          "original_info": {
+            "width": 1080,
+            "height": 1350,
+            "focus_rects": [
+              {
+                "x": 0,
+                "y": 136,
+                "h": 605,
+                "w": 1080
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "h": 1080,
+                "w": 1080
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "h": 1231,
+                "w": 1080
+              },
+              {
+                "x": 101,
+                "y": 0,
+                "h": 1350,
+                "w": 675
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "h": 1350,
+                "w": 1080
+              }
+            ]
+          },
+          "sizes": {
+            "thumb": {
+              "w": 150,
+              "h": 150,
+              "resize": "crop"
+            },
+            "medium": {
+              "w": 960,
+              "h": 1200,
+              "resize": "fit"
+            },
+            "large": {
+              "w": 1080,
+              "h": 1350,
+              "resize": "fit"
+            },
+            "small": {
+              "w": 544,
+              "h": 680,
+              "resize": "fit"
+            }
+          }
+        }
+      ]
+    },
+    "extended_entities": {
+      "media": [
+        {
+          "id_str": "1327194335646019585",
+          "indices": [
+            230,
+            253
+          ],
+          "media_url": "http://pbs.twimg.com/media/EmskN2wXcAEzR3L.jpg",
+          "media_url_https": "https://pbs.twimg.com/media/EmskN2wXcAEzR3L.jpg",
+          "url": "https://t.co/narFBhkGDa",
+          "display_url": "pic.twitter.com/narFBhkGDa",
+          "expanded_url": "https://twitter.com/DelosSoftware/status/1327194615317991424/photo/1",
+          "type": "photo",
+          "original_info": {
+            "width": 1080,
+            "height": 1350,
+            "focus_rects": [
+              {
+                "x": 0,
+                "y": 406,
+                "h": 605,
+                "w": 1080
+              },
+              {
+                "x": 0,
+                "y": 168,
+                "h": 1080,
+                "w": 1080
+              },
+              {
+                "x": 0,
+                "y": 93,
+                "h": 1231,
+                "w": 1080
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "h": 1350,
+                "w": 675
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "h": 1350,
+                "w": 1080
+              }
+            ]
+          },
+          "sizes": {
+            "thumb": {
+              "w": 150,
+              "h": 150,
+              "resize": "crop"
+            },
+            "small": {
+              "w": 544,
+              "h": 680,
+              "resize": "fit"
+            },
+            "medium": {
+              "w": 960,
+              "h": 1200,
+              "resize": "fit"
+            },
+            "large": {
+              "w": 1080,
+              "h": 1350,
+              "resize": "fit"
+            }
+          },
+          "media_key": "3_1327194335646019585",
+          "ext_alt_text": null,
+          "ext_media_color": {
+            "palette": [
+              {
+                "rgb": {
+                  "red": 243,
+                  "green": 244,
+                  "blue": 244
+                },
+                "percentage": 80.59
+              },
+              {
+                "rgb": {
+                  "red": 200,
+                  "green": 212,
+                  "blue": 16
+                },
+                "percentage": 6.79
+              },
+              {
+                "rgb": {
+                  "red": 109,
+                  "green": 116,
+                  "blue": 127
+                },
+                "percentage": 5.42
+              },
+              {
+                "rgb": {
+                  "red": 136,
+                  "green": 176,
+                  "blue": 205
+                },
+                "percentage": 2.11
+              },
+              {
+                "rgb": {
+                  "red": 238,
+                  "green": 184,
+                  "blue": 204
+                },
+                "percentage": 1.4
+              }
+            ]
+          },
+          "ext_media_availability": {
+            "status": "available"
+          },
+          "ext": {
+            "mediaStats": {
+              "r": "Missing",
+              "ttl": -1
+            }
+          }
+        },
+        {
+          "id_str": "1327194335654326272",
+          "indices": [
+            230,
+            253
+          ],
+          "media_url": "http://pbs.twimg.com/media/EmskN2yWMAAQmDF.jpg",
+          "media_url_https": "https://pbs.twimg.com/media/EmskN2yWMAAQmDF.jpg",
+          "url": "https://t.co/narFBhkGDa",
+          "display_url": "pic.twitter.com/narFBhkGDa",
+          "expanded_url": "https://twitter.com/DelosSoftware/status/1327194615317991424/photo/1",
+          "type": "photo",
+          "original_info": {
+            "width": 1080,
+            "height": 1350,
+            "focus_rects": [
+              {
+                "x": 0,
+                "y": 136,
+                "h": 605,
+                "w": 1080
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "h": 1080,
+                "w": 1080
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "h": 1231,
+                "w": 1080
+              },
+              {
+                "x": 101,
+                "y": 0,
+                "h": 1350,
+                "w": 675
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "h": 1350,
+                "w": 1080
+              }
+            ]
+          },
+          "sizes": {
+            "thumb": {
+              "w": 150,
+              "h": 150,
+              "resize": "crop"
+            },
+            "medium": {
+              "w": 960,
+              "h": 1200,
+              "resize": "fit"
+            },
+            "large": {
+              "w": 1080,
+              "h": 1350,
+              "resize": "fit"
+            },
+            "small": {
+              "w": 544,
+              "h": 680,
+              "resize": "fit"
+            }
+          },
+          "media_key": "3_1327194335654326272",
+          "ext_alt_text": null,
+          "ext_media_availability": {
+            "status": "available"
+          },
+          "ext_media_color": {
+            "palette": [
+              {
+                "rgb": {
+                  "red": 246,
+                  "green": 247,
+                  "blue": 247
+                },
+                "percentage": 85.1
+              },
+              {
+                "rgb": {
+                  "red": 202,
+                  "green": 213,
+                  "blue": 24
+                },
+                "percentage": 5.63
+              },
+              {
+                "rgb": {
+                  "red": 114,
+                  "green": 120,
+                  "blue": 131
+                },
+                "percentage": 5.19
+              },
+              {
+                "rgb": {
+                  "red": 223,
+                  "green": 230,
+                  "blue": 122
+                },
+                "percentage": 1.25
+              },
+              {
+                "rgb": {
+                  "red": 233,
+                  "green": 236,
+                  "blue": 170
+                },
+                "percentage": 0.9
+              }
+            ]
+          },
+          "ext": {
+            "mediaStats": {
+              "r": "Missing",
+              "ttl": -1
+            }
+          }
+        }
+      ]
+    },
+    "source": "<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>",
+    "user_id_str": "1306590790345318400",
+    "retweet_count": 0,
+    "favorite_count": 0,
+    "reply_count": 0,
+    "quote_count": 0,
+    "conversation_id_str": "1327194615317991424",
+    "possibly_sensitive_editable": true,
+    "lang": "de"
+  }
+}
