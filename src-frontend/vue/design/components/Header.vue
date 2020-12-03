@@ -22,10 +22,10 @@ export default {
     return {
       drawer: false,
       items: [
-        { title: "Startseite", icon: "mdi-home" },
-        { title: "Einstellungen", icon: "mdi-settings" },
-        { title: "Meine Feeds", icon: "mdi-rss" },
-        { title: "Logout", icon: "mdi-power" },
+        { title: "Startseite", icon: "mdi-home", to:'/' },
+        { title: "Einstellungen", icon: "mdi-settings", to:'/settings' },
+        { title: "Meine Feeds", icon: "mdi-rss", to:'/feeds' },
+        { title: "Logout", icon: "mdi-power", to:'/logout' },
       ],
     };
   },
