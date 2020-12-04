@@ -1,18 +1,17 @@
 import Home from './Home.vue'
-import Header from './components/Header.vue'
 import FeedManagement from './FeedManagement.vue'
 export default [
     {
         path: '/index',
-        component: Home,
+        component: Home
     },
     {
         path: '/',
-        component: Home,
+        component: Home
     },
     {
         path: '/home',
-        component: Home,
+        component: Home
     },
     {
         path: '/feeds',
