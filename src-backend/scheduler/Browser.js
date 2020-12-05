@@ -9,7 +9,7 @@ let browser = null;
 module.exports = async () => {
     if (browser === null) {
         browser = await puppeteer.launch({
-            headless: false,
+            headless: true,
             product: 'chrome',
             defaultViewport: {
                 height: 1080,
