@@ -42,7 +42,8 @@ module.exports = {
                         baseIndent: 1,
                         closeBracket: 0,
                         alignAttributesVertically: true
-                    }]
+                    }],
+                'vue/no-deprecated-v-bind-sync': 'off'
             }
         }
     ],

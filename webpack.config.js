@@ -3,7 +3,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
     entry: {
-        test: './src-frontend/vue/test/main.js'
+        design: './src-frontend/vue/design/main.js'
     },
     output: {
         path: path.resolve(__dirname, 'public'),
