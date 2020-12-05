@@ -18,7 +18,6 @@ module.exports = class Scheduler {
     }
 
     async executeJobs () {
-        console.log('this = ', this);
         const startTime = Date.now();
         while (this._jobs.length > 0) {
             /**
