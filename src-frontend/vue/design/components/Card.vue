@@ -1,7 +1,7 @@
 <template>
     <v-card
         class="mx-auto"
-        :max-width="[$vuetify.breakpoint.mobile ? '100%' : '60%']"
+        :max-width="$vuetify.breakpoint.mobile ? '100%' : '60%'"
     >
         <v-img
             v-if="img"
@@ -65,13 +65,36 @@
 <script>
 export default {
     props: {
-        title: String,
-        date: String,
-        img: String,
-        source: String,
-        text: String,
-        link: String,
-        categories: Array
+        title: {
+            type: String,
+            default: ''
+        },
+        date: {
+            type: String,
+            default: ''
+        },
+        img: {
+            type: String,
+            default: ''
+        },
+        source: {
+            type: String,
+            default: ''
+        },
+        text: {
+            type: String,
+            default: ''
+        },
+        link: {
+            type: String,
+            default: ''
+        },
+        categories: {
+            type: Array,
+            default: function () {
+                return [];
+            }
+        }
     }
 };
 </script>
