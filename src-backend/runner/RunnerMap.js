@@ -1,6 +1,7 @@
 const RssRunner = require('./RssRunner');
 const TwitterRunner = require('./TwitterRunner');
 const YoutubeRunner = require('./YoutubeRunner');
+const TagesschauRunner = require('./TagesschauRunner');
 
 /**
  * @type Record<string, AbstractRunner>
@@ -8,5 +9,6 @@ const YoutubeRunner = require('./YoutubeRunner');
 module.exports = {
     rss: new RssRunner(),
     twitter: new TwitterRunner(),
-    youtube: new YoutubeRunner()
+    youtube: new YoutubeRunner(),
+    tagesschau: new TagesschauRunner()
 }

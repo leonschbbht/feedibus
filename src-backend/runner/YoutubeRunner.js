@@ -8,69 +8,74 @@ module.exports = class YoutubeRunner extends AbstractRunner {
      * @return {Promise<Message[]>}
      */
     async runJob (job) {
-        /**
-         * @type {Browser}
-         */
-        const browser = await getBrowser();
-        const page = await browser.newPage();
-        await page.setCacheEnabled(false);
-        await page.goto(job.url);
-        await page.waitForSelector('paper-tab');
-        const tabs = await page.$$('paper-tab');
-        if (tabs.length < 2) {
-            return [];
-        }
-        tabs[1].click(); // Der "Videos"-Tab
-        await page.waitForSelector('yt-icon#label-icon');
-        await page.waitForSelector('ytd-grid-video-renderer');
-        const author = await page.$eval('yt-formatted-string.ytd-channel-name', el => el.textContent);
-        if (!author) {
-            return [];
-        }
-        const messageData = await page.$$eval('ytd-grid-video-renderer', elements => elements.map(el => {
-            const titleElement = el.querySelector('a#video-title');
-            const metadataElement = el.querySelector('#metadata-line');
-            if (titleElement === null || metadataElement === null) {
-                return null;
+        try {
+            /**
+             * @type {Browser}
+             */
+            const browser = await getBrowser();
+            const page = await browser.newPage();
+            await page.setCacheEnabled(false);
+            await page.goto(job.url);
+            await page.waitForSelector('paper-tab');
+            const tabs = await page.$$('paper-tab');
+            if (tabs.length < 2) {
+                return [];
             }
-            const title = titleElement.title;
-            const href = titleElement.href;
-            if (typeof href !== 'string' || typeof title !== 'string') {
-                return null;
+            tabs[1].click(); // Der "Videos"-Tab
+            await page.waitForSelector('yt-icon#label-icon');
+            await page.waitForSelector('ytd-grid-video-renderer');
+            const author = await page.$eval('yt-formatted-string.ytd-channel-name', el => el.textContent);
+            if (!author) {
+                return [];
             }
-            const matches = href.match(/v=([A-Za-z0-9_-]+)/);
-            if (matches === null) {
-                return null
-            }
-            const id = matches[1];
-            const imgUrl = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
-            let dateline = '';
-            if (metadataElement.childElementCount > 1) {
-                dateline = metadataElement.childNodes.item(1).textContent;
-            }
-            return {
-                title: title,
-                imgUrl: imgUrl,
-                href: href,
-                dateline: dateline,
-                id: id
-            };
-        }));
-        await page.close();
+            const messageData = await page.$$eval('ytd-grid-video-renderer', elements => elements.map(el => {
+                const titleElement = el.querySelector('a#video-title');
+                const metadataElement = el.querySelector('#metadata-line');
+                if (titleElement === null || metadataElement === null) {
+                    return null;
+                }
+                const title = titleElement.title;
+                const href = titleElement.href;
+                if (typeof href !== 'string' || typeof title !== 'string') {
+                    return null;
+                }
+                const matches = href.match(/v=([A-Za-z0-9_-]+)/);
+                if (matches === null) {
+                    return null
+                }
+                const id = matches[1];
+                const imgUrl = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+                let dateline = '';
+                if (metadataElement.childElementCount > 1) {
+                    dateline = metadataElement.childNodes.item(1).textContent;
+                }
+                return {
+                    title: title,
+                    imgUrl: imgUrl,
+                    href: href,
+                    dateline: dateline,
+                    id: id
+                };
+            }));
+            await page.close();
 
-        return messageData
-            .filter(data => data !== null)
-            .map(data => new Message(
-                0,
-                job.id,
-                data.title,
-                null,
-                data.imgUrl,
-                author,
-                data.href,
-                this.interpretDateline(data.dateline),
-                data.id
-            ));
+            return messageData
+                .filter(data => data !== null)
+                .map(data => new Message(
+                    0,
+                    job.id,
+                    data.title,
+                    null,
+                    data.imgUrl,
+                    author,
+                    data.href,
+                    this.interpretDateline(data.dateline),
+                    data.id
+                ));
+        } catch (e) {
+            console.log(e);
+            return [];
+        }
     }
 
     /**
