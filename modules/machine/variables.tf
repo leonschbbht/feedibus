@@ -7,3 +7,5 @@ variable "subnet-id" {}
 variable "security-group-id" {}
 variable "network-interface-name" {}
 variable "dockertoken" {}
+variable "tls-private-key-pem" {}
+variable "public_key_openssh" {}
