@@ -13,3 +13,7 @@
 
 ## v0.3
 * E-Mail Benachrichtigung wird bei überschreiten bestimmter Grenzwerte automatisch versendet
+
+## v0.4
+* Update der Terraform Version auf 0.14.3
+* Integration von Sensitive Flags bei zu schützenden Variablen
