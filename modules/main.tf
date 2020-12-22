@@ -3,8 +3,8 @@ module "general" {
   location = var.location
   tfmanaged = var.tfmanaged
   environment = var.environment
-  public-ssh-key = module.machine.public-ssh-key
-  private-ssh-key = module.machine.private-ssh-key
+  public-ssh-key = module.secrets.public-ssh-key
+  private-ssh-key = module.secrets.private-ssh-key
 }
 
 module "machine" {
@@ -17,6 +17,8 @@ module "machine" {
   subnet-id = module.network.subnet-id
   security-group-id = module.network.security-group-id
   network-interface-name = module.network.network-interface-name
+  tls-private-key-pem = module.secrets.tls-private-key-pem
+  public_key_openssh = module.secrets.public_key_openssh
   dockertoken = var.dockertoken
 }
 
@@ -35,4 +37,8 @@ module "metric" {
   resource-group-name = module.general.resource-group-name
   feedibus-production-vm-id = module.machine.feedibus-production-vm-id
   location = var.location
+}
+
+module "secrets" {
+  source = "./secrets"
 }

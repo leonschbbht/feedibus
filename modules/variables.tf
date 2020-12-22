@@ -1,4 +1,6 @@
 variable "location" {}
 variable "tfmanaged" {}
 variable "environment" {}
-variable "dockertoken" {}
+variable "dockertoken" {
+  sensitive = true
+}
