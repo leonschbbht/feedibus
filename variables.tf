@@ -1,4 +1,7 @@
-variable "dockertoken" {}
+variable "dockertoken" {
+  type = string
+  sensitive = true
+}
 
 variable "location" {
   default = "UK South"
