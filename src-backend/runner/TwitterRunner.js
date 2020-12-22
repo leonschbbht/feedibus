@@ -8,83 +8,88 @@ module.exports = class TwitterRunner extends AbstractRunner {
      * @return {Promise<Message[]>}
      */
     async runJob (job) {
-        const messages = [];
-        const globalObjects = await this.getGlobalObjectsForUrl(job.url);
-        const matches = job.url.match(/twitter\.com\/(.+)($|\?|\/|#)/);
-        const screenName = matches ? matches[1] : null;
-        if (globalObjects !== null && screenName) {
-            const user = this.getUserFromGlobalObjectsByScreenName(globalObjects, screenName);
-            if (typeof user !== 'object') {
-                return [];
-            }
-            const userIdString = this.getStringFromUser(user, 'id_str');
-            const author = this.getStringFromUser(user, 'name');
-            const bannerImage = this.getStringFromUser(user, 'profile_banner_url');
-            if ('tweets' in globalObjects && typeof globalObjects.tweets === 'object') {
-                for (const id in globalObjects.tweets) {
-                    const tweet = globalObjects.tweets[id];
-                    const tweetUserIdString = this.getStringFromTweet(tweet, 'user_id_str');
-                    if (tweetUserIdString !== userIdString) {
-                        continue;
-                    }
-                    let headline = `${author} tweeted`;
-                    const date = this.getDateFromTweet(tweet, 'created_at');
-                    const url = `https://twitter.com/${screenName}/status/${id}`;
-                    let text = this.getTweetText(tweet);
-                    const image = this.getImageFromTweet(tweet);
-                    let displayImage = bannerImage;
-                    if (image) {
-                        displayImage = image;
-                    }
-
-                    // Quoted Tweet
-                    if (this.isReactionTweet(tweet)) {
-                        const quotedTweetId = this.getStringFromTweet(tweet, 'quoted_status_id_str');
-                        if (quotedTweetId) {
-                            const quotedUserName = this.getUserNameForTweet(globalObjects, quotedTweetId);
-                            if (quotedUserName) {
-                                headline = `${author} reagiert auf ${quotedUserName}`;
-                            }
+        try {
+            const messages = [];
+            const globalObjects = await this.getGlobalObjectsForUrl(job.url);
+            const matches = job.url.match(/twitter\.com\/(.+)($|\?|\/|#)/);
+            const screenName = matches ? matches[1] : null;
+            if (globalObjects !== null && screenName) {
+                const user = this.getUserFromGlobalObjectsByScreenName(globalObjects, screenName);
+                if (typeof user !== 'object') {
+                    return [];
+                }
+                const userIdString = this.getStringFromUser(user, 'id_str');
+                const author = this.getStringFromUser(user, 'name');
+                const bannerImage = this.getStringFromUser(user, 'profile_banner_url');
+                if ('tweets' in globalObjects && typeof globalObjects.tweets === 'object') {
+                    for (const id in globalObjects.tweets) {
+                        const tweet = globalObjects.tweets[id];
+                        const tweetUserIdString = this.getStringFromTweet(tweet, 'user_id_str');
+                        if (tweetUserIdString !== userIdString) {
+                            continue;
                         }
-                    }
-
-                    // Retweet
-                    if (
-                        'retweeted_status_id_str' in tweet &&
-                        typeof tweet.retweeted_status_id_str === 'string'
-                    ) {
-                        const retweetId = tweet.retweeted_status_id_str;
-                        const retweetedUserName = this.getUserNameForTweet(globalObjects, retweetId);
-                        if (retweetedUserName) {
-                            headline = `${author} retweeted ${retweetedUserName}`;
+                        let headline = `${author} tweeted`;
+                        const date = this.getDateFromTweet(tweet, 'created_at');
+                        const url = `https://twitter.com/${screenName}/status/${id}`;
+                        let text = this.getTweetText(tweet);
+                        const image = this.getImageFromTweet(tweet);
+                        let displayImage = bannerImage;
+                        if (image) {
+                            displayImage = image;
                         }
-                        if (retweetId in globalObjects.tweets) {
-                            const retweet = globalObjects.tweets[retweetId];
-                            if (typeof retweet === 'object') {
-                                const retweetText = this.getTweetText(retweet);
-                                if (retweetText) {
-                                    text = retweetText;
+
+                        // Quoted Tweet
+                        if (this.isReactionTweet(tweet)) {
+                            const quotedTweetId = this.getStringFromTweet(tweet, 'quoted_status_id_str');
+                            if (quotedTweetId) {
+                                const quotedUserName = this.getUserNameForTweet(globalObjects, quotedTweetId);
+                                if (quotedUserName) {
+                                    headline = `${author} reagiert auf ${quotedUserName}`;
                                 }
                             }
                         }
-                    }
 
-                    const time = date !== null ? date : new Date();
-                    messages.push(new Message(
-                        0,
-                        job.id,
-                        headline,
-                        text,
-                        displayImage,
-                        author,
-                        url,
-                        time,
-                        id
-                    ));
+                        // Retweet
+                        if (
+                            'retweeted_status_id_str' in tweet &&
+                            typeof tweet.retweeted_status_id_str === 'string'
+                        ) {
+                            const retweetId = tweet.retweeted_status_id_str;
+                            const retweetedUserName = this.getUserNameForTweet(globalObjects, retweetId);
+                            if (retweetedUserName) {
+                                headline = `${author} retweeted ${retweetedUserName}`;
+                            }
+                            if (retweetId in globalObjects.tweets) {
+                                const retweet = globalObjects.tweets[retweetId];
+                                if (typeof retweet === 'object') {
+                                    const retweetText = this.getTweetText(retweet);
+                                    if (retweetText) {
+                                        text = retweetText;
+                                    }
+                                }
+                            }
+                        }
+
+                        const time = date !== null ? date : new Date();
+                        messages.push(new Message(
+                            0,
+                            job.id,
+                            headline,
+                            text,
+                            displayImage,
+                            author,
+                            url,
+                            time,
+                            id
+                        ));
+                    }
                 }
             }
+            return messages;
+        } catch (e) {
+            console.log(e)
+            return [];
         }
-        return messages;
     }
 
     /**
