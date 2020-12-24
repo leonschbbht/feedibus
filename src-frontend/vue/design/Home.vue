@@ -2,9 +2,11 @@
     <div>
         <v-data-iterator
             :items="filteredNews"
-            :pagination.sync="pagination"
+            :items-per-page.sync="itemsPerPage"
+            :page="page"
             :sort-by="sortBy.toLowerCase()"
             :sort-desc="sortDesc"
+            hide-default-footer
         >
             <template #header>
                 <v-toolbar
@@ -13,18 +15,57 @@
                     class="toolBar"
                 >
                     <template>
-                        <v-spacer />
                         <v-select
                             v-model="filter"
                             flat
-                            chips
+                            :chips="!$vuetify.breakpoint.mobile"
                             multiple
                             solo-inverted
                             hide-details
                             :items="news.map((a) => a.categories).flat()"
-                            prepend-inner-icon="mdi-magnify"
-                            label="Filtern nach"
-                        />
+                            prepend-inner-icon="mdi-filter-variant"
+                            label="Filter auswählen"
+                            @change="changed()"
+                        >
+                            <template
+                                v-if="!$vuetify.breakpoint.mobile"
+                                #selection="{ attrs, item, select, selected, index }"
+                            >
+                                <v-chip
+                                    v-if="index < 5"
+                                    v-bind="attrs"
+                                    :input-value="selected"
+                                    close
+                                    @click="select"
+                                    @click:close="remove(item.id)"
+                                >
+                                    <strong>{{ item }}</strong>
+                                </v-chip>
+                                <span
+                                    v-if="index === 5"
+                                    class="grey--text caption"
+                                >
+                                    (+{{ filter.length - 5 }} )
+                                </span>
+                            </template>
+                            <template
+                                v-else
+                                #selection="{ item, selected, index }"
+                            >
+                                <v-chip
+                                    v-if="index === 0"
+                                    :input-value="selected"
+                                >
+                                    <span>{{ item }}</span>
+                                </v-chip>
+                                <span
+                                    v-if="index === 1"
+                                    class="grey--text caption"
+                                >
+                                    (+{{ filter.length - 1 }} )
+                                </span>
+                            </template>
+                        </v-select>
                         <v-spacer />
                         <v-btn-toggle
                             v-model="sortDesc"
@@ -32,17 +73,17 @@
                         >
                             <v-btn
                                 large
-                                depressed
-                                color="accent"
+                                :class="{primary: !sortDesc, secondary: sortDesc }"
                                 :value="false"
+                                
                             >
                                 <v-icon>mdi-arrow-up</v-icon>
                             </v-btn>
                             <v-btn
                                 large
-                                depressed
-                                color="accent"
+                                :class="{primary: sortDesc, secondary: !sortDesc }"
                                 :value="true"
+                            
                             >
                                 <v-icon>mdi-arrow-down</v-icon>
                             </v-btn>
@@ -64,6 +105,14 @@
                     class="newsCard"
                 />
             </template>
+            <template #footer>
+                <v-pagination
+                    v-model="page"
+                    color="secondary"
+                    :length="maxPages"
+                    :total-visible="10"
+                />
+            </template>
         </v-data-iterator>
     </div>
 </template>
@@ -75,16 +124,14 @@ export default {
     components: {
         Card
     },
+    emits: { changed: null },
     data () {
         return {
-            pagination: {
-                rowsPerPage: 4
-            },
             search: '',
             filter: [],
             sortDesc: true,
             page: 1,
-            itemsPerPage: 4,
+            itemsPerPage: 10,
             sortBy: 'date',
             keys: [
                 { text: 'Titel', value: 'Title' },
@@ -95,7 +142,7 @@ export default {
                 {
                     title: 'Innenminister Caffier tritt zurück',
                     source: 'Tagesschau.de',
-                    date: '17.11.2020 17:51',
+                    date: '1',
                     text:
             'Mecklenburg-Vorpommerns Innenminister Caffier ist zurückgetreten. Er war wegen eines umstrittenen Waffenkaufs unter Druck geraten. Sein Landtagsmandat will der CDU-Politiker behalten.',
                     link: 'https://www.tagesschau.de/inland/caffier-ruecktritt-103.html',
@@ -106,30 +153,30 @@ export default {
                     img:
             'https://img.zeit.de/wissen/gesundheit/2020-11/corona-politik-impfung-lockdown-kontaktverfolgung-pandemiekontrolle-strategien-bild/wide__820x461__desktop',
                     source: 'Zeit.de',
-                    date: '17.11.2020 15:03',
+                    date: '2',
                     text:
             ' Die Politik wird die Corona-Regeln wohl bald noch einmal verschärfen. Doch was kommt danach? Drei mögliche Langzeitstrategien, die die Politik ergreifen könnte. Eine Analyse von Jakob Simmank, Florian Schumann und Philipp Daum',
                     link:
             'https://www.zeit.de/wissen/gesundheit/2020-11/corona-politik-impfung-lockdown-kontaktverfolgung-pandemiekontrolle-strategien',
-                    categories: ['Corona', 'Leitmedien']
+                    categories: ['Corona', 'Leitmedien', 'Bla', 'Blubb', 'Kategorie1']
                 },
                 {
                     title: 'Elektroautokäufer sollen bis 2025 Zuschuss bekommen',
                     img:
             'https://media1.faz.net/ppmedia/aktuell/wirtschaft/4185919099/1.7056839/format_top1_breit/vw-produktion-in-zwickau.jpg',
                     source: 'faz.net',
-                    date: '17.11.2020 15:18',
+                    date: '3',
                     text:
             'Längere Förderung für E-Autos, zahlreiche neue Ladestationen und mehr: Die Regierung plant eine Reihe von Maßnahmen, um die deutsche Autolandschaft zu transformieren. ',
                     link:
             'https://www.faz.net/aktuell/wirtschaft/elektroautokaeufer-sollen-bis-2025-einen-zuschuss-kriegen-17056821.html',
-                    categories: ['Politik', 'Leitmedien']
+                    categories: ['Politik', 'Leitmedien', 'kategorie2']
                 },
                 {
                     title: 'Einfach Uff: ALLE Apple M1 ausprobiert!1',
                     img: 'http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg',
                     source: 'youtube / alexibexi',
-                    date: '17.11.2020',
+                    date: '4',
                     text:
             'Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1',
                     link: 'https://www.youtube.com/watch?v=xSRI2_z-QwE',
@@ -139,7 +186,7 @@ export default {
                     title: 'Einfach Uff: ALLE Apple M1 ausprobiert!2',
                     img: 'http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg',
                     source: 'youtube / alexibexi',
-                    date: '17.11.2020',
+                    date: '5',
                     text:
             'Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1',
                     link: 'https://www.youtube.com/watch?v=xSRI2_z-QwE',
@@ -149,7 +196,7 @@ export default {
                     title: 'Einfach Uff: ALLE Apple M1 ausprobiert!3',
                     img: 'http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg',
                     source: 'youtube / alexibexi',
-                    date: '17.11.2020',
+                    date: '6',
                     text:
             'Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1',
                     link: 'https://www.youtube.com/watch?v=xSRI2_z-QwE',
@@ -159,7 +206,7 @@ export default {
                     title: 'Einfach Uff: ALLE Apple M1 ausprobiert!4',
                     img: 'http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg',
                     source: 'youtube / alexibexi',
-                    date: '17.11.2020',
+                    date: '7',
                     text:
             'Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1',
                     link: 'https://www.youtube.com/watch?v=xSRI2_z-QwE',
@@ -169,7 +216,7 @@ export default {
                     title: 'Einfach Uff: ALLE Apple M1 ausprobiert!5',
                     img: 'http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg',
                     source: 'youtube / alexibexi',
-                    date: '17.11.2020',
+                    date: '8',
                     text:
             'Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1',
                     link: 'https://www.youtube.com/watch?v=xSRI2_z-QwE',
@@ -179,7 +226,7 @@ export default {
                     title: 'Einfach Uff: ALLE Apple M1 ausprobiert!6',
                     img: 'http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg',
                     source: 'youtube / alexibexi',
-                    date: '17.11.2020',
+                    date: '9',
                     text:
             'Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1',
                     link: 'https://www.youtube.com/watch?v=xSRI2_z-QwE',
@@ -189,7 +236,7 @@ export default {
                     title: 'Einfach Uff: ALLE Apple M1 ausprobiert!7',
                     img: 'http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg',
                     source: 'youtube / alexibexi',
-                    date: '17.11.2020',
+                    date: '10',
                     text:
             'Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1',
                     link: 'https://www.youtube.com/watch?v=xSRI2_z-QwE',
@@ -199,7 +246,7 @@ export default {
                     title: 'Einfach Uff: ALLE Apple M1 ausprobiert!8',
                     img: 'http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg',
                     source: 'youtube / alexibexi',
-                    date: '17.11.2020',
+                    date: '11',
                     text:
             'Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1',
                     link: 'https://www.youtube.com/watch?v=xSRI2_z-QwE',
@@ -209,7 +256,7 @@ export default {
                     title: 'Einfach Uff: ALLE Apple M1 ausprobiert!9',
                     img: 'http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg',
                     source: 'youtube / alexibexi',
-                    date: '17.11.2020',
+                    date: '12',
                     text:
             'Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1',
                     link: 'https://www.youtube.com/watch?v=xSRI2_z-QwE',
@@ -219,7 +266,7 @@ export default {
                     title: 'Einfach Uff: ALLE Apple M1 ausprobiert!10',
                     img: 'http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg',
                     source: 'youtube / alexibexi',
-                    date: '17.11.2020',
+                    date: '13',
                     text:
             'Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1',
                     link: 'https://www.youtube.com/watch?v=xSRI2_z-QwE',
@@ -229,7 +276,7 @@ export default {
                     title: 'Einfach Uff: ALLE Apple M1 ausprobiert!11',
                     img: 'http://i3.ytimg.com/vi/xSRI2_z-QwE/maxresdefault.jpg',
                     source: 'youtube / alexibexi',
-                    date: '17.11.2020',
+                    date: '14',
                     text:
             'Das ist er also: Der M1 von Apple. Der Anfang der Zukunft von Computern! Was uns wohl bald erwartet habe ich an all den drei neuen Geräte ausprobiert. Was ist das Ergebnis? Das verrate ich euch in diesem Video! #AppleM1',
                     link: 'https://www.youtube.com/watch?v=xSRI2_z-QwE',
@@ -250,6 +297,19 @@ export default {
                     return filter.includes(e);
                 })
             );
+        },
+        maxPages () {
+            return Math.ceil(this.filteredNews.length / this.itemsPerPage);
+        }
+    },
+    methods: {
+        remove (id) {
+            const index = this.filter.indexOf(id);
+            this.filter.splice(index, 1);
+            this.filter = [...this.filter];
+        },
+        changed () {
+            this.$emit('changed', this.filter)
         }
     }
 };
@@ -257,5 +317,11 @@ export default {
 <style scoped>
 .newsCard {
   margin: 50px;
+}
+.active{
+color: accent;
+}
+.inactive{
+    color:secondary;
 }
 </style>

@@ -3,16 +3,21 @@
         class="mx-auto"
         :max-width="$vuetify.breakpoint.mobile ? '100%' : '60%'"
     >
-        <v-img
+        <a
             v-if="img"
-            class="white--text align-end"
-            height="300px"
-            :src="img"
+            :href="link"
+            target="_blank"
         >
-            <v-card-title class="title">
-                {{ title }}
-            </v-card-title>
-        </v-img>
+            <v-img
+                class="white--text align-end img"
+                height="300px"
+                :src="img"
+            >
+                <v-card-title class="title">
+                    {{ title }}
+                </v-card-title>
+            </v-img>
+        </a>
         <div
             v-else
             class="white--text accent"
@@ -102,13 +107,21 @@ export default {
 .chips {
   margin: 10px;
 }
-.title{
+.title {
   text-shadow: 0px 0px 20px black;
+  text-decoration: none;
 }
-.mobile{
+.mobile {
   max-width: 100%;
 }
-.desktop{
+.desktop {
   max-width: 60%;
+}
+a {
+    text-decoration: none;
+}
+.img{
+    -webkit-filter: grayscale(30%); /* Safari 6.0 -9.0 */
+    filter: grayscale(30%);
 }
 </style>
