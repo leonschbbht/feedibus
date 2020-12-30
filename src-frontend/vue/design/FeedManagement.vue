@@ -3,8 +3,11 @@
         <v-data-table
             :headers="headers"
             :items="feeds"
+            :items-per-page.sync="itemsPerPage"
+            :page="page"
             sort-by="calories"
             class="elevation-1"
+            hide-default-footer
         >
             <template #top>
                 <v-toolbar
@@ -164,12 +167,22 @@
                     Reset
                 </v-btn>
             </template>
+            <template #footer>
+                <v-pagination
+                    v-model="page"
+                    color="secondary"
+                    :length="maxPages"
+                    :total-visible="10"
+                />
+            </template>
         </v-data-table>
     </div>
 </template>
 <script>
 export default {
     data: () => ({
+        page: 1,
+        itemsPerPage: 10,
         dialog: false,
         dialogDelete: false,
         headers: [
@@ -206,9 +219,11 @@ export default {
     computed: {
         formTitle () {
             return this.editedIndex === -1 ? 'Feed hinzufügen' : 'Feed bearbeiten';
+        },
+        maxPages () {
+            return Math.ceil(this.feeds.length / this.itemsPerPage);
         }
     },
-
     watch: {
         dialog (val) {
             val || this.close();
@@ -276,3 +291,8 @@ export default {
     }
 };
 </script>
+<style>
+table.v-table {
+  max-width: none;
+}
+</style>
