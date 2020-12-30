@@ -5,7 +5,7 @@
             :max-width="$vuetify.breakpoint.mobile ? '100%' : '60%'"
         >
             <v-card-title class="white--text secondary">
-                Allgemeine Einstellungen
+                Herzlich Willkommen!
             </v-card-title>
             <v-card-text>
                 <v-text-field
@@ -23,36 +23,9 @@
                     label="E-Mail wiederholen"
                     :rules="[rules.required, rules.email, rules.emailMatches]"
                 />
-            </v-card-text>
-            <v-card-actions>
-                <v-btn
-                    color="success"
-                    text
-                    :disabled="submitGeneralDisabled"
-                    @click="submitGeneral"
-                >
-                    Änderungen absenden
-                </v-btn>
-                <v-btn
-                    color="warning"
-                    text
-                    @click="resetGeneral"
-                >
-                    Änderungen verwerfen
-                </v-btn>
-            </v-card-actions>
-        </v-card>
-        <v-card
-            class="mx-auto card"
-            :max-width="$vuetify.breakpoint.mobile ? '100%' : '60%'"
-        >
-            <v-card-title class="white--text secondary">
-                Passwort
-            </v-card-title>
-            <v-card-text>
                 <v-text-field
                     v-model="passwordData.password"
-                    label="Neues Passwort"
+                    label="Passwort"
                     :rules="[rules.required]"
 
                     :append-icon="passwordData.showPw ? 'mdi-eye' : 'mdi-eye-off'"
@@ -61,7 +34,7 @@
                 />
                 <v-text-field
                     v-model="passwordData.passwordRepeat"
-                    label="Neues Passwort wiederholen"
+                    label="Passwort wiederholen"
                     :rules="[rules.required, rules.pwMatches]"
 
                     :append-icon="passwordData.showPw ? 'mdi-eye' : 'mdi-eye-off'"
@@ -73,10 +46,17 @@
                 <v-btn
                     color="success"
                     text
-                    :disabled="submitPasswordDisabled"
-                    @click="submitPassword"
+                    :disabled="submitGeneralDisabled"
+                    @click="submitGeneral"
                 >
-                    Änderungen absenden
+                    Registrieren
+                </v-btn>
+                <v-btn
+                    color="warning"
+                    text
+                    @click="resetGeneral"
+                >
+                    Zurücksetzen
                 </v-btn>
             </v-card-actions>
         </v-card>
@@ -102,12 +82,11 @@
 </template>
 <script>
 export default {
-    name: 'Settings',
+    name: 'Register',
     components: {
     },
     data () {
         return {
-            userData: { name: 'Jan', email: 'jan@huemmelinkcloud.de' },
             userDataNew: { name: '', email: '', emailRepeat: '' },
             passwordData: {
                 password: '',
@@ -136,33 +115,25 @@ export default {
         }
     },
     computed: {
-        submitGeneralDisabled () {
+        submitGeneralDisabled: function () {
             const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             let disabled = false;
             disabled = !pattern.test(this.userDataNew.email);
             disabled = disabled || this.userDataNew.email !== this.userDataNew.emailRepeat;
             disabled = disabled || !this.userDataNew.name;
+            disabled = disabled || this.passwordData.password !== this.passwordData.passwordRepeat || !this.passwordData.password;
             return disabled;
-        },
-        submitPasswordDisabled () {
-            return this.passwordData.password !== this.passwordData.passwordRepeat || !this.passwordData.password;
         }
-    },
-    created () {
-        this.resetGeneral();
     },
     methods: {
         resetGeneral () {
-            this.userDataNew.name = this.userData.name;
-            this.userDataNew.email = this.userData.email;
-            this.userDataNew.emailRepeat = this.userData.email;
+            this.userDataNew.name = '';
+            this.userDataNew.email = '';
+            this.userDataNew.emailRepeat = '';
+            this.passwordData.password = '';
+            this.passwordData.passwordRepeat = '';
         },
         submitGeneral () {
-            this.snackbarData.text = 'Daten übernommen!'
-            this.snackbarData.color = 'success'
-            this.snackbarData.enabled = true;
-        },
-        submitPassword () {
             this.snackbarData.text = 'Daten übernommen!'
             this.snackbarData.color = 'success'
             this.snackbarData.enabled = true;
