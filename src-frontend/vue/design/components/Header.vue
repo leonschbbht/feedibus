@@ -30,17 +30,6 @@
                     active-class="primary--text text--primary-4"
                     @input="drawer = false"
                 >
-                    <v-list-item>
-                        <v-list-item-avatar>
-                            <v-img src="https://randomuser.me/api/portraits/men/77.jpg" />
-                        </v-list-item-avatar>
-                        <v-list-item-content>
-                            <v-list-item-title>John Leider</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-divider />
-
                     <v-list-item
                         v-for="item in items"
                         :key="item.title"

@@ -88,14 +88,14 @@
                             <v-card-actions>
                                 <v-spacer />
                                 <v-btn
-                                    color="warning darken-1"
+                                    color="warning"
                                     text
                                     @click="close"
                                 >
                                     Abbrechen
                                 </v-btn>
                                 <v-btn
-                                    color="success darken-1"
+                                    color="success"
                                     text
                                     @click="save"
                                 >
@@ -117,14 +117,14 @@
                             <v-card-actions>
                                 <v-spacer />
                                 <v-btn
-                                    color="warning darken-1"
+                                    color="warning"
                                     text
                                     @click="closeDelete"
                                 >
                                     Abbrechen
                                 </v-btn>
                                 <v-btn
-                                    color="error darken-1"
+                                    color="error"
                                     text
                                     @click="deleteItemConfirm"
                                 >

@@ -75,7 +75,6 @@
                                 large
                                 :class="{primary: !sortDesc, secondary: sortDesc }"
                                 :value="false"
-                                
                             >
                                 <v-icon>mdi-arrow-up</v-icon>
                             </v-btn>
@@ -83,7 +82,6 @@
                                 large
                                 :class="{primary: sortDesc, secondary: !sortDesc }"
                                 :value="true"
-                            
                             >
                                 <v-icon>mdi-arrow-down</v-icon>
                             </v-btn>
