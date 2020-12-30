@@ -64,16 +64,6 @@
                                             md="4"
                                         >
                                             <v-text-field
-                                                v-model="editedItem.id"
-                                                label="ID"
-                                            />
-                                        </v-col>
-                                        <v-col
-                                            cols="12"
-                                            sm="6"
-                                            md="4"
-                                        >
-                                            <v-text-field
                                                 v-model="editedItem.link"
                                                 label="Link"
                                             />
@@ -190,7 +180,6 @@ export default {
                 value: 'name'
             },
             { text: 'Feedtyp', value: 'type' },
-            { text: 'Feed-ID', value: 'id' },
             { text: 'Link', value: 'link' },
             { text: 'Kategorien', value: 'categories' },
             { text: 'Aktionen', value: 'actions', sortable: false }
