@@ -49,6 +49,7 @@
                                             <v-text-field
                                                 v-model="editedItem.name"
                                                 label="Feed Name"
+                                                :rules="[rules.required]"
                                             />
                                         </v-col>
                                         <v-col
@@ -56,9 +57,11 @@
                                             sm="6"
                                             md="4"
                                         >
-                                            <v-text-field
+                                            <v-select
                                                 v-model="editedItem.type"
+                                                :items="types"
                                                 label="Typ"
+                                                :rules="[rules.required]"
                                             />
                                         </v-col>
                                         <v-col
@@ -69,6 +72,7 @@
                                             <v-text-field
                                                 v-model="editedItem.link"
                                                 label="Link"
+                                                :rules="[rules.required]"
                                             />
                                         </v-col>
                                         <v-col
@@ -76,8 +80,11 @@
                                             sm="6"
                                             md="4"
                                         >
-                                            <v-text-field
+                                            <v-combobox
                                                 v-model="editedItem.categories"
+                                                :items="categories"
+                                                multiple
+                                                chips
                                                 label="Kategorien"
                                             />
                                         </v-col>
@@ -88,15 +95,16 @@
                             <v-card-actions>
                                 <v-spacer />
                                 <v-btn
-                                    color="warning darken-1"
+                                    color="warning"
                                     text
                                     @click="close"
                                 >
                                     Abbrechen
                                 </v-btn>
                                 <v-btn
-                                    color="success darken-1"
+                                    color="success"
                                     text
+                                    :disabled="saveDisabled"
                                     @click="save"
                                 >
                                     Speichern
@@ -117,14 +125,14 @@
                             <v-card-actions>
                                 <v-spacer />
                                 <v-btn
-                                    color="warning darken-1"
+                                    color="warning"
                                     text
                                     @click="closeDelete"
                                 >
                                     Abbrechen
                                 </v-btn>
                                 <v-btn
-                                    color="error darken-1"
+                                    color="error"
                                     text
                                     @click="deleteItemConfirm"
                                 >
@@ -185,6 +193,8 @@ export default {
         itemsPerPage: 10,
         dialog: false,
         dialogDelete: false,
+        types: ['RSS', 'YouTube', 'Twitter'],
+        categories: ['Unterhaltung', 'Leitmedien', 'Politik', 'Corona', 'Technik', 'Medien', 'Nachrichten'],
         headers: [
             {
                 text: 'Feedname',
@@ -198,6 +208,9 @@ export default {
             { text: 'Aktionen', value: 'actions', sortable: false }
 
         ],
+        rules: {
+            required: value => !!value || 'Pflichtfeld'
+        },
         feeds: [],
         editedIndex: -1,
         editedItem: {
@@ -205,14 +218,14 @@ export default {
             type: '',
             id: 0,
             link: '',
-            categories: ''
+            categories: []
         },
         defaultItem: {
             name: '',
             type: '',
             id: 0,
             link: '',
-            categories: ''
+            categories: []
         }
     }),
 
@@ -222,7 +235,11 @@ export default {
         },
         maxPages () {
             return Math.ceil(this.feeds.length / this.itemsPerPage);
+        },
+        saveDisabled () {
+            return !(this.editedItem.name && this.editedItem.type && this.editedItem.link)
         }
+
     },
     watch: {
         dialog (val) {
