@@ -1,7 +1,3 @@
-provider "azurerm" {
-  features {}
-}
-
 terraform {
   backend "azurerm" {
     resource_group_name = "terraform-remote"
@@ -9,6 +5,15 @@ terraform {
     container_name = "tfrmcontainer"
     key = "terraform.tfstate"
   }
+  required_providers {
+    azurerm = {
+      source = "hashicorp/azurerm"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
 }
 
 module "modules" {
