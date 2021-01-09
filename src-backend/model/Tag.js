@@ -1,22 +1,19 @@
-const crypto = require('crypto');
-const util = require('util');
-
 module.exports = class Tag {
     /**
      * @param {number} id
+     * @param {number} userId
      * @param {string} name
      * @param {string} color
-     * @param {number} userId
      */
-    constructor (id, name, color, userId) {
+    constructor (id, userId, name, color) {
         this._id = id;
+        this._userId = userId;
         this._name = name;
         this._color = color;
-        this._userId = userId;
     }
 
     /**
-     * @return {number}
+     * @returns {number}
      */
     get id () {
         return this._id;
@@ -30,7 +27,21 @@ module.exports = class Tag {
     }
 
     /**
-     * @return {string}
+     * @returns {number}
+     */
+    get userId () {
+        return this._userId;
+    }
+
+    /**
+     * @param {number} value
+     */
+    set userId (value) {
+        this._userId = value;
+    }
+
+    /**
+     * @returns {string}
      */
     get name () {
         return this._name;
@@ -44,7 +55,7 @@ module.exports = class Tag {
     }
 
     /**
-     * @return {string}
+     * @returns {string}
      */
     get color () {
         return this._color;
@@ -56,16 +67,4 @@ module.exports = class Tag {
     set color (value) {
         this._color = value;
     }
-
-    /**
-     * @return {number}
-     */
-    get userId () {
-        return this._userId;
-    }
-
-    /**
-     * @param {string} value
-     * @return {Promise<boolean>}
-     */
 }

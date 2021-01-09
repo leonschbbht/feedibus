@@ -6,8 +6,23 @@ import de from 'vuetify/es5/locale/de';
 Vue.use(Vuetify);
 
 export default new Vuetify({
+
     lang: {
         locales: { de },
         current: 'de'
+    },
+    theme: {
+        themes: {
+            light: {
+                primary: '#42A5F5',
+                accent: '#C8553D',
+                secondary: '#3E505B',
+                success: '#4CAF50',
+                info: '#2196F3',
+                warning: '#FB8C00',
+                error: '#FF5252'
+            }
+        }
     }
+
 });

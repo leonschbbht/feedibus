@@ -2,6 +2,8 @@ const User = require('../model/User');
 const Tag = require('../model/Tag');
 const Subscription = require('../model/Subscription');
 const dbConfig = require('../../knexfile');
+const Job = require('../model/Job');
+const Message = require('../model/Message');
 
 class Database {
     constructor() {
@@ -17,7 +19,7 @@ class Database {
     async createUser(name, email, password) {
         const user = new User(0, name, email, '', '');
         await user.setNewPassword(password);
-        const id = await this._con('user')
+        const resultArray = await this._con('user')
             .insert({
                 name: user.name,
                 email: user.email,
@@ -25,11 +27,13 @@ class Database {
                 salt: user.salt
             })
             .returning('id')
-            .catch(() => null)
-            ;
-
-        if (id && Array.isArray(id)) {
-            user.id = id.pop();
+            .catch(e => {
+                console.log(e);
+                return null
+            })
+        ;
+        if (resultArray && Array.isArray(resultArray)) {
+            user.id = resultArray.pop();
             return user;
         }
         return null;
@@ -86,8 +90,7 @@ class Database {
                     salt: user.salt
                 })
                 .returning('id')
-                .catch(() => null)
-                ;
+                .catch(() => null);
             return (id && Array.isArray(id) && id.length > 0);
         }
         return false;
@@ -112,7 +115,7 @@ class Database {
  * @returns {Promise<null|Tag>}
  */
     async createTag(name, color, userId) {
-        const tag = new Tag(0, name, color, userId);
+        const tag = new Tag(0, userId, name, color);
         const id = await this._con('tag')
             .insert({
                 userId: tag.userId,
@@ -129,6 +132,79 @@ class Database {
             tag.id = id.pop();
             return tag;
         }
+    }
+    /**
+     * @return {Promise<Job[]>}
+     */
+    async getAllJobs () {
+        const resultArray = await this._con
+            .select('*')
+            .from('job')
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray.map(row => new Job(row.id, row.type, row.url));
+        }
+        return [];
+    }
+
+    /**
+     * @param {number} id
+     * @return {Promise<Job|null>}
+     */
+    async getJobById (id) {
+        const resultArray = await this._con
+            .select('*')
+            .from('job')
+            .where('id', id)
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
+            const row = resultArray.pop();
+            return new Job(row.id, row.type, row.url);
+        }
+        return null;
+    }
+
+    /**
+     * @param {string} type
+     * @param {string} url
+     * @return {Promise<Job|null>}
+     */
+    async getJobByTypeAndUrl (type, url) {
+        const resultArray = await this._con
+            .select('*')
+            .from('job')
+            .where({
+                type: type,
+                url: url
+            })
+            .returning('id')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
+            const row = resultArray.pop();
+            return new Job(row.id, row.type, row.url);
+        }
+        return null;
+    }
+
+    /**
+     * @param {string} type
+     * @param {string} url
+     * @return {Promise<Job|null>}
+     */
+    async createJob (type, url) {
+        const resultArray = await this._con('job')
+            .insert({
+                type: type,
+                url: url
+            })
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray) && resultArray.length === 1) {
+            const row = resultArray.pop();
+            return new Job(row.id, row.type, row.url);
+        }
         return null;
     }
 
@@ -140,64 +216,105 @@ class Database {
             .del();
     }
 
-        /**
- * @param {string} type
- * @param {string} userId
- * @returns {Promise<null|Subscription>}
- */
-async createSubscription(type, userId) {
-    const jobUrl = await this._con('subscription')
-        .select('url')
-        .from('job')
-        .where('type', type)
-        .returning('url')
-        .catch(() => null);
-
-    const subscription = new Subscription(0, type, "", userId);
-    if (jobUrl && Array.isArray(jobUrl)) {
-        subscription.url = jobUrl.pop();
+    /**
+     * @param {number} userId
+     * @param {number} jobId
+     * @return {Promise<Subscription|null>}
+     */
+    async getSubscriptionByUserIdAndJobId (userId, jobId) {
+        const resultArray = await this._con
+            .select('*')
+            .from('subscription')
+            .where({
+                userId: userId,
+                jobId: jobId
+            })
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
+            const row = resultArray.pop();
+            return new Subscription(row.id, row.userId, row.jobId);
+        }
+        return null;
     }
 
-    const id = await this._con('subscription')
-        .insert({
-            type: subscription.userId,
-            url: subscription.url,
-            userId: subscription.userId
-        })
-        .returning('id')
-        .catch(() => null)
-        ;
-
-    console.log("Subscription:");
-    console.log(id)
-    if (id && Array.isArray(id)) {
-        subscription.id = id.pop();
-        return subscription;
+    /**
+     * @param {number} userId
+     * @param {number} jobId
+     * @return {Promise<Subscription|null>}
+     */
+    async createSubscription (userId, jobId) {
+        const resultArray = await this._con('subscription')
+            .insert({
+                userId: userId,
+                jobId: jobId
+            })
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray) && resultArray.length === 1) {
+            const row = resultArray.pop();
+            return new Subscription(row.id, row.userId, row.jobId);
+        }
+        return null;
     }
-    return null;
-}
 
-async createJob(type, url) {
-
-    const id = await this._con('job')
-        .insert({
-            type: type,
-            url: url
-        })
-        .returning('id')
-        .catch(() => null)
-        ;
-
-    console.log("Job:");
-    console.log(id)
-    const job = new Job(0, type, url);
-    if (id && Array.isArray(id)) {
-        job.id = id.pop();
-        return job;
+    /**
+     *
+     * @param {message} message
+     * @return {Promise<Message|void>}
+     */
+    async saveMessage (message) {
+        const resultArray = this._con('message')
+            .insert({
+                jobId: message.jobId,
+                headline: message.headline,
+                text: message.text,
+                imageUrl: message.imageUrl,
+                author: message.author,
+                sourceUrl: message.sourceUrl,
+                time: message.time,
+                identifier: message.identifier
+            })
+            .returning('id')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray) && resultArray.length === 1) {
+            const row = resultArray.pop();
+            message.id = row.id;
+            return message;
+        }
+        return null;
     }
-    return null;
-}
 
+    /**
+     * @param {number} jobId
+     * @param {string} identifier
+     * @return {Promise<null|Message>}
+     */
+    async getMessageByJobIdAndIdentifier (jobId, identifier) {
+        const resultArray = await this._con('message')
+            .select('*')
+            .where({
+                jobId: jobId,
+                identifier: identifier
+            })
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
+            const row = resultArray.pop();
+            return new Message(
+                row.id,
+                row.jobId,
+                row.headline,
+                row.text,
+                row.imageUrl,
+                row.author,
+                row.sourceUrl,
+                row.time,
+                row.identifier
+            );
+        }
+        return null;
+    }
 }
 
 // Die Datenbankverbindung sollte ein Singleton sein

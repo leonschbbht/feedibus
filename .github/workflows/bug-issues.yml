@@ -1,4 +1,4 @@
-name: Auto Assign bug tickets to Project
+name: Auto Assign bug tickets to Bugs / Tickets
 
 on:
   issues:

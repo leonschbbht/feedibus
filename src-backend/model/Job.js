@@ -1,6 +1,3 @@
-const crypto = require('crypto');
-const util = require('util');
-
 module.exports = class Job {
     /**
      * @param {number} id
@@ -14,7 +11,7 @@ module.exports = class Job {
     }
 
     /**
-     * @return {number}
+     * @returns {number}
      */
     get id () {
         return this._id;
@@ -28,7 +25,7 @@ module.exports = class Job {
     }
 
     /**
-     * @return {string}
+     * @returns {string}
      */
     get type () {
         return this._type;
@@ -42,7 +39,7 @@ module.exports = class Job {
     }
 
     /**
-     * @return {string}
+     * @returns {string}
      */
     get url () {
         return this._url;
@@ -54,9 +51,4 @@ module.exports = class Job {
     set url (value) {
         this._url = value;
     }
-    
-    /**
-     * @param {string} value
-     * @return {Promise<boolean>}
-     */
 }

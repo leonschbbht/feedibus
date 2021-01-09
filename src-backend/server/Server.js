@@ -3,7 +3,6 @@ const expressSession = require('express-session');
 const bodyParser = require('body-parser');
 const User = require('../model/User');
 const Tag = require('../model/Tag');
-const Subscription = require('../model/Subscription');
 const path = require('path');
 const responseUtils = require('./ResponseUtils');
 
@@ -18,9 +17,27 @@ const sessionConfig = {
 
 module.exports = class Server {
     /**
+     * @param jobId
+     */
+    _newJobCallback (jobId) {
+        console.log('New Job ', jobId);
+    }
+
+    /**
+     * @param {function} callback
+     */
+    setNewJobCallback (callback) {
+        if (typeof callback === 'function') {
+            this._newJobCallback = callback;
+        } else {
+            console.log('callback is not an function');
+        }
+    }
+
+    /**
      * @param {number} port
      */
-    constructor(port) {
+    run (port) {
         this.jsonBodyParser = bodyParser.json();
         this.urlencodedBodyParser = bodyParser.urlencoded({ extended: false });
         this.app = express();
@@ -37,7 +54,7 @@ module.exports = class Server {
         this.app.delete('/tags', this.jsonBodyParser, this.deleteTag);
 
         this.app.get('/subscriptions', this.jsonBodyParser, this.getSubscriptions);
-        this.app.post('/subscriptions', this.jsonBodyParser, this.createSubscription);
+        this.app.post('/subscriptions', this.jsonBodyParser, this.createNewSubscription);
         this.app.delete('/subscriptions', this.jsonBodyParser, this.deleteSubscription);
 
         this.app.get('/jobs', this.jsonBodyParser, this.getJobs);
@@ -62,7 +79,6 @@ module.exports = class Server {
             const password = req.body.password;
             const user = await db.getUserByEmail(email)
             if (user instanceof User && await user.validatePassword(password)) {
-                console.log(req.sessionID, req.session.id, req.session.cookie, req.session.user)
                 req.session.user = user.id;
                 responseUtils.sendOK(res, 'User "' + user.name + '" was logged in successfully.');
                 return;
@@ -90,16 +106,13 @@ module.exports = class Server {
                 console.log(newUser);
                 if (newUser instanceof User) {
                     responseUtils.sendCreated(res, "Created user with id: " + newUser.id);
-                    //res.redirect('/index.html')
                     return;
                 }
             } else {
-                responseUtils.sendConflict(res, "User with id: '" + user.id + "' already exists.");
+                responseUtils.sendConflict(res, "User with email: '" + email + "' already exists.");
             }
         }
         responseUtils.sendBadRequest(res);
-        // console.log(req);
-        //  res.redirect('/register.html');
     }
 
     async getTags(req, res) {
@@ -127,7 +140,6 @@ module.exports = class Server {
             const name = req.body.name;
             const color = req.body.color;
             const userId = req.user.id;
-            console.log(userId);
 
             const newTag = await db.createTag(name, color, userId);
             if (newTag instanceof Tag) {
@@ -135,9 +147,8 @@ module.exports = class Server {
                 return;
             }
             else {
-                responseUtils.sendConflict(res, "Tag with id: '" + newTag.id + "' already exists.");
+                responseUtils.sendConflict(res, "Tag could not be created.");
             }
-            // console.log(req);
         }
         responseUtils.sendBadRequest(res);
     }
@@ -180,7 +191,6 @@ module.exports = class Server {
             else {
                 responseUtils.sendConflict(res, "Job with id: '" + newJob.id + "' already exists.");
             }
-            // console.log(req);
         }
         responseUtils.sendBadRequest(res);
     }
@@ -198,33 +208,8 @@ module.exports = class Server {
 
     async getSubscriptions(req, res) {
         const subscriptions = await db.getAllTableRows('subscription');
-        console.log(subscriptions);
+        subscriptions.filter(subscription => subscription.userId === req.user.id);
         res.send(subscriptions);
-    }
-
-    async createSubscription(req, res) {
-        if (!req.user) {
-            responseUtils.sendForbidden(res, "You are not logged in");
-            return;
-        }
-
-        if (
-            'type' in req.body && typeof req.body.type === 'string'
-        ) {
-            const type = req.body.type;
-            const userId = req.user.id;
-            console.log(userId);
-
-            const newSubcription = await db.createSubscription(type, userId);
-            if (newSubcription instanceof Subscription) {
-                responseUtils.sendCreated(res, "Created subscription with id: " + newSubcription.id);
-                return;
-            } else {
-                responseUtils.sendConflict(res, "Subscription with id: '" + newUser.id + "' already exists.");
-            }
-            // console.log(req);
-        }
-        responseUtils.sendBadRequest(res);
     }
 
     async deleteSubscription(req, res) {
@@ -239,9 +224,9 @@ module.exports = class Server {
     }
 
     async getMessages(req, res) {
-        const subscriptions = await db.getAllTableRows('message');
-        console.log(subscriptions);
-        res.send(subscriptions);
+        const messages = await db.getAllTableRows('message');
+        console.log(messages);
+        res.send(messages);
     }
 
     async getSessionUser(req, res) {
@@ -267,5 +252,42 @@ module.exports = class Server {
             }
         }
         next();
+    }
+
+    async createNewSubscription (req, res) {
+        if (!req.user) {
+            responseUtils.sendForbidden(res, "You are not logged in");
+            return;
+        }
+        
+        if (
+            'type' in req.body && typeof req.body.type === 'string' &&
+            'url' in req.body && typeof req.body.url === 'string' &&
+            'user' in req && req.user instanceof User
+        ) {
+            const user = req.user;
+            const type = req.body.type;
+            const url = req.body.url;
+            let job = await db.getJobByTypeAndUrl(type, url);
+            if (job === null) {
+                job = await db.createJob(type, url);
+                if (job !== null) {
+                    this._newJobCallback(job.id);
+                }
+            }
+            if (job !== null) {
+                let subscription = await db.getSubscriptionByUserIdAndJobId(user.id, job.id);
+                if (subscription === null) {
+                    subscription = await db.createSubscription(user.id, job.id);
+                }
+                if (subscription !== null) {
+                    res.json({
+                        id: subscription.id
+                    });
+                    return;
+                }
+            }
+        }
+        responseUtils.sendBadRequest(res);
     }
 }

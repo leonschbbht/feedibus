@@ -1,32 +1,16 @@
-// const puppeter = require('puppeteer');
-
-// const loader = async function () {
-//     const browser = await puppeter.launch({
-//         headless: true,
-//         product: 'chrome',
-//         defaultViewport: null
-//      });
-//     const page = await browser.newPage();
-//     await page.goto('https://www.youtube.com/c/inanutshell/videos');
-//     await page.waitForSelector('ytd-grid-video-renderer')
-//     .then(async () => {
-//         const elements = await page.$$eval('ytd-grid-video-renderer', elements => elements.map(el => {
-//             const title = el.querySelector('a#video-title');
-//
-//
-//             return {
-//                 tile: title.title,
-//                 href: title.href
-//             }
-//         }));
-//         console.log(elements);
-//     });
-//     await browser.close();
-// }
-
-// loader();
 const Server = require('./src-backend/server/Server');
 const config = require('./config.js');
+const { Worker } = require('worker_threads');
 
-/* eslint-disable-next-line no-unused-vars */
-const server = new Server(config.PORT);
+const server = new Server();
+const worker = new Worker('./schedulerWorkerApp.js');
+server.setNewJobCallback(function (id) {
+    worker.postMessage({
+        type: 'newJob',
+        id: id
+    });
+})
+server.run(config.PORT);
+
+// worker.on('message', message => console.log(message));
+// worker.postMessage('ping');

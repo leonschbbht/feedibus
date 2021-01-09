@@ -1,22 +1,17 @@
-const crypto = require('crypto');
-const util = require('util');
-
 module.exports = class Subscription {
     /**
      * @param {number} id
-     * @param {string} type
-     * @param {string} url
      * @param {number} userId
+     * @param {number} jobId
      */
-    constructor (id, type, url, userId) {
+    constructor (id, userId, jobId) {
         this._id = id;
-        this._type = type;
-        this._url = url;
         this._userId = userId;
+        this._jobId = jobId;
     }
 
     /**
-     * @return {number}
+     * @returns {number}
      */
     get id () {
         return this._id;
@@ -30,42 +25,30 @@ module.exports = class Subscription {
     }
 
     /**
-     * @return {string}
-     */
-    get type () {
-        return this._type;
-    }
-
-    /**
-     * @param {string} value
-     */
-    set type (value) {
-        this._type = value;
-    }
-
-    /**
-     * @return {string}
-     */
-    get url () {
-        return this._url;
-    }
-
-    /**
-     * @param {string} value
-     */
-    set url (value) {
-        this._url = value;
-    }
-
-    /**
-     * @return {number}
+     * @returns {number}
      */
     get userId () {
         return this._userId;
     }
 
     /**
-     * @param {string} value
-     * @return {Promise<boolean>}
+     * @param {number} value
      */
+    set userId (value) {
+        this._userId = value;
+    }
+
+    /**
+     * @returns {number}
+     */
+    get jobId () {
+        return this._jobId;
+    }
+
+    /**
+     * @param {number} value
+     */
+    set jobId (value) {
+        this._jobId = value;
+    }
 }
