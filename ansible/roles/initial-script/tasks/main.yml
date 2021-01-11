@@ -2,3 +2,7 @@
   template:
     src: templates/init.sh
     dest: /init.sh
+- name: add format.sh templates
+  template:
+    src: templates/format.sh
+    dest: /format.sh
