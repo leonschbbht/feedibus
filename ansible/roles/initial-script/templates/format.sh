@@ -10,7 +10,6 @@ function createMountPoint {
   if [ "$DEVICE_INFO" == "$VOLUME: data" ]; then
     echo "Formatiere Laufwerk $VOLUME"
     mkfs -t xfs $VOLUME
-    echo "$VOLUME /mnt/extension xfs noatime 0 0" >> /etc/fstab
     docker volume create --name database --opt type=none --opt device=/mnt/extension/database --opt o=bind
   fi
 
@@ -18,4 +17,5 @@ function createMountPoint {
   mount $VOLUME $MOUNTPATH
 }
 
+echo "$VOLUME /mnt/extension xfs noatime 0 0" >> /etc/fstab
 createMountPoint
