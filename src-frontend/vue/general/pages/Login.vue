@@ -26,12 +26,14 @@
             <v-card-actions>
                 <v-btn
                     color="success"
+                    :disabled="submitGeneralDisabled"
                     @click="submitGeneral"
                 >
                     Login
                 </v-btn>
                 <v-btn
                     color="info"
+                    text
                     to="/register"
                 >
                     Registrieren
@@ -81,6 +83,12 @@ export default {
                     return pattern.test(value) || 'Ungültige E-Mail.'
                 }
             }
+        }
+    },
+    computed: {
+        submitGeneralDisabled: function () {
+            const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return !pattern.test(this.email) || !this.password;
         }
     },
     methods: {

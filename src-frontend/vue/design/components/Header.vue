@@ -27,7 +27,6 @@
                 dense
             >
                 <v-list-item-group
-                    :value="group"
                     active-class="primary--text text--primary-4"
                     @input="drawer = false"
                 >
@@ -44,6 +43,21 @@
                         <v-list-item-content>
                             <v-list-item-title>{{ item.title }}</v-list-item-title>
                         </v-list-item-content>
+                    </v-list-item><v-list-item
+                        href="/logout"
+                        link
+                    >
+                        <v-list-item-icon>
+                            <v-icon>
+                                mdi-power
+                            </v-icon>
+                        </v-list-item-icon>
+
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                Logout
+                            </v-list-item-title>
+                        </v-list-item-content>
                     </v-list-item>
                 </v-list-item-group>
             </v-list>
@@ -58,10 +72,7 @@ export default {
             items: [
                 { title: 'Startseite', icon: 'mdi-home', to: '/' },
                 { title: 'Einstellungen', icon: 'mdi-settings', to: '/settings' },
-                { title: 'Meine Feeds', icon: 'mdi-rss', to: '/feeds' },
-                { title: 'Logout', icon: 'mdi-power', to: '/logout' },
-                { title: 'Login (Temp)', icon: 'mdi-sparkles', to: '/login' },
-                { title: 'Registrieren (Temp)', icon: 'mdi-sparkles', to: '/register' }
+                { title: 'Meine Feeds', icon: 'mdi-rss', to: '/feeds' }
             ]
         };
     }

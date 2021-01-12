@@ -59,8 +59,7 @@ module.exports = class Server {
         });
         this.app.get('/logout', (req, res) => {
             delete req.session.user;
-            res.status(200);
-            res.send('');
+            res.redirect('/index.html');
         })
         this.app.post('/register', this.jsonBodyParser, (req, res) => {
             this.register(req, res)

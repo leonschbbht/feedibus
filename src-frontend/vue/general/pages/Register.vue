@@ -38,7 +38,6 @@
             <v-card-actions>
                 <v-btn
                     color="success"
-                    text
                     :disabled="submitGeneralDisabled"
                     @click="submitGeneral"
                 >
@@ -50,6 +49,13 @@
                     @click="resetGeneral"
                 >
                     Zurücksetzen
+                </v-btn>
+                <v-btn
+                    color="info"
+                    text
+                    to="/"
+                >
+                    Zurück
                 </v-btn>
             </v-card-actions>
         </v-card>
