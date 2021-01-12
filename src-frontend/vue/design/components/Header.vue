@@ -7,14 +7,15 @@
             app
         >
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-            <a href="/">
+            <router-link to="/">
                 <v-img
                     class="mx-2"
                     src="https://i.imgur.com/LQUQZvA.png"
                     max-height="40"
                     max-width="40"
                     contain
-                />    </a>
+                />
+            </router-link>
             <v-toolbar-title>feedibus</v-toolbar-title>
         </v-app-bar>
         <v-navigation-drawer
