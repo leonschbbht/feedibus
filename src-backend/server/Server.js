@@ -8,6 +8,7 @@ const path = require('path');
 const responseUtils = require('./ResponseUtils');
 
 const db = require('../database/Database');
+const { join } = require('path');
 
 const sessionConfig = {
     secret: 'feedibus',
@@ -45,8 +46,12 @@ module.exports = class Server {
         this.app.use(this.loadUserFromSession);
         this.app.use(express.static(path.resolve(__dirname, '../../public')));
 
-        this.app.post('/login', this.jsonBodyParser, this.login);
-        this.app.post('/register', this.jsonBodyParser, this.register);
+        this.app.post('/login', this.jsonBodyParser,  (req, res) => {
+            this.login(req,res);
+        });
+        this.app.post('/register', this.jsonBodyParser, (req, res) => {
+            this.register(req,res);
+        });
         this.app.get('/user', this.jsonBodyParser, this.getSessionUser);
 
         this.app.get('/tags', this.jsonBodyParser, this.getTags);
@@ -91,7 +96,6 @@ module.exports = class Server {
     }
 
     async register(req, res) {
-        console.log(req.body);
         if (
             'name' in req.body && typeof req.body.name === 'string' &&
             'email' in req.body && typeof req.body.email === 'string' &&
@@ -103,7 +107,6 @@ module.exports = class Server {
             const user = await db.getUserByEmail(email);
             if (user === undefined) {
                 const newUser = await db.createUser(name, email, password);
-                console.log(newUser);
                 if (newUser instanceof User) {
                     responseUtils.sendCreated(res, "Created user with id: " + newUser.id);
                     return;
@@ -121,9 +124,7 @@ module.exports = class Server {
             return;
         }
         
-        const tags = await db.getAllTableRows('tag');
-        tags.filter(tag => tag.id === req.user.id);
-        console.log(tags);
+        const tags = await db.getTableRowsByUserId('tag', req.user.id);
         res.send(tags);
     }
 
@@ -154,19 +155,28 @@ module.exports = class Server {
     }
 
     async deleteTag(req, res) {
+        if (!req.user) {
+            responseUtils.sendForbidden(res, "You are not logged in");
+            return;
+        }
+        
         if (
             'id' in req.query
         ) {
             const id = req.query.id;
-            db.deleteTableRowById('tag', id);
-            responseUtils.sendNoContent("Deleted tag with id '" + id + "' successfully.");
+            db.deleteTableRowByIdAndUserId('tag', id, req.user.id);
+            responseUtils.sendNoContent(res,"Deleted tag with id '" + id + "' successfully.");
         }
         responseUtils.sendBadRequest(res);
     }
 
     async getJobs(req, res) {
-        const jobs = await db.getAllTableRows('job');
-        console.log(jobs);
+        if (!req.user) {
+            responseUtils.sendForbidden(res, "You are not logged in");
+            return;
+        }
+
+        const jobs = await db.getJobsByUserId(req.user.id);
         res.send(jobs);
     }
 
@@ -183,49 +193,86 @@ module.exports = class Server {
             const type = req.body.type;
             const url = req.body.url;
 
+            let types = await db.getAvailableJobTypes();
+            if (types === null || types.length === 0) {
+                responseUtils.sendConflict(res, "There are no job types available.");
+                return;
+            }
+            types = types.map(type => type.type);
+            if (!types.includes(type)) {
+                responseUtils.sendConflict(res, "Job type '" + type + "' doesn't exist.");
+                return;
+            }
+            let job = await db.getJobByTypeAndUrl(type, url);
+            if (job !== null) {
+                responseUtils.sendConflict(res, "Job with url: '" + url + "' already exists.");
+                return;
+            }
             const newJob = await db.createJob(type, url);
             if (newJob instanceof Job) {
                 responseUtils.sendCreated(res, "Created job with id: " + newJob.id);
                 return;
-            }
-            else {
-                responseUtils.sendConflict(res, "Job with id: '" + newJob.id + "' already exists.");
             }
         }
         responseUtils.sendBadRequest(res);
     }
 
     async deleteJob(req, res) {
+        if (!req.user) {
+            responseUtils.sendForbidden(res, "You are not logged in");
+            return;
+        }
+
         if (
             'id' in req.query
         ) {
             const id = req.query.id;
-            db.deleteTableRowById('job', id);
-            responseUtils.sendNoContent("Deleted job with id '" + id + "' successfully.");
+            const jobs = db.getJobsByUserId(userId);
+            const jobIds = jobs.map(job => job.id);
+            if (jobIds.includes(id)) {
+                db.deleteTableRowById('job',id);
+                db.deleteSubscriptionByJobId(id);
+            } else {
+                responseUtils.sendNotFound(res,"Could not find job with the specified id.");
+            }
+            responseUtils.sendNoContent(res, "Deleted job with id '" + id + "' successfully.");
         }
         responseUtils.sendBadRequest(res);
     }
 
     async getSubscriptions(req, res) {
-        const subscriptions = await db.getAllTableRows('subscription');
-        subscriptions.filter(subscription => subscription.userId === req.user.id);
+        if (!req.user) {
+            responseUtils.sendForbidden(res, "You are not logged in");
+            return;
+        }
+
+        const subscriptions = await db.getTableRowsByUserId('subscription', req.user.id);
         res.send(subscriptions);
     }
 
     async deleteSubscription(req, res) {
+        if (!req.user) {
+            responseUtils.sendForbidden(res, "You are not logged in");
+            return;
+        }
+
         if (
             'id' in req.query
         ) {
             const id = req.query.id;
-            db.deleteTableRowById('subscription', id);
-            responseUtils.sendNoContent("Deleted subscription with id '" + id + "' successfully.");
+            db.deleteTableRowByIdAndUserId('subscription', id, req.user.id);
+            responseUtils.sendNoContent(res, "Deleted subscription with id '" + id + "' successfully.");
         }
         responseUtils.sendBadRequest(res);
     }
 
     async getMessages(req, res) {
+        if (!req.user) {
+            responseUtils.sendForbidden(res, "You are not logged in");
+            return;
+        }
+
         const messages = await db.getAllTableRows('message');
-        console.log(messages);
         res.send(messages);
     }
 
@@ -248,7 +295,6 @@ module.exports = class Server {
             const user = await db.getUserById(req.session.user);
             if (user !== undefined) {
                 req.user = user;
-                console.log(user);
             }
         }
         next();
@@ -271,9 +317,6 @@ module.exports = class Server {
             let job = await db.getJobByTypeAndUrl(type, url);
             if (job === null) {
                 job = await db.createJob(type, url);
-                if (job !== null) {
-                    this._newJobCallback(job.id);
-                }
             }
             if (job !== null) {
                 let subscription = await db.getSubscriptionByUserIdAndJobId(user.id, job.id);

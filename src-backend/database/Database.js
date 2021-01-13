@@ -108,6 +108,56 @@ class Database {
         }
         return undefined;
     }
+
+    async deleteTableRowById(tableName, id) {
+        await this._con(tableName)
+            .where({
+                id: id
+            })
+            .del();
+    }
+
+    async deleteTableRowByIdAndUserId(tableName, id, userId) {
+        await this._con(tableName)
+            .where({
+                id: id,
+                userId: userId
+            })
+            .del();
+    }
+
+    async getTableRowsById(tableName, id) {
+        const resultArray = await this._con
+            .select('*')
+            .from(tableName)
+            .where({
+                id: id
+            })
+            .returning('*')
+            .catch(() => null);
+        console.log(resultArray);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray;
+        }
+        return undefined;
+    }
+
+    async getTableRowsByUserId(tableName, userId) {
+        const resultArray = await this._con
+            .select('*')
+            .from(tableName)
+            .where({
+                userId: userId
+            })
+            .returning('*')
+            .catch(() => null);
+        console.log(resultArray);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray;
+        }
+        return undefined;
+    }
+
     /**
  * @param {string} name
  * @param {string} color
@@ -141,6 +191,22 @@ class Database {
             .select('*')
             .from('job')
             .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray.map(row => new Job(row.id, row.type, row.url));
+        }
+        return [];
+    }
+
+    async getJobsByUserId (userId) {
+
+        const resultArray = await this._con
+            .select('*')
+            .from('job')
+            .innerJoin('subscription','subscription.jobId','job.id')
+            .innerJoin('user','user.id','subscription.userId')
+            .where('user.id', userId)
+            .returning(['job.id', 'job.type', 'job.url'])
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray)) {
             return resultArray.map(row => new Job(row.id, row.type, row.url));
@@ -188,6 +254,17 @@ class Database {
         return null;
     }
 
+    async getAvailableJobTypes() {
+        const resultArray = await this._con
+            .distinct('type')
+            .from('job')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
+            return resultArray;
+        }
+        return null;
+    }
+
     /**
      * @param {string} type
      * @param {string} url
@@ -206,14 +283,6 @@ class Database {
             return new Job(row.id, row.type, row.url);
         }
         return null;
-    }
-
-    async deleteTableRowById(tableName, id) {
-        await this._con(tableName)
-            .where({
-                id: id
-            })
-            .del();
     }
 
     /**
@@ -256,6 +325,14 @@ class Database {
             return new Subscription(row.id, row.userId, row.jobId);
         }
         return null;
+    }
+
+    async deleteSubscriptionByJobId(jobId) {
+        await this._con(tableName)
+            .where({
+                jobId: jobId
+            })
+            .del();
     }
 
     /**
