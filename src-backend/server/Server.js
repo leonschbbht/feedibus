@@ -40,17 +40,35 @@ module.exports = class Server {
         this.app = express();
         this.app.use(expressSession(sessionConfig))
         this.app.use(this.loadUserFromSession);
-        this.app.use(express.static(path.resolve(__dirname, '../../public')));
-        this.app.post('/login', this.urlencodedBodyParser, (req, res) => {
+        this.app.get('/index.html', (req, res, next) => {
+            if ('user' in req && req.user instanceof User) {
+                res.redirect('/home.html');
+                return;
+            }
+            next();
+        });
+        this.app.get('/home.html', (req, res, next) => {
+            if ('user' in req && req.user instanceof User) {
+                next();
+                return;
+            }
+            res.redirect('/index.html');
+        });
+        this.app.post('/login', this.jsonBodyParser, (req, res) => {
             this.login(req, res)
         });
-        this.app.post('/register', this.urlencodedBodyParser, (req, res) => {
+        this.app.get('/logout', (req, res) => {
+            delete req.session.user;
+            res.redirect('/index.html');
+        })
+        this.app.post('/register', this.jsonBodyParser, (req, res) => {
             this.register(req, res)
         });
         this.app.post('/subscribe', this.urlencodedBodyParser, (req, res) => {
             this.createNewSubscription(req, res)
         });
 
+        this.app.use(express.static(path.resolve(__dirname, '../../public')));
         this.app.listen(port);
     }
 
@@ -64,11 +82,12 @@ module.exports = class Server {
             const user = await db.getUserByEmail(email)
             if (user instanceof User && await user.validatePassword(password)) {
                 req.session.user = user.id;
-                res.send('login' + email + password);
+                res.status(200);
+                res.send('');
                 return;
             }
         }
-        res.send('logout')
+        res.send('Login nicht erfolgreich!')
     }
 
     async register (req, res) {
@@ -81,15 +100,23 @@ module.exports = class Server {
             const email = req.body.email;
             const password = req.body.password;
             const user = await db.getUserByEmail(email);
-            if (user === undefined) {
-                const newUser = await db.createUser(name, email, password);
-                if (newUser instanceof User) {
-                    res.redirect('/index.html')
-                    return;
-                }
+            if (user !== undefined) {
+                res.status(404);
+                res.send('Unzulässige Email');
+                return;
             }
+            const newUser = await db.createUser(name, email, password);
+            if (newUser instanceof User) {
+                res.status(200);
+                res.send('');
+                return;
+            }
+            res.status(500);
+            res.send('Nutzer konnte nicht angelegt werden');
+            return;
         }
-        res.redirect('/register.html');
+        res.status(400);
+        res.send('Bad Request');
     }
 
     async loadUserFromSession (req, res, next) {

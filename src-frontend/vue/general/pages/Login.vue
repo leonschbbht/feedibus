@@ -15,23 +15,28 @@
                 />
 
                 <v-text-field
-                    v-model="passwordData.password"
+                    v-model="password"
                     label="Passwort"
                     :rules="[rules.required]"
-
-                    :append-icon="passwordData.showPw ? 'mdi-eye' : 'mdi-eye-off'"
-                    :type="passwordData.showPw ? 'text' : 'password'"
-                    @click:append="passwordData.showPw = !passwordData.showPw"
+                    :append-icon="showPw ? 'mdi-eye' : 'mdi-eye-off'"
+                    :type="showPw ? 'text' : 'password'"
+                    @click:append="showPw = !showPw"
                 />
             </v-card-text>
             <v-card-actions>
                 <v-btn
                     color="success"
-                    text
                     :disabled="submitGeneralDisabled"
                     @click="submitGeneral"
                 >
                     Login
+                </v-btn>
+                <v-btn
+                    color="info"
+                    text
+                    to="/register"
+                >
+                    Registrieren
                 </v-btn>
             </v-card-actions>
         </v-card>
@@ -55,24 +60,22 @@
         </v-snackbar>
     </div>
 </template>
+
 <script>
+import api from '../api';
+
 export default {
     name: 'Register',
-    components: {
-    },
     data () {
         return {
             email: '',
-            passwordData: {
-                password: '',
-                showPw: false
-            },
+            password: '',
+            showPw: false,
             snackbarData: {
                 enabled: false,
                 text: '',
                 color: ''
             },
-
             rules: {
                 required: value => !!value || 'Pflichtfeld',
                 email: value => {
@@ -82,15 +85,27 @@ export default {
             }
         }
     },
+    computed: {
+        submitGeneralDisabled: function () {
+            const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return !pattern.test(this.email) || !this.password;
+        }
+    },
     methods: {
-        submitGeneral () {
-            this.snackbarData.text = 'Daten übernommen!'
-            this.snackbarData.color = 'success'
-            this.snackbarData.enabled = true;
+        async submitGeneral () {
+            const response = await api.login(this.email, this.password);
+            if (response) {
+                this.snackbarData.text = response;
+                this.snackbarData.color = 'error';
+                this.snackbarData.enabled = true;
+            } else {
+                window.location = '/home.html';
+            }
         }
     }
 }
 </script>
+
 <style scoped>
 .card{
   margin: 50px;
