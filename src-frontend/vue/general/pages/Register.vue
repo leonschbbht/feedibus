@@ -9,43 +9,35 @@
             </v-card-title>
             <v-card-text>
                 <v-text-field
-                    v-model="userDataNew.name"
-                    :counter="10"
+                    v-model="name"
                     label="Name"
                 />
                 <v-text-field
-                    v-model="userDataNew.email"
+                    v-model="email"
                     label="E-Mail"
                     :rules="[rules.required, rules.email]"
                 />
                 <v-text-field
-                    v-model="userDataNew.emailRepeat"
-                    label="E-Mail wiederholen"
-                    :rules="[rules.required, rules.email, rules.emailMatches]"
-                />
-                <v-text-field
-                    v-model="passwordData.password"
+                    v-model="password"
                     label="Passwort"
                     :rules="[rules.required]"
 
-                    :append-icon="passwordData.showPw ? 'mdi-eye' : 'mdi-eye-off'"
-                    :type="passwordData.showPw ? 'text' : 'password'"
-                    @click:append="passwordData.showPw = !passwordData.showPw"
+                    :append-icon="showPw ? 'mdi-eye' : 'mdi-eye-off'"
+                    :type="showPw ? 'text' : 'password'"
+                    @click:append="showPw = !showPw"
                 />
                 <v-text-field
-                    v-model="passwordData.passwordRepeat"
+                    v-model="passwordRepeat"
                     label="Passwort wiederholen"
                     :rules="[rules.required, rules.pwMatches]"
-
-                    :append-icon="passwordData.showPw ? 'mdi-eye' : 'mdi-eye-off'"
-                    :type="passwordData.showPw ? 'text' : 'password'"
-                    @click:append="passwordData.showPw = !passwordData.showPw"
+                    :append-icon="showPw ? 'mdi-eye' : 'mdi-eye-off'"
+                    :type="showPw ? 'text' : 'password'"
+                    @click:append="showPw = !showPw"
                 />
             </v-card-text>
             <v-card-actions>
                 <v-btn
                     color="success"
-                    text
                     :disabled="submitGeneralDisabled"
                     @click="submitGeneral"
                 >
@@ -57,6 +49,13 @@
                     @click="resetGeneral"
                 >
                     Zurücksetzen
+                </v-btn>
+                <v-btn
+                    color="info"
+                    text
+                    to="/"
+                >
+                    Zurück
                 </v-btn>
             </v-card-actions>
         </v-card>
@@ -81,18 +80,17 @@
     </div>
 </template>
 <script>
+import api from '../api';
+
 export default {
     name: 'Register',
-    components: {
-    },
     data () {
         return {
-            userDataNew: { name: '', email: '', emailRepeat: '' },
-            passwordData: {
-                password: '',
-                passwordRepeat: '',
-                showPw: false
-            },
+            name: '',
+            email: '',
+            password: '',
+            passwordRepeat: '',
+            showPw: false,
             snackbarData: {
                 enabled: false,
                 text: '',
@@ -105,11 +103,8 @@ export default {
                     const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                     return pattern.test(value) || 'Ungültige E-Mail.'
                 },
-                pwMatches: value => {
-                    return this.passwordData.password === this.passwordData.passwordRepeat || 'Passwort stimmt nicht überein.'
-                },
-                emailMatches: value => {
-                    return this.userDataNew.email === this.userDataNew.emailRepeat || 'E-Mail stimmt nicht überein.'
+                pwMatches: () => {
+                    return this.password === this.passwordRepeat || 'Passwort stimmt nicht überein.'
                 }
             }
         }
@@ -117,30 +112,33 @@ export default {
     computed: {
         submitGeneralDisabled: function () {
             const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            let disabled = false;
-            disabled = !pattern.test(this.userDataNew.email);
-            disabled = disabled || this.userDataNew.email !== this.userDataNew.emailRepeat;
-            disabled = disabled || !this.userDataNew.name;
-            disabled = disabled || this.passwordData.password !== this.passwordData.passwordRepeat || !this.passwordData.password;
-            return disabled;
+            return !pattern.test(this.email) ||
+                !this.name ||
+                this.password !== this.passwordRepeat ||
+                !this.password;
         }
     },
     methods: {
         resetGeneral () {
-            this.userDataNew.name = '';
-            this.userDataNew.email = '';
-            this.userDataNew.emailRepeat = '';
-            this.passwordData.password = '';
-            this.passwordData.passwordRepeat = '';
+            this.name = '';
+            this.email = '';
+            this.password = '';
+            this.passwordRepeat = '';
         },
-        submitGeneral () {
-            this.snackbarData.text = 'Daten übernommen!'
-            this.snackbarData.color = 'success'
-            this.snackbarData.enabled = true;
+        async submitGeneral () {
+            const response = await api.register(this.name, this.email, this.password);
+            if (response) {
+                this.snackbarData.text = response
+                this.snackbarData.color = 'error'
+                this.snackbarData.enabled = true;
+            } else {
+                await this.$router.push('/');
+            }
         }
     }
 }
 </script>
+
 <style scoped>
 .card{
   margin: 50px;

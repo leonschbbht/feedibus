@@ -45,13 +45,29 @@ module.exports = class Server {
         this.app = express();
         this.app.use(expressSession(sessionConfig))
         this.app.use(this.loadUserFromSession);
-        this.app.use(express.static(path.resolve(__dirname, '../../public')));
-
-        this.app.post('/login', this.jsonBodyParser,  (req, res) => {
-            this.login(req,res);
+        this.app.get('/index.html', (req, res, next) => {
+            if ('user' in req && req.user instanceof User) {
+                res.redirect('/home.html');
+                return;
+            }
+            next();
         });
+        this.app.get('/home.html', (req, res, next) => {
+            if ('user' in req && req.user instanceof User) {
+                next();
+                return;
+            }
+            res.redirect('/index.html');
+        });
+        this.app.post('/login', this.jsonBodyParser, (req, res) => {
+            this.login(req, res)
+        });
+        this.app.get('/logout', (req, res) => {
+            delete req.session.user;
+            res.redirect('/index.html');
+        })
         this.app.post('/register', this.jsonBodyParser, (req, res) => {
-            this.register(req,res);
+            this.register(req, res)
         });
         this.app.get('/user', this.jsonBodyParser, this.getSessionUser);
 
@@ -73,6 +89,7 @@ module.exports = class Server {
             res.send('hello world');
         });
 
+        this.app.use(express.static(path.resolve(__dirname, '../../public')));
         this.app.listen(port);
     }
 
@@ -93,7 +110,6 @@ module.exports = class Server {
             }
         }
         responseUtils.sendBadRequest(res);
-        res.send('logout')
     }
 
     async register(req, res) {
@@ -115,6 +131,9 @@ module.exports = class Server {
             } else {
                 responseUtils.sendConflict(res, "User with email: '" + email + "' already exists.");
             }
+            res.status(500);
+            res.send('Nutzer konnte nicht angelegt werden');
+            return;
         }
         responseUtils.sendBadRequest(res);
     }

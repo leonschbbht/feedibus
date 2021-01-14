@@ -34,7 +34,8 @@
             <v-icon color="white">
                 mdi-access-point
             </v-icon>
-            <v-toolbar-title>{{ source }}</v-toolbar-title> <v-spacer />
+            <v-toolbar-title>{{ source }}</v-toolbar-title>
+            <v-spacer />
             <v-icon color="white">
                 mdi-calendar
             </v-icon>
