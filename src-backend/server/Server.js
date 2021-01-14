@@ -9,7 +9,6 @@ const responseUtils = require('./ResponseUtils');
 
 const db = require('../database/Database');
 const runnerMap = require('../runner/RunnerMap');
-const { join } = require('path');
 
 const sessionConfig = {
     secret: 'feedibus',
@@ -241,7 +240,7 @@ module.exports = class Server {
             'id' in req.query
         ) {
             const id = req.query.id;
-            const jobs = db.getJobsByUserId(userId);
+            const jobs = db.getJobsByUserId(req.user.id);
             const jobIds = jobs.map(job => job.id);
             if (jobIds.includes(id)) {
                 db.deleteTableRowById('job',id);

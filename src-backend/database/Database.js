@@ -311,7 +311,7 @@ class Database {
     }
 
     async deleteSubscriptionByJobId(jobId) {
-        await this._con(tableName)
+        await this._con('subscription')
             .where({
                 jobId: jobId
             })
