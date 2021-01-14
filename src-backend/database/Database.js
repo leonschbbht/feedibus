@@ -31,7 +31,7 @@ class Database {
                 console.log(e);
                 return null
             })
-        ;
+            ;
         if (resultArray && Array.isArray(resultArray)) {
             user.id = resultArray.pop();
             return user;
@@ -102,7 +102,6 @@ class Database {
             .from(tableName)
             .returning('*')
             .catch(() => null);
-        console.log(resultArray);
         if (resultArray && Array.isArray(resultArray)) {
             return resultArray;
         }
@@ -135,7 +134,6 @@ class Database {
             })
             .returning('*')
             .catch(() => null);
-        console.log(resultArray);
         if (resultArray && Array.isArray(resultArray)) {
             return resultArray;
         }
@@ -173,11 +171,7 @@ class Database {
                 name: tag.name
             })
             .returning('id')
-            .catch(() => null)
-            ;
-
-        console.log("Tag:");
-        console.log(id)
+            .catch(() => null);
         if (id && Array.isArray(id)) {
             tag.id = id.pop();
             return tag;
@@ -186,7 +180,7 @@ class Database {
     /**
      * @return {Promise<Job[]>}
      */
-    async getAllJobs () {
+    async getAllJobs() {
         const resultArray = await this._con
             .select('*')
             .from('job')
@@ -198,13 +192,13 @@ class Database {
         return [];
     }
 
-    async getJobsByUserId (userId) {
+    async getJobsByUserId(userId) {
 
         const resultArray = await this._con
             .select('*')
             .from('job')
-            .innerJoin('subscription','subscription.jobId','job.id')
-            .innerJoin('user','user.id','subscription.userId')
+            .innerJoin('subscription', 'subscription.jobId', 'job.id')
+            .innerJoin('user', 'user.id', 'subscription.userId')
             .where('user.id', userId)
             .returning(['job.id', 'job.type', 'job.url'])
             .catch(() => null);
@@ -218,7 +212,7 @@ class Database {
      * @param {number} id
      * @return {Promise<Job|null>}
      */
-    async getJobById (id) {
+    async getJobById(id) {
         const resultArray = await this._con
             .select('*')
             .from('job')
@@ -237,7 +231,7 @@ class Database {
      * @param {string} url
      * @return {Promise<Job|null>}
      */
-    async getJobByTypeAndUrl (type, url) {
+    async getJobByTypeAndUrl(type, url) {
         const resultArray = await this._con
             .select('*')
             .from('job')
@@ -254,23 +248,12 @@ class Database {
         return null;
     }
 
-    async getAvailableJobTypes() {
-        const resultArray = await this._con
-            .distinct('type')
-            .from('job')
-            .catch(() => null);
-        if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
-            return resultArray;
-        }
-        return null;
-    }
-
     /**
      * @param {string} type
      * @param {string} url
      * @return {Promise<Job|null>}
      */
-    async createJob (type, url) {
+    async createJob(type, url) {
         const resultArray = await this._con('job')
             .insert({
                 type: type,
@@ -290,7 +273,7 @@ class Database {
      * @param {number} jobId
      * @return {Promise<Subscription|null>}
      */
-    async getSubscriptionByUserIdAndJobId (userId, jobId) {
+    async getSubscriptionByUserIdAndJobId(userId, jobId) {
         const resultArray = await this._con
             .select('*')
             .from('subscription')
@@ -312,7 +295,7 @@ class Database {
      * @param {number} jobId
      * @return {Promise<Subscription|null>}
      */
-    async createSubscription (userId, jobId) {
+    async createSubscription(userId, jobId) {
         const resultArray = await this._con('subscription')
             .insert({
                 userId: userId,
@@ -340,7 +323,7 @@ class Database {
      * @param {message} message
      * @return {Promise<Message|void>}
      */
-    async saveMessage (message) {
+    async saveMessage(message) {
         const resultArray = this._con('message')
             .insert({
                 jobId: message.jobId,
@@ -367,7 +350,7 @@ class Database {
      * @param {string} identifier
      * @return {Promise<null|Message>}
      */
-    async getMessageByJobIdAndIdentifier (jobId, identifier) {
+    async getMessageByJobIdAndIdentifier(jobId, identifier) {
         const resultArray = await this._con('message')
             .select('*')
             .where({
@@ -392,8 +375,24 @@ class Database {
         }
         return null;
     }
-}
 
+    async getMessagesByUserId(userId) {
+
+        const resultArray = await this._con
+            .select('*')
+            .from('message as m')
+            .innerJoin('subscription', 'subscription.jobId', 'm.jobId')
+            .innerJoin('user', 'user.id', 'subscription.userId')
+            .where('user.id', userId)
+            .returning(['m.id', 'm.jobId', 'm.headline', 'm.text', 'm.imageUrl', 'm.author', 'm.sourceUrl', 'm.time', 'm.identifier'])
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
+            return resultArray;
+        }
+        return [];
+    }
+
+}
 // Die Datenbankverbindung sollte ein Singleton sein
 const db = new Database();
 module.exports = db;

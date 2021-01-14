@@ -8,6 +8,7 @@ const path = require('path');
 const responseUtils = require('./ResponseUtils');
 
 const db = require('../database/Database');
+const runnerMap = require('../runner/RunnerMap');
 const { join } = require('path');
 
 const sessionConfig = {
@@ -193,13 +194,7 @@ module.exports = class Server {
             const type = req.body.type;
             const url = req.body.url;
 
-            let types = await db.getAvailableJobTypes();
-            if (types === null || types.length === 0) {
-                responseUtils.sendConflict(res, "There are no job types available.");
-                return;
-            }
-            types = types.map(type => type.type);
-            if (!types.includes(type)) {
+            if (!Object.keys(runnerMap).includes(type)) {
                 responseUtils.sendConflict(res, "Job type '" + type + "' doesn't exist.");
                 return;
             }
@@ -272,8 +267,12 @@ module.exports = class Server {
             return;
         }
 
-        const messages = await db.getAllTableRows('message');
-        res.send(messages);
+        const messages = await db.getMessagesByUserId(req.user.id);
+        if (messages && messages.length > 0) {
+            res.send(messages);
+        } else {
+            responseUtils.sendNotFound(res,"Could not find any message for the specified user.");
+        }
     }
 
     async getSessionUser(req, res) {
