@@ -10,6 +10,10 @@ class Database {
         this._con = require('knex')(dbConfig);
     }
 
+    async migrateKnex () {
+        await this._con.migrate.up();
+    }
+
     /**
      * @param {string} name
      * @param {string} email
