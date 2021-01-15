@@ -360,9 +360,16 @@ module.exports = class Server {
             const user = req.user;
             const type = req.body.type;
             const url = req.body.url;
+            if (!Object.keys(runnerMap).includes(type)) {
+                responseUtils.sendConflict(res, "Job type '" + type + "' doesn't exist.");
+                return;
+            }
             let job = await db.getJobByTypeAndUrl(type, url);
             if (job === null) {
                 job = await db.createJob(type, url);
+                if (job !== null) {
+                    this._newJobCallback(job.id);  
+                }
             }
             if (job !== null) {
                 let subscription = await db.getSubscriptionByUserIdAndJobId(user.id, job.id);
