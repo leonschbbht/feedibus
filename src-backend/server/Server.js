@@ -68,21 +68,43 @@ module.exports = class Server {
         this.app.post('/register', this.jsonBodyParser, (req, res) => {
             this.register(req, res)
         });
-        this.app.get('/user', this.jsonBodyParser, this.getSessionUser);
+        this.app.get('/user', this.jsonBodyParser, (req, res) => {
+            this.getSessionUser(req, res);
+        });
+        
+        this.app.get('/tags', this.jsonBodyParser, (req, res) => {
+            this.getTags(req, res);
+        });
+        this.app.post('/tags', this.jsonBodyParser, (req, res) => {
+            this.createTag(req, res);
+        });
+        this.app.delete('/tags', this.jsonBodyParser, (req, res) => {
+            this.deleteTag(req, res);
+        });
 
-        this.app.get('/tags', this.jsonBodyParser, this.getTags);
-        this.app.post('/tags', this.jsonBodyParser, this.createTag);
-        this.app.delete('/tags', this.jsonBodyParser, this.deleteTag);
+        this.app.get('/subscriptions', this.jsonBodyParser, (req, res) => {
+            this.getSubscriptions(req, res);
+        });
+        this.app.post('/subscriptions', this.jsonBodyParser, (req, res) => {
+            this.createNewSubscription(req, res);
+        });
+        this.app.delete('/subscriptions', this.jsonBodyParser, (req, res) => {
+            this.deleteSubscription(req, res);
+        });
 
-        this.app.get('/subscriptions', this.jsonBodyParser, this.getSubscriptions);
-        this.app.post('/subscriptions', this.jsonBodyParser, this.createNewSubscription);
-        this.app.delete('/subscriptions', this.jsonBodyParser, this.deleteSubscription);
+        this.app.get('/jobs', this.jsonBodyParser, (req, res) => {
+            this.getJobs(req, res);
+        });
+        this.app.post('/jobs', this.jsonBodyParser, (req, res) => {
+            this.createJob(req, res);
+        });
+        this.app.delete('/jobs', this.jsonBodyParser, (req, res) => {
+            this.deleteJob(req, res);
+        });
 
-        this.app.get('/jobs', this.jsonBodyParser, this.getJobs);
-        this.app.post('/jobs', this.jsonBodyParser, this.createJob);
-        this.app.delete('/jobs', this.jsonBodyParser, this.deleteJob);
-
-        this.app.get('/messages', this.jsonBodyParser, this.getMessages);
+        this.app.get('/messages', this.jsonBodyParser, (req, res) => {
+            this.getMessages(req, res);
+        });
 
         this.app.get('/test', function (req, res) {
             res.send('hello world');
@@ -106,6 +128,7 @@ module.exports = class Server {
                 return;
             } else {
                 responseUtils.sendNotFound(res, 'User does not exist or the entered password is invalid.');
+                return;
             }
         }
         responseUtils.sendBadRequest(res);
@@ -129,6 +152,7 @@ module.exports = class Server {
                 }
             } else {
                 responseUtils.sendConflict(res, "User with email: '" + email + "' already exists.");
+                return;
             }
             res.status(500);
             res.send('Nutzer konnte nicht angelegt werden');
@@ -168,6 +192,7 @@ module.exports = class Server {
             }
             else {
                 responseUtils.sendConflict(res, "Tag could not be created.");
+                return;
             }
         }
         responseUtils.sendBadRequest(res);
@@ -184,7 +209,8 @@ module.exports = class Server {
         ) {
             const id = req.query.id;
             db.deleteTableRowByIdAndUserId('tag', id, req.user.id);
-            responseUtils.sendNoContent(res,"Deleted tag with id '" + id + "' successfully.");
+            responseUtils.sendNoContent(res, "Deleted tag with id '" + id + "' successfully.");
+            return;
         }
         responseUtils.sendBadRequest(res);
     }
@@ -246,9 +272,11 @@ module.exports = class Server {
                 db.deleteTableRowById('job',id);
                 db.deleteSubscriptionByJobId(id);
             } else {
-                responseUtils.sendNotFound(res,"Could not find job with the specified id.");
+                responseUtils.sendNotFound(res, "Could not find job with the specified id.");
+                return;
             }
             responseUtils.sendNoContent(res, "Deleted job with id '" + id + "' successfully.");
+            return;
         }
         responseUtils.sendBadRequest(res);
     }
@@ -275,6 +303,7 @@ module.exports = class Server {
             const id = req.query.id;
             db.deleteTableRowByIdAndUserId('subscription', id, req.user.id);
             responseUtils.sendNoContent(res, "Deleted subscription with id '" + id + "' successfully.");
+            return;
         }
         responseUtils.sendBadRequest(res);
     }

@@ -153,7 +153,6 @@ class Database {
             })
             .returning('*')
             .catch(() => null);
-        console.log(resultArray);
         if (resultArray && Array.isArray(resultArray)) {
             return resultArray;
         }
