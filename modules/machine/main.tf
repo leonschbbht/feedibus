@@ -56,8 +56,7 @@ resource "null_resource" "init-script-execution" {
 }
 
 resource "null_resource" "format-script-execution" {
-  depends_on = [
-  azurerm_linux_virtual_machine.feedibus-production-virtual]
+  depends_on = [azurerm_linux_virtual_machine.feedibus-production-virtual, azurerm_virtual_machine_data_disk_attachment.feedibus-production-persistence-drive-attachment]
   connection {
     type        = "ssh"
     host        = azurerm_linux_virtual_machine.feedibus-production-virtual.public_ip_address
@@ -67,8 +66,7 @@ resource "null_resource" "format-script-execution" {
   provisioner "remote-exec" {
     inline = [
       "sudo chmod a+rwx /format.sh",
-      "sudo /format.sh",
-      "sudo rm -rf /format.sh"
+      "sudo /format.sh"
     ]
   }
 }
