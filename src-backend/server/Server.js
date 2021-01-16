@@ -147,7 +147,7 @@ module.exports = class Server {
             if (user === undefined) {
                 const newUser = await db.createUser(name, email, password);
                 if (newUser instanceof User) {
-                    responseUtils.sendOK(res, '');
+                    responseUtils.sendCreated(res, '');
                     return;
                 }
             } else {
