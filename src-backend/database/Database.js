@@ -6,7 +6,7 @@ const Job = require('../model/Job');
 const Message = require('../model/Message');
 
 class Database {
-    constructor() {
+    constructor () {
         this._con = require('knex')(dbConfig);
     }
 
@@ -20,7 +20,7 @@ class Database {
      * @param {string} password
      * @returns {Promise<null|User>}
      */
-    async createUser(name, email, password) {
+    async createUser (name, email, password) {
         const user = new User(0, name, email, '', '');
         await user.setNewPassword(password);
         const resultArray = await this._con('user')
@@ -47,7 +47,7 @@ class Database {
      * @param {number} id
      * @returns {Promise<User|undefined>}
      */
-    async getUserById(id) {
+    async getUserById (id) {
         const resultArray = await this._con
             .select('*')
             .from('user')
@@ -65,7 +65,7 @@ class Database {
      * @param {string} email
      * @returns {Promise<User|undefined>}
      */
-    async getUserByEmail(email) {
+    async getUserByEmail (email) {
         const resultArray = await this._con
             .select('*')
             .from('user')
@@ -83,7 +83,7 @@ class Database {
      * @param {User} user
      * @returns {Promise<boolean>}
      */
-    async saveUser(user) {
+    async saveUser (user) {
         if (user instanceof User) {
             const id = this._con('user')
                 .where('id', user.id)
@@ -100,7 +100,7 @@ class Database {
         return false;
     }
 
-    async getAllTableRows(tableName) {
+    async getAllTableRows (tableName) {
         const resultArray = await this._con
             .select('*')
             .from(tableName)
@@ -112,7 +112,7 @@ class Database {
         return undefined;
     }
 
-    async deleteTableRowById(tableName, id) {
+    async deleteTableRowById (tableName, id) {
         await this._con(tableName)
             .where({
                 id: id
@@ -120,7 +120,7 @@ class Database {
             .del();
     }
 
-    async deleteTableRowByIdAndUserId(tableName, id, userId) {
+    async deleteTableRowByIdAndUserId (tableName, id, userId) {
         await this._con(tableName)
             .where({
                 id: id,
@@ -129,7 +129,7 @@ class Database {
             .del();
     }
 
-    async getTableRowsById(tableName, id) {
+    async getTableRowsById (tableName, id) {
         const resultArray = await this._con
             .select('*')
             .from(tableName)
@@ -144,7 +144,7 @@ class Database {
         return undefined;
     }
 
-    async getTableRowsByUserId(tableName, userId) {
+    async getTableRowsByUserId (tableName, userId) {
         const resultArray = await this._con
             .select('*')
             .from(tableName)
@@ -165,7 +165,7 @@ class Database {
  * @param {string} userId
  * @returns {Promise<null|Tag>}
  */
-    async createTag(name, color, userId) {
+    async createTag (name, color, userId) {
         const tag = new Tag(0, userId, name, color);
         const id = await this._con('tag')
             .insert({
@@ -180,10 +180,11 @@ class Database {
             return tag;
         }
     }
+
     /**
      * @return {Promise<Job[]>}
      */
-    async getAllJobs() {
+    async getAllJobs () {
         const resultArray = await this._con
             .select('*')
             .from('job')
@@ -195,8 +196,7 @@ class Database {
         return [];
     }
 
-    async getJobsByUserId(userId) {
-
+    async getJobsByUserId (userId) {
         const resultArray = await this._con
             .select('*')
             .from('job')
@@ -215,7 +215,7 @@ class Database {
      * @param {number} id
      * @return {Promise<Job|null>}
      */
-    async getJobById(id) {
+    async getJobById (id) {
         const resultArray = await this._con
             .select('*')
             .from('job')
@@ -234,7 +234,7 @@ class Database {
      * @param {string} url
      * @return {Promise<Job|null>}
      */
-    async getJobByTypeAndUrl(type, url) {
+    async getJobByTypeAndUrl (type, url) {
         const resultArray = await this._con
             .select('*')
             .from('job')
@@ -256,7 +256,7 @@ class Database {
      * @param {string} url
      * @return {Promise<Job|null>}
      */
-    async createJob(type, url) {
+    async createJob (type, url) {
         const resultArray = await this._con('job')
             .insert({
                 type: type,
@@ -276,7 +276,7 @@ class Database {
      * @param {number} jobId
      * @return {Promise<Subscription|null>}
      */
-    async getSubscriptionByUserIdAndJobId(userId, jobId) {
+    async getSubscriptionByUserIdAndJobId (userId, jobId) {
         const resultArray = await this._con
             .select('*')
             .from('subscription')
@@ -298,7 +298,7 @@ class Database {
      * @param {number} jobId
      * @return {Promise<Subscription|null>}
      */
-    async createSubscription(userId, jobId) {
+    async createSubscription (userId, jobId) {
         const resultArray = await this._con('subscription')
             .insert({
                 userId: userId,
@@ -313,7 +313,7 @@ class Database {
         return null;
     }
 
-    async deleteSubscriptionByJobId(jobId) {
+    async deleteSubscriptionByJobId (jobId) {
         await this._con('subscription')
             .where({
                 jobId: jobId
@@ -326,7 +326,7 @@ class Database {
      * @param {message} message
      * @return {Promise<Message|void>}
      */
-    async saveMessage(message) {
+    async saveMessage (message) {
         const resultArray = this._con('message')
             .insert({
                 jobId: message.jobId,
@@ -353,7 +353,7 @@ class Database {
      * @param {string} identifier
      * @return {Promise<null|Message>}
      */
-    async getMessageByJobIdAndIdentifier(jobId, identifier) {
+    async getMessageByJobIdAndIdentifier (jobId, identifier) {
         const resultArray = await this._con('message')
             .select('*')
             .where({
@@ -379,8 +379,7 @@ class Database {
         return null;
     }
 
-    async getMessagesByUserId(userId) {
-
+    async getMessagesByUserId (userId) {
         const resultArray = await this._con
             .select('*')
             .from('message as m')
@@ -394,7 +393,6 @@ class Database {
         }
         return [];
     }
-
 }
 // Die Datenbankverbindung sollte ein Singleton sein
 const db = new Database();

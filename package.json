@@ -8,6 +8,7 @@
     "lint": "eslint --ext .js --ext .vue . --f codeframe",
     "fix": "eslint --ext .js --ext .vue . --f codeframe --fix",
     "build": "webpack --config webpack.config.js",
+    "watch": "webpack --config webpack.config.js --watch",
     "migrate": "knex migrate:up",
     "start:dev": "webpack-dev-server --mode development"
   },

@@ -14,7 +14,7 @@ export default class api {
             password: password
         };
         const response = await Axios.post('/register', data);
-        if (response.status === 200) {
+        if (response.status === 201) {
             return '';
         } else if (typeof response.data === 'string') {
             return response.data;
