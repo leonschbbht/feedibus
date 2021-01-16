@@ -71,7 +71,7 @@ module.exports = class Server {
         this.app.get('/user', this.jsonBodyParser, (req, res) => {
             this.getSessionUser(req, res);
         });
-        
+
         this.app.get('/tags', this.jsonBodyParser, (req, res) => {
             this.getTags(req, res);
         });
@@ -114,7 +114,7 @@ module.exports = class Server {
         this.app.listen(port);
     }
 
-    async login(req, res) {
+    async login (req, res) {
         if (
             'email' in req.body && typeof req.body.email === 'string' &&
             'password' in req.body && typeof req.body.password === 'string'
@@ -134,7 +134,7 @@ module.exports = class Server {
         responseUtils.sendBadRequest(res);
     }
 
-    async register(req, res) {
+    async register (req, res) {
         if (
             'name' in req.body && typeof req.body.name === 'string' &&
             'email' in req.body && typeof req.body.email === 'string' &&
@@ -147,7 +147,7 @@ module.exports = class Server {
             if (user === undefined) {
                 const newUser = await db.createUser(name, email, password);
                 if (newUser instanceof User) {
-                    responseUtils.sendCreated(res, "Created user with id: " + newUser.id);
+                    responseUtils.sendOK(res, '');
                     return;
                 }
             } else {
@@ -161,19 +161,19 @@ module.exports = class Server {
         responseUtils.sendBadRequest(res);
     }
 
-    async getTags(req, res) {
+    async getTags (req, res) {
         if (!req.user) {
-            responseUtils.sendForbidden(res, "You are not logged in");
+            responseUtils.sendForbidden(res, 'You are not logged in');
             return;
         }
-        
+
         const tags = await db.getTableRowsByUserId('tag', req.user.id);
         res.send(tags);
     }
 
-    async createTag(req, res) {
+    async createTag (req, res) {
         if (!req.user) {
-            responseUtils.sendForbidden(res, "You are not logged in");
+            responseUtils.sendForbidden(res, 'You are not logged in');
             return;
         }
 
@@ -187,23 +187,22 @@ module.exports = class Server {
 
             const newTag = await db.createTag(name, color, userId);
             if (newTag instanceof Tag) {
-                responseUtils.sendCreated(res, "Created tag with id: " + newTag.id);
+                responseUtils.sendCreated(res, 'Created tag with id: ' + newTag.id);
                 return;
-            }
-            else {
-                responseUtils.sendConflict(res, "Tag could not be created.");
+            } else {
+                responseUtils.sendConflict(res, 'Tag could not be created.');
                 return;
             }
         }
         responseUtils.sendBadRequest(res);
     }
 
-    async deleteTag(req, res) {
+    async deleteTag (req, res) {
         if (!req.user) {
-            responseUtils.sendForbidden(res, "You are not logged in");
+            responseUtils.sendForbidden(res, 'You are not logged in');
             return;
         }
-        
+
         if (
             'id' in req.query
         ) {
@@ -215,9 +214,9 @@ module.exports = class Server {
         responseUtils.sendBadRequest(res);
     }
 
-    async getJobs(req, res) {
+    async getJobs (req, res) {
         if (!req.user) {
-            responseUtils.sendForbidden(res, "You are not logged in");
+            responseUtils.sendForbidden(res, 'You are not logged in');
             return;
         }
 
@@ -225,9 +224,9 @@ module.exports = class Server {
         res.send(jobs);
     }
 
-    async createJob(req, res) {
+    async createJob (req, res) {
         if (!req.user) {
-            responseUtils.sendForbidden(res, "You are not logged in");
+            responseUtils.sendForbidden(res, 'You are not logged in');
             return;
         }
 
@@ -242,23 +241,23 @@ module.exports = class Server {
                 responseUtils.sendConflict(res, "Job type '" + type + "' doesn't exist.");
                 return;
             }
-            let job = await db.getJobByTypeAndUrl(type, url);
+            const job = await db.getJobByTypeAndUrl(type, url);
             if (job !== null) {
                 responseUtils.sendConflict(res, "Job with url: '" + url + "' already exists.");
                 return;
             }
             const newJob = await db.createJob(type, url);
             if (newJob instanceof Job) {
-                responseUtils.sendCreated(res, "Created job with id: " + newJob.id);
+                responseUtils.sendCreated(res, 'Created job with id: ' + newJob.id);
                 return;
             }
         }
         responseUtils.sendBadRequest(res);
     }
 
-    async deleteJob(req, res) {
+    async deleteJob (req, res) {
         if (!req.user) {
-            responseUtils.sendForbidden(res, "You are not logged in");
+            responseUtils.sendForbidden(res, 'You are not logged in');
             return;
         }
 
@@ -269,10 +268,10 @@ module.exports = class Server {
             const jobs = db.getJobsByUserId(req.user.id);
             const jobIds = jobs.map(job => job.id);
             if (jobIds.includes(id)) {
-                db.deleteTableRowById('job',id);
+                db.deleteTableRowById('job', id);
                 db.deleteSubscriptionByJobId(id);
             } else {
-                responseUtils.sendNotFound(res, "Could not find job with the specified id.");
+                responseUtils.sendNotFound(res, 'Could not find job with the specified id.');
                 return;
             }
             responseUtils.sendNoContent(res, "Deleted job with id '" + id + "' successfully.");
@@ -281,9 +280,9 @@ module.exports = class Server {
         responseUtils.sendBadRequest(res);
     }
 
-    async getSubscriptions(req, res) {
+    async getSubscriptions (req, res) {
         if (!req.user) {
-            responseUtils.sendForbidden(res, "You are not logged in");
+            responseUtils.sendForbidden(res, 'You are not logged in');
             return;
         }
 
@@ -291,9 +290,9 @@ module.exports = class Server {
         res.send(subscriptions);
     }
 
-    async deleteSubscription(req, res) {
+    async deleteSubscription (req, res) {
         if (!req.user) {
-            responseUtils.sendForbidden(res, "You are not logged in");
+            responseUtils.sendForbidden(res, 'You are not logged in');
             return;
         }
 
@@ -308,9 +307,9 @@ module.exports = class Server {
         responseUtils.sendBadRequest(res);
     }
 
-    async getMessages(req, res) {
+    async getMessages (req, res) {
         if (!req.user) {
-            responseUtils.sendForbidden(res, "You are not logged in");
+            responseUtils.sendForbidden(res, 'You are not logged in');
             return;
         }
 
@@ -318,25 +317,25 @@ module.exports = class Server {
         if (messages && messages.length > 0) {
             res.send(messages);
         } else {
-            responseUtils.sendNotFound(res,"Could not find any message for the specified user.");
+            responseUtils.sendNotFound(res, 'Could not find any message for the specified user.');
         }
     }
 
-    async getSessionUser(req, res) {
+    async getSessionUser (req, res) {
         const user = req.user;
         if (user) {
             res.send(
                 {
-                    "user": {
-                        "name": user.name,
-                        "email": user.email
+                    user: {
+                        name: user.name,
+                        email: user.email
                     }
                 });
         }
-        responseUtils.sendNotFound(res, "No user is currently logged in.");
+        responseUtils.sendNotFound(res, 'No user is currently logged in.');
     }
 
-    async loadUserFromSession(req, res, next) {
+    async loadUserFromSession (req, res, next) {
         if ('user' in req.session && typeof req.session.user === 'number') {
             const user = await db.getUserById(req.session.user);
             if (user !== undefined) {
@@ -348,10 +347,10 @@ module.exports = class Server {
 
     async createNewSubscription (req, res) {
         if (!req.user) {
-            responseUtils.sendForbidden(res, "You are not logged in");
+            responseUtils.sendForbidden(res, 'You are not logged in');
             return;
         }
-        
+
         if (
             'type' in req.body && typeof req.body.type === 'string' &&
             'url' in req.body && typeof req.body.url === 'string' &&
@@ -368,7 +367,7 @@ module.exports = class Server {
             if (job === null) {
                 job = await db.createJob(type, url);
                 if (job !== null) {
-                    this._newJobCallback(job.id);  
+                    this._newJobCallback(job.id);
                 }
             }
             if (job !== null) {
