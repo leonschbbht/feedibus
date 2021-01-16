@@ -11,11 +11,12 @@ function createMountPoint {
     echo "Formatiere Laufwerk $VOLUME"
     mkfs -t xfs $VOLUME
     docker volume create --name database --opt type=none --opt device=/mnt/extension/database --opt o=bind
+    mount $VOLUME $MOUNTPATH
   fi
 
   mkdir -p $MOUNTPATH
-  mount $VOLUME $MOUNTPATH
 }
 
 echo "$VOLUME /mnt/extension xfs noatime 0 0" >> /etc/fstab
 createMountPoint
+reboot
