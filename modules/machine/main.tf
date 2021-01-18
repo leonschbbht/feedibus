@@ -65,7 +65,7 @@ resource "null_resource" "format-script-execution" {
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo chmod a+rwx /format.sh",
+      "sudo chmod a+rwx /format.sh ${azurerm_managed_disk.feedibus-production-persistence-drive.disk_size_gb}",
       "sudo /format.sh"
     ]
   }
