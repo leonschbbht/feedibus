@@ -329,13 +329,13 @@ class Database {
      */
     async saveMessage (message) {
         const messagesArray = await this._con
-        .select('*')
-        .from('message')
-        .where({
-            identifier: message.identifier
-        })
-        .returning('*')
-        .catch(() => null);
+            .select('*')
+            .from('message')
+            .where({
+                identifier: message.identifier
+            })
+            .returning('*')
+            .catch(() => null);
         if (messagesArray && Array.isArray(messagesArray) && messagesArray.length > 0) {
             return;
         }
@@ -369,16 +369,16 @@ class Database {
     async getMessageByJobIdAndIdentifier (jobId, identifier) {
         const resultArray = await this._con('message')
             .select(['m.id',
-            'm.jobId',
-            'm.headline',
-            'm.text',
-            'm.imageUrl',
-            'm.author',
-            'm.sourceUrl',
-            'm.time',
-            'm.identifier',
-            'job.type',
-            'tags'])
+                'm.jobId',
+                'm.headline',
+                'm.text',
+                'm.imageUrl',
+                'm.author',
+                'm.sourceUrl',
+                'm.time',
+                'm.identifier',
+                'job.type',
+                'tags'])
             .where({
                 jobId: jobId,
                 identifier: identifier
@@ -408,18 +408,17 @@ class Database {
     }
 
     async getMessagesByUserId (userId) {
-
         const resultArray = await this._con
             .select(['m.id',
-                     'm.jobId',
-                     'm.headline',
-                     'm.text',
-                     'm.imageUrl',
-                     'm.author',
-                     'm.sourceUrl',
-                     'm.time',
-                     'm.identifier',
-                     'job.type'])
+                'm.jobId',
+                'm.headline',
+                'm.text',
+                'm.imageUrl',
+                'm.author',
+                'm.sourceUrl',
+                'm.time',
+                'm.identifier',
+                'job.type'])
             .from('message as m')
             .innerJoin('subscription', 'subscription.jobId', 'm.jobId')
             .innerJoin('user', 'user.id', 'subscription.userId')
@@ -428,15 +427,15 @@ class Database {
             .returning('*')
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
-            for (let result of resultArray) {
+            for (const result of resultArray) {
                 const tagArray = await this._con
                     .select(['tag.id',
-                            'tag.userId',
-                            'tag.name',
-                            'tag.color'])
+                        'tag.userId',
+                        'tag.name',
+                        'tag.color'])
                     .distinct()
                     .from('tag')
-                    .innerJoin('categorisation','categorisation.tagId','tag.id')
+                    .innerJoin('categorisation', 'categorisation.tagId', 'tag.id')
                     .innerJoin('subscription', 'subscription.id', 'categorisation.subscriptionId')
                     .innerJoin('job', 'job.id', 'subscription.jobId')
                     .innerJoin('message', 'message.jobId', 'job.id')

@@ -162,7 +162,7 @@ module.exports = class Message {
         this._identifier = value;
     }
 
-        /**
+    /**
      * @returns {object}
      */
     get tags () {
@@ -176,7 +176,7 @@ module.exports = class Message {
         this._tags = value;
     }
 
-        /**
+    /**
      * @returns {string}
      */
     get type () {
