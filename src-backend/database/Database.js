@@ -327,6 +327,18 @@ class Database {
      * @return {Promise<Message|void>}
      */
     async saveMessage (message) {
+        const messagesArray = await this._con
+        .select('*')
+        .from('message')
+        .where({
+            identifier: message.identifier
+        })
+        .returning('*')
+        .catch(() => null);
+        if (messagesArray && Array.isArray(messagesArray) && messagesArray.length > 0) {
+            return;
+        }
+
         const resultArray = this._con('message')
             .insert({
                 jobId: message.jobId,
@@ -355,11 +367,24 @@ class Database {
      */
     async getMessageByJobIdAndIdentifier (jobId, identifier) {
         const resultArray = await this._con('message')
-            .select('*')
+            .select(['m.id',
+            'm.jobId',
+            'm.headline',
+            'm.text',
+            'm.imageUrl',
+            'm.author',
+            'm.sourceUrl',
+            'm.time',
+            'm.identifier',
+            'job.type',
+            'tags'])
             .where({
                 jobId: jobId,
                 identifier: identifier
             })
+            .innerJoin('user', 'user.id', 'subscription.userId')
+            .innerJoin('job', 'job.id', 'm.jobId')
+            .innerJoin('tag as tags', 'user.id', 'tags.userId')
             .returning('*')
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
@@ -373,25 +398,69 @@ class Database {
                 row.author,
                 row.sourceUrl,
                 row.time,
-                row.identifier
+                row.identifier,
+                row.tags,
+                row.type
             );
         }
         return null;
     }
 
     async getMessagesByUserId (userId) {
+
         const resultArray = await this._con
-            .select('*')
+            .select(['m.id',
+                     'm.jobId',
+                     'm.headline',
+                     'm.text',
+                     'm.imageUrl',
+                     'm.author',
+                     'm.sourceUrl',
+                     'm.time',
+                     'm.identifier',
+                     'job.type'])
             .from('message as m')
             .innerJoin('subscription', 'subscription.jobId', 'm.jobId')
             .innerJoin('user', 'user.id', 'subscription.userId')
+            .leftJoin('job', 'job.id', 'subscription.jobId')
             .where('user.id', userId)
-            .returning(['m.id', 'm.jobId', 'm.headline', 'm.text', 'm.imageUrl', 'm.author', 'm.sourceUrl', 'm.time', 'm.identifier'])
+            .returning('*')
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
+
+            for (let result of resultArray) {
+                const tagArray = await this._con
+                    .select('*')
+                    .from('tag')
+                    .innerJoin('user', 'user.id', 'tag.userId')
+                    .innerJoin('subscription', 'subscription.userId', 'user.id')
+                    .leftJoin('message', 'message.jobId', 'subscription.jobId')
+                    .where({
+                        'user.id': userId,
+                        'message.id': result.id
+                    })
+                    .returning('*')
+                    .catch(() => null);
+                result.tags = tagArray;
+            }
             return resultArray;
         }
         return [];
+    }
+
+    async createCategorisation (subscriptionId, tagId) {
+        const resultArray = await this._con('categorisation')
+            .insert({
+                subscriptionId: subscriptionId,
+                tagId: tagId
+            })
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray) && resultArray.length === 1) {
+            const row = resultArray.pop();
+            return row.id;
+        }
+        return null;
     }
 }
 // Die Datenbankverbindung sollte ein Singleton sein

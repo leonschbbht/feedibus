@@ -19,7 +19,9 @@ module.exports = class Message {
         author,
         sourceUrl,
         time,
-        identifier
+        identifier,
+        tags,
+        type
     ) {
         this._id = id;
         this._jobId = jobId;
@@ -30,6 +32,8 @@ module.exports = class Message {
         this._sourceUrl = sourceUrl;
         this._time = time;
         this._identifier = identifier;
+        this._tags = tags;
+        this._type = type;
     }
 
     /**
@@ -156,5 +160,33 @@ module.exports = class Message {
      */
     set identifier (value) {
         this._identifier = value;
+    }
+
+        /**
+     * @returns {object}
+     */
+    get tags () {
+        return this._identifier;
+    }
+
+    /**
+     * @param {object} value
+     */
+    set tags (value) {
+        this._tags = value;
+    }
+
+        /**
+     * @returns {string}
+     */
+    get type () {
+        return this._type;
+    }
+
+    /**
+     * @param {string} value
+     */
+    set type (value) {
+        this._type = value;
     }
 }

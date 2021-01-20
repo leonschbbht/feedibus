@@ -186,7 +186,36 @@ module.exports = class Server {
             const userId = req.user.id;
 
             const newTag = await db.createTag(name, color, userId);
-            if (newTag instanceof Tag) {
+            if (newTag instanceof Tag) {     
+                responseUtils.sendCreated(res, 'Created tag with id: ' + newTag.id);
+                return;
+            } else {
+                responseUtils.sendConflict(res, 'Tag could not be created.');
+                return;
+            }
+        }
+        responseUtils.sendBadRequest(res);
+    }
+
+    async createTag (req, res) {
+        if (!req.user) {
+            responseUtils.sendForbidden(res, 'You are not logged in');
+            return;
+        }
+
+        if (
+            'name' in req.body && typeof req.body.name === 'string' &&
+            'color' in req.body && typeof req.body.color === 'string' &&
+            'subscriptionId' in req.body && typeof req.body.subscriptionId === 'number'
+        ) {
+            const name = req.body.name;
+            const color = req.body.color;
+            const userId = req.user.id;
+            const subscriptionId  = req.user.subscriptionId;
+            
+            const newTag = await db.createTag(name, color, userId);
+            if (newTag instanceof Tag) {                  
+                db.createCategorisation(subscriptionId, newTag.id);
                 responseUtils.sendCreated(res, 'Created tag with id: ' + newTag.id);
                 return;
             } else {
