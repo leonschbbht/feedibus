@@ -211,7 +211,7 @@ module.exports = class Server {
             const name = req.body.name;
             const color = req.body.color;
             const userId = req.user.id;
-            const subscriptionId  = req.user.subscriptionId;
+            const subscriptionId  = req.body.subscriptionId;
             
             const newTag = await db.createTag(name, color, userId);
             if (newTag instanceof Tag) {                  
@@ -383,11 +383,14 @@ module.exports = class Server {
         if (
             'type' in req.body && typeof req.body.type === 'string' &&
             'url' in req.body && typeof req.body.url === 'string' &&
+            'name' in req.body && typeof req.body.name === 'string' &&
             'user' in req && req.user instanceof User
         ) {
             const user = req.user;
             const type = req.body.type;
             const url = req.body.url;
+            const name = req.body.name;
+            
             if (!Object.keys(runnerMap).includes(type)) {
                 responseUtils.sendConflict(res, "Job type '" + type + "' doesn't exist.");
                 return;
@@ -402,7 +405,7 @@ module.exports = class Server {
             if (job !== null) {
                 let subscription = await db.getSubscriptionByUserIdAndJobId(user.id, job.id);
                 if (subscription === null) {
-                    subscription = await db.createSubscription(user.id, job.id);
+                    subscription = await db.createSubscription(user.id, job.id, name);
                 }
                 if (subscription !== null) {
                     res.json({

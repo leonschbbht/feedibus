@@ -288,7 +288,7 @@ class Database {
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
             const row = resultArray.pop();
-            return new Subscription(row.id, row.userId, row.jobId);
+            return new Subscription(row.id, row.userId, row.jobId, row.name);
         }
         return null;
     }
@@ -298,17 +298,18 @@ class Database {
      * @param {number} jobId
      * @return {Promise<Subscription|null>}
      */
-    async createSubscription (userId, jobId) {
+    async createSubscription (userId, jobId, name) {
         const resultArray = await this._con('subscription')
             .insert({
                 userId: userId,
-                jobId: jobId
+                jobId: jobId,
+                name: name
             })
             .returning('*')
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray) && resultArray.length === 1) {
             const row = resultArray.pop();
-            return new Subscription(row.id, row.userId, row.jobId);
+            return new Subscription(row.id, row.userId, row.jobId, row.name);
         }
         return null;
     }
@@ -427,21 +428,27 @@ class Database {
             .returning('*')
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
-
             for (let result of resultArray) {
                 const tagArray = await this._con
-                    .select('*')
+                    .select(['tag.id',
+                            'tag.userId',
+                            'tag.name',
+                            'tag.color'])
+                    .distinct()
                     .from('tag')
-                    .innerJoin('user', 'user.id', 'tag.userId')
-                    .innerJoin('subscription', 'subscription.userId', 'user.id')
-                    .leftJoin('message', 'message.jobId', 'subscription.jobId')
+                    .innerJoin('categorisation','categorisation.tagId','tag.id')
+                    .innerJoin('subscription', 'subscription.id', 'categorisation.subscriptionId')
+                    .innerJoin('job', 'job.id', 'subscription.jobId')
+                    .innerJoin('message', 'message.jobId', 'job.id')
+                    .innerJoin('user', 'user.id', 'subscription.userId')
                     .where({
                         'user.id': userId,
+                        'message.jobId': result.jobId,
                         'message.id': result.id
                     })
                     .returning('*')
                     .catch(() => null);
-                result.tags = tagArray;
+                result.tags = tagArray !== null ? tagArray : [];
             }
             return resultArray;
         }

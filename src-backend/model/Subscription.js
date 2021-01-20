@@ -3,11 +3,13 @@ module.exports = class Subscription {
      * @param {number} id
      * @param {number} userId
      * @param {number} jobId
+     * @param {string} name
      */
-    constructor (id, userId, jobId) {
+    constructor (id, userId, jobId, name) {
         this._id = id;
         this._userId = userId;
         this._jobId = jobId;
+        this._name = name;
     }
 
     /**
@@ -50,5 +52,19 @@ module.exports = class Subscription {
      */
     set jobId (value) {
         this._jobId = value;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get name () {
+        return this._name;
+    }
+
+    /**
+     * @param {string} value
+     */
+    set name (value) {
+        this._name = value;
     }
 }
