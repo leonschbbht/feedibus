@@ -400,7 +400,7 @@ class Database {
 
             const subscriptionIdTagsMap = new Map();
             tagSubscriptionIdArray.forEach(elem => {
-                const tags = subscriptionIdTagsMap.get(elem.subscriptionId);          
+                const tags = subscriptionIdTagsMap.get(elem.subscriptionId);
                 if (tags) {
                     tags.push(elem);
                     subscriptionIdTagsMap.set(elem.subscriptionId, tags)
@@ -408,7 +408,7 @@ class Database {
                     subscriptionIdTagsMap.set(elem.subscriptionId, [elem])
                 }
             });
-          
+
             const messageIdTagsMap = new Map();
             for (const element of messageSubscriptionArray) {
                 const tags = subscriptionIdTagsMap.get(element.subscriptionId);
