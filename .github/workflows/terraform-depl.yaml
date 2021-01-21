@@ -1,8 +1,8 @@
 name: "Terraform: CD - Deploy latest version"
 on:
   workflow_dispatch:
-    branches:
-      - terraform-infrastructure
+    tags:
+      description: "Rollt die aktuelle Version der Cloud-Infrastruktur aus"
 jobs:
   terraform:
     name: "run and deploy terraform config"
