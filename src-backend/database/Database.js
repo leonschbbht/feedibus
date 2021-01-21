@@ -328,18 +328,6 @@ class Database {
      * @return {Promise<Message|void>}
      */
     async saveMessage (message) {
-        const messagesArray = await this._con
-            .select('*')
-            .from('message')
-            .where({
-                identifier: message.identifier
-            })
-            .returning('*')
-            .catch(() => null);
-        if (messagesArray && Array.isArray(messagesArray) && messagesArray.length > 0) {
-            return;
-        }
-
         const resultArray = this._con('message')
             .insert({
                 jobId: message.jobId,
@@ -368,24 +356,11 @@ class Database {
      */
     async getMessageByJobIdAndIdentifier (jobId, identifier) {
         const resultArray = await this._con('message')
-            .select(['m.id',
-                'm.jobId',
-                'm.headline',
-                'm.text',
-                'm.imageUrl',
-                'm.author',
-                'm.sourceUrl',
-                'm.time',
-                'm.identifier',
-                'job.type',
-                'tags'])
+            .select('*')
             .where({
                 jobId: jobId,
                 identifier: identifier
             })
-            .innerJoin('user', 'user.id', 'subscription.userId')
-            .innerJoin('job', 'job.id', 'm.jobId')
-            .innerJoin('tag as tags', 'user.id', 'tags.userId')
             .returning('*')
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
@@ -399,57 +374,55 @@ class Database {
                 row.author,
                 row.sourceUrl,
                 row.time,
-                row.identifier,
-                row.tags,
-                row.type
+                row.identifier
             );
         }
         return null;
     }
 
     async getMessagesByUserId (userId) {
-        const resultArray = await this._con
-            .select(['m.id',
-                'm.jobId',
-                'm.headline',
-                'm.text',
-                'm.imageUrl',
-                'm.author',
-                'm.sourceUrl',
-                'm.time',
-                'm.identifier',
-                'job.type'])
-            .from('message as m')
-            .innerJoin('subscription', 'subscription.jobId', 'm.jobId')
-            .innerJoin('user', 'user.id', 'subscription.userId')
-            .leftJoin('job', 'job.id', 'subscription.jobId')
-            .where('user.id', userId)
+        const messageSubscriptionArray = await this._con
+            .select(['message.*', 'subscription.id as subscriptionId', 'job.type'])
+            .from('message')
+            .innerJoin('subscription', 'subscription.jobId', 'message.jobId')
+            .innerJoin('job', 'subscription.jobId', 'job.id')
+            .where('subscription.userId', userId)
             .returning('*')
             .catch(() => null);
-        if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
-            for (const result of resultArray) {
-                const tagArray = await this._con
-                    .select(['tag.id',
-                        'tag.userId',
-                        'tag.name',
-                        'tag.color'])
-                    .distinct()
-                    .from('tag')
-                    .innerJoin('categorisation', 'categorisation.tagId', 'tag.id')
-                    .innerJoin('subscription', 'subscription.id', 'categorisation.subscriptionId')
-                    .innerJoin('job', 'job.id', 'subscription.jobId')
-                    .innerJoin('message', 'message.jobId', 'job.id')
-                    .innerJoin('user', 'user.id', 'subscription.userId')
-                    .where({
-                        'user.id': userId,
-                        'message.jobId': result.jobId,
-                        'message.id': result.id
-                    })
-                    .returning('*')
-                    .catch(() => null);
-                result.tags = tagArray !== null ? tagArray : [];
+        if (messageSubscriptionArray && Array.isArray(messageSubscriptionArray) && messageSubscriptionArray.length > 0) {
+            const tagSubscriptionIdArray = await this._con
+                .select(['tag.*', 'categorisation.subscriptionId'])
+                .from('tag')
+                .innerJoin('categorisation', 'categorisation.tagId', 'tag.id')
+                .where('tag.userId', userId)
+                .returning('*')
+                .catch(() => null);
+
+            let subscriptionIdTagsMap = new Map();
+            tagSubscriptionIdArray.forEach(elem => {
+                let tags = subscriptionIdTagsMap.get(elem.subscriptionId);
+                
+                if (tags) {
+                    tags.push(elem);
+                    subscriptionIdTagsMap.set(elem.subscriptionId, tags)
+                } else {
+                    subscriptionIdTagsMap.set(elem.subscriptionId, [elem])
+                }
+            });
+            
+            let messageIdTagsMap = new Map();
+            for (const element of messageSubscriptionArray) {
+                const tags = subscriptionIdTagsMap.get(element.subscriptionId);
+                if (tags != null) {
+                    messageIdTagsMap.set(element.id, tags);
+                }
             }
-            return resultArray;
+
+            for (let element of messageSubscriptionArray) {
+                const tags = messageIdTagsMap.get(element.id);
+                element.tags = tags !== null ? tags : [];
+            }
+            return messageSubscriptionArray;
         }
         return [];
     }
