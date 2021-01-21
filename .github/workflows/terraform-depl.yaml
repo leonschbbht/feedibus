@@ -1,5 +1,6 @@
 name: "Terraform: CD - Deploy latest version"
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 jobs:
   terraform:
     name: "run and deploy terraform config"
