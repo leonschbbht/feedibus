@@ -188,7 +188,7 @@ module.exports = class Server {
             const subscriptionId = req.body.subscriptionId;
 
             const newTag = await db.createTag(name, color, userId);
-            if (newTag instanceof Tag) {            
+            if (newTag instanceof Tag) {        
                 db.createCategorisation(subscriptionId, newTag.id);
                 responseUtils.sendCreated(res, 'Created tag with id: ' + newTag.id);
                 return;
@@ -364,7 +364,7 @@ module.exports = class Server {
             const type = req.body.type;
             const url = req.body.url;
             const name = req.body.name;
-          
+       
             if (!Object.keys(runnerMap).includes(type)) {
                 responseUtils.sendConflict(res, "Job type '" + type + "' doesn't exist.");
                 return;
