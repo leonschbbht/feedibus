@@ -1,10 +1,8 @@
 name: "Terraform: CD - Deploy latest version"
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
     branches:
       - terraform-infrastructure
-      - terraform-infrastructure-test
 jobs:
   terraform:
     name: "run and deploy terraform config"
