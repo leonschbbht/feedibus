@@ -1,6 +1,11 @@
 name: "Terraform: CD - Deploy latest version"
 on:
   workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Y/N"
+        required: false
+        default: "yes"
     tags:
       description: "Rollt die aktuelle Version der Cloud-Infrastruktur aus"
 jobs:
