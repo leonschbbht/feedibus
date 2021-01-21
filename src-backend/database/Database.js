@@ -288,7 +288,7 @@ class Database {
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
             const row = resultArray.pop();
-            return new Subscription(row.id, row.userId, row.jobId);
+            return new Subscription(row.id, row.userId, row.jobId, row.name);
         }
         return null;
     }
@@ -298,17 +298,18 @@ class Database {
      * @param {number} jobId
      * @return {Promise<Subscription|null>}
      */
-    async createSubscription (userId, jobId) {
+    async createSubscription (userId, jobId, name) {
         const resultArray = await this._con('subscription')
             .insert({
                 userId: userId,
-                jobId: jobId
+                jobId: jobId,
+                name: name
             })
             .returning('*')
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray) && resultArray.length === 1) {
             const row = resultArray.pop();
-            return new Subscription(row.id, row.userId, row.jobId);
+            return new Subscription(row.id, row.userId, row.jobId, row.name);
         }
         return null;
     }
@@ -380,18 +381,64 @@ class Database {
     }
 
     async getMessagesByUserId (userId) {
-        const resultArray = await this._con
-            .select('*')
-            .from('message as m')
-            .innerJoin('subscription', 'subscription.jobId', 'm.jobId')
-            .innerJoin('user', 'user.id', 'subscription.userId')
-            .where('user.id', userId)
-            .returning(['m.id', 'm.jobId', 'm.headline', 'm.text', 'm.imageUrl', 'm.author', 'm.sourceUrl', 'm.time', 'm.identifier'])
+        const messageSubscriptionArray = await this._con
+            .select(['message.*', 'subscription.id as subscriptionId', 'job.type'])
+            .from('message')
+            .innerJoin('subscription', 'subscription.jobId', 'message.jobId')
+            .innerJoin('job', 'subscription.jobId', 'job.id')
+            .where('subscription.userId', userId)
+            .returning('*')
             .catch(() => null);
-        if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
-            return resultArray;
+        if (messageSubscriptionArray && Array.isArray(messageSubscriptionArray) && messageSubscriptionArray.length > 0) {
+            const tagSubscriptionIdArray = await this._con
+                .select(['tag.*', 'categorisation.subscriptionId'])
+                .from('tag')
+                .innerJoin('categorisation', 'categorisation.tagId', 'tag.id')
+                .where('tag.userId', userId)
+                .returning('*')
+                .catch(() => null);
+
+            const subscriptionIdTagsMap = new Map();
+            tagSubscriptionIdArray.forEach(elem => {
+                const tags = subscriptionIdTagsMap.get(elem.subscriptionId);
+                if (tags) {
+                    tags.push(elem);
+                    subscriptionIdTagsMap.set(elem.subscriptionId, tags)
+                } else {
+                    subscriptionIdTagsMap.set(elem.subscriptionId, [elem])
+                }
+            });
+
+            const messageIdTagsMap = new Map();
+            for (const element of messageSubscriptionArray) {
+                const tags = subscriptionIdTagsMap.get(element.subscriptionId);
+                if (tags != null) {
+                    messageIdTagsMap.set(element.id, tags);
+                }
+            }
+
+            for (const element of messageSubscriptionArray) {
+                const tags = messageIdTagsMap.get(element.id);
+                element.tags = tags !== null ? tags : [];
+            }
+            return messageSubscriptionArray;
         }
         return [];
+    }
+
+    async createCategorisation (subscriptionId, tagId) {
+        const resultArray = await this._con('categorisation')
+            .insert({
+                subscriptionId: subscriptionId,
+                tagId: tagId
+            })
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray) && resultArray.length === 1) {
+            const row = resultArray.pop();
+            return row.id;
+        }
+        return null;
     }
 }
 // Die Datenbankverbindung sollte ein Singleton sein
