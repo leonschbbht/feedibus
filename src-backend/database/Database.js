@@ -23,7 +23,7 @@ class Database {
         return !!result;
     }
 
-    async reconnect() {
+    async reconnect () {
         this._con = require('knex')(dbConfig);
     }
 
