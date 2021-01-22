@@ -56,7 +56,9 @@
                 Weiterlesen
             </v-btn>
         </v-card-actions>
-        <v-card-text>Kategorien:</v-card-text>
+        <v-card-text class="categoryText">
+            Kategorien:
+        </v-card-text>
         <v-chip-group class="chips">
             <v-chip
                 v-for="category in categories"
@@ -124,5 +126,9 @@ a {
 .img{
     -webkit-filter: grayscale(30%); /* Safari 6.0 -9.0 */
     filter: grayscale(30%);
+}
+.categoryText{
+    padding-bottom: 0;
+    padding-top: 0;
 }
 </style>

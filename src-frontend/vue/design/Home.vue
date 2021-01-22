@@ -22,7 +22,7 @@
                             multiple
                             solo-inverted
                             hide-details
-                            :items="news.map((a) => a.categories).flat()"
+                            :items="news.map((a) => a.tags.map((t) => t.name).flat()).flat()"
                             prepend-inner-icon="mdi-filter-variant"
                             label="Filter auswählen"
                             @change="changed()"
@@ -95,11 +95,11 @@
                     :key="item.messageId"
                     :title="item.headline"
                     :img="item.imageUrl"
-                    source="Test"
+                    :source="item.type"
                     :date="item.formattedDate"
                     :text="item.text"
                     :link="item.sourceUrl"
-                    :categories="[]"
+                    :categories="item.tags.map((a) => a.name).flat()"
                     class="newsCard"
                 />
             </template>
@@ -147,9 +147,8 @@ export default {
                 return this.news;
             }
             return this.news.filter((newsItem) =>
-                newsItem.categories.some(function (e) {
-                    console.log(e);
-                    return filter.includes(e);
+                newsItem.tags.some(function (e) {
+                    return filter.includes(e.name);
                 })
             );
         },
