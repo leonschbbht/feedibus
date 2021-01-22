@@ -6,17 +6,44 @@ const db = require('./src-backend/database/Database')
 const server = new Server();
 const worker = new Worker('./schedulerWorkerApp.js');
 
-db.migrateKnex()
-    .then(() => console.log('Datenbank ist Up-To-Date'))
-    .catch(err => console.log('Fehler bei der Migration!', JSON.stringify(err, null, 2)));
+start();
+async function start() {
+    const maxConnectionAttempts = 12;
+    let connectionAttempts = 1;
+    let isConnected = await db.isConnected();
+    while (!isConnected) {
+        await sleep(10 * 1000);
+        if (connectionAttempts > maxConnectionAttempts) {
+            throw 'Maximale Versuchsanzahl erreicht. Die Verbindung zur Datenbank konnte nicht hergestellt werden.';
+        }
+        console.log("Verbindung zur Datenbank wird aufgebaut... (Versuch "+connectionAttempts+"/"+maxConnectionAttempts+")");
+        await db.reconnect();
+        isConnected = await db.isConnected();
+        connectionAttempts++;
+    }
 
-server.setNewJobCallback(function (id) {
-    worker.postMessage({
-        type: 'newJob',
-        id: id
-    });
-})
-server.run(config.PORT);
+    let migrationSuccessful = false;
+    if (isConnected) {
+        console.log('Datenbankverbindung hergestellt!');
+        await db.migrateKnex()
+            .then(() => {console.log('Datenbank-Migration wurde erfolgreich durchgeführt.'); migrationSuccessful = true;})
+            .catch(err => console.log('Fehler bei der Migration!', JSON.stringify(err, null, 2)));
+    }
 
+    if (migrationSuccessful && isConnected) {
+        console.log('Starte Server...');
+        server.setNewJobCallback(function (id) {
+            worker.postMessage({
+                type: 'newJob',
+                id: id
+            });
+        })
+        server.run(config.PORT);
+    }
+}
 // worker.on('message', message => console.log(message));
 // worker.postMessage('ping');
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
