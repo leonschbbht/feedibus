@@ -14,6 +14,19 @@ class Database {
         await this._con.migrate.up();
     }
 
+    async isConnected () {
+        const result = await this._con
+            .distinct()
+            .select('table_catalog')
+            .from('information_schema.tables')
+            .catch(() => null);
+        return !!result;
+    }
+
+    async reconnect () {
+        this._con = require('knex')(dbConfig);
+    }
+
     /**
      * @param {string} name
      * @param {string} email
