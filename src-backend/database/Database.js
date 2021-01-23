@@ -24,7 +24,6 @@ class Database {
     }
 
     async reconnect () {
-        this._con.destroy();
         this._con = require('knex')(dbConfig);
     }
 
