@@ -6,7 +6,18 @@ const db = require('./src-backend/database/Database')
 const server = new Server();
 const worker = new Worker('./schedulerWorkerApp.js');
 
-start();
+start().then(startSuccessful => {
+    if (startSuccessful) {
+        console.log('Starte Server...');
+        server.setNewJobCallback(function (id) {
+            worker.postMessage({
+                type: 'newJob',
+                id: id
+            });
+        })
+        server.run(config.PORT);
+    }
+});
 async function start () {
     const maxConnectionAttempts = 12;
     let connectionAttempts = 1;
@@ -30,16 +41,7 @@ async function start () {
             .catch(err => console.log('Fehler bei der Migration!', JSON.stringify(err, null, 2)));
     }
 
-    if (migrationSuccessful && isConnected) {
-        console.log('Starte Server...');
-        server.setNewJobCallback(function (id) {
-            worker.postMessage({
-                type: 'newJob',
-                id: id
-            });
-        })
-        server.run(config.PORT);
-    }
+    return migrationSuccessful && isConnected;
 }
 // worker.on('message', message => console.log(message));
 // worker.postMessage('ping');
