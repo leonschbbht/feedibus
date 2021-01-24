@@ -1,6 +1,7 @@
 const User = require('../model/User');
 const Tag = require('../model/Tag');
 const Subscription = require('../model/Subscription');
+const Categorisation = require('../model/Categorisation');
 const dbConfig = require('../../knexfile');
 const Job = require('../model/Job');
 const Message = require('../model/Message');
@@ -452,6 +453,47 @@ class Database {
             return row.id;
         }
         return null;
+    }
+
+    async getCategorisationsByUserId (userId) {
+        const resultArray = await this._con
+            .select('*')
+            .from('categorisation')
+            .innerJoin('tag', 'tag.id', 'categorisation.tagId')
+            .where('tag.userId', userId)
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray.map(row => new Categorisation(row.id, row.subscriptionId, row.tagId));
+        }
+        return [];
+    }
+
+    async getCategorisationBySubscriptionIdAndTagId (subscriptionId, tagId) {
+        const resultArray = await this._con
+            .select('*')
+            .from('categorisation')
+            .where({
+                subscriptionId: subscriptionId,
+                tagId: tagId
+            })
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            const row = resultArray.pop();
+            if (!row) {
+                return null;
+            }
+            return new Categorisation(row.id, row.subscriptionId, row.tagId);
+        }
+        return null;
+    }
+
+    async deleteCategorisationBySubscriptionIdAndTagId (subscriptionId, tagId) {
+        await this._con('categorisation')
+            .where({
+                subscriptionId: subscriptionId,
+                tagId: tagId
+            })
+            .del();
     }
 }
 // Die Datenbankverbindung sollte ein Singleton sein
