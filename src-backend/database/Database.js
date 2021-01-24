@@ -395,7 +395,7 @@ class Database {
 
     async getMessagesByUserId (userId) {
         const messageSubscriptionArray = await this._con
-            .select(['message.*', 'subscription.id as subscriptionId', 'job.type'])
+            .select(['message.*', 'subscription.id as subscriptionId', 'subscription.name as subscriptionName', 'job.type'])
             .from('message')
             .innerJoin('subscription', 'subscription.jobId', 'message.jobId')
             .innerJoin('job', 'subscription.jobId', 'job.id')
@@ -432,7 +432,7 @@ class Database {
 
             for (const element of messageSubscriptionArray) {
                 const tags = messageIdTagsMap.get(element.id);
-                element.tags = tags !== null ? tags : [];
+                element.tags = tags || [];
             }
             return messageSubscriptionArray;
         }
