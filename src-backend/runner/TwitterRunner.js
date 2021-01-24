@@ -104,7 +104,7 @@ module.exports = class TwitterRunner extends AbstractRunner {
         const page = await browser.newPage();
         await page.setCacheEnabled(false);
         const responsePromise = page.waitForResponse(response => (
-            response.url().match('api.twitter.com/2/timeline/profile/') &&
+            response.url().match('/2/timeline/profile/') &&
             response.status() === 200 &&
             response.request().method().toLowerCase() === 'get'
         )
