@@ -22,7 +22,9 @@ module.exports = class YoutubeRunner extends AbstractRunner {
                 return [];
             }
             tabs[1].click(); // Der "Videos"-Tab
-            await page.waitForSelector('yt-icon#label-icon');
+            await page.waitForNavigation({
+                waitUntil: 'networkidle0'
+            });
             await page.waitForSelector('ytd-grid-video-renderer');
             const author = await page.$eval('yt-formatted-string.ytd-channel-name', el => el.textContent);
             if (!author) {
@@ -95,11 +97,23 @@ module.exports = class YoutubeRunner extends AbstractRunner {
                 case 'Minuten':
                     date.setMinutes(date.getMinutes() - number);
                     break;
+                case 'hour':
+                case 'hours':
+                case 'Stunde':
+                case 'Stunden':
+                    date.setHours(date.getHours() - number);
+                    break;
                 case 'day':
                 case 'days':
                 case 'Tag':
                 case 'Tagen':
                     date.setDate(date.getDate() - number);
+                    break;
+                case 'week':
+                case 'weeks':
+                case 'Woche':
+                case 'Wochen':
+                    date.setDate(date.getDate() - number * 7);
                     break;
                 case 'month':
                 case 'months':
