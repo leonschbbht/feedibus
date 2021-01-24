@@ -432,7 +432,7 @@ class Database {
 
             for (const element of messageSubscriptionArray) {
                 const tags = messageIdTagsMap.get(element.id);
-                element.tags = tags ? tags : [];
+                element.tags = tags || [];
             }
             return messageSubscriptionArray;
         }
