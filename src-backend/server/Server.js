@@ -296,7 +296,7 @@ module.exports = class Server {
             return;
         }
 
-        const subscriptions = await db.getTableRowsByUserId('subscription', req.user.id);
+        const subscriptions = await db.getSubscriptionsByUserId(req.user.id);
         res.send(subscriptions);
     }
 
@@ -365,13 +365,20 @@ module.exports = class Server {
             'type' in req.body && typeof req.body.type === 'string' &&
             'url' in req.body && typeof req.body.url === 'string' &&
             'name' in req.body && typeof req.body.name === 'string' &&
+            'tags' in req.body && Array.isArray(req.body.tags) && req.body.tags.every(elem => typeof elem === "number") &&
             'user' in req && req.user instanceof User
         ) {
             const user = req.user;
             const type = req.body.type;
             const url = req.body.url;
             const name = req.body.name;
+            const tags = req.body.tags;
 
+            const tagsAreValid = await this.validateTags(tags, user.id);
+            if (!tagsAreValid) {
+                responseUtils.sendConflict(res, "At least one tag id doesn't exist.");
+                return;
+            }
             if (!Object.keys(runnerMap).includes(type)) {
                 responseUtils.sendConflict(res, "Job type '" + type + "' doesn't exist.");
                 return;
@@ -382,13 +389,13 @@ module.exports = class Server {
                 if (job !== null) {
                     this._newJobCallback(job.id);
                 }
-            }
-            if (job !== null) {
+            } else {
                 let subscription = await db.getSubscriptionByUserIdAndJobId(user.id, job.id);
                 if (subscription === null) {
                     subscription = await db.createSubscription(user.id, job.id, name);
                 }
                 if (subscription !== null) {
+                    db.createMutipleCategorisations(subscription.id, tags);
                     res.json({
                         id: subscription.id
                     });
@@ -455,5 +462,18 @@ module.exports = class Server {
             return;
         }
         responseUtils.sendBadRequest(res);
+    }
+
+    
+    async validateTags(tagIds, userId) {
+       if (!tagIds || tagIds.length === 0) {
+           return true;
+       }
+       const dbTags = await db.getTableRowsByUserId('tag', userId);
+       if (!dbTags || dbTags.length == 0) {
+           return false;
+       }
+       let dbTagIds = dbTags.map(tag => tag.id);
+       return tagIds.every(id => dbTagIds.includes(id))
     }
 }
