@@ -6,4 +6,26 @@ export default class api {
 
         return response.data;
     }
+
+    static async tags () {
+        const response = await Axios.get('/tags');
+        return response.data;
+    }
+
+    /**
+     * @param {string} name
+     * @param {string} color
+     */
+    static async createTag (name, color) {
+        const data = {
+            name: name,
+            color: color
+        };
+        const response = await Axios.post('/tags', data);
+        if (response.status === 200) {
+            return '';
+        } else if (typeof response.data === 'string') {
+            return response.data;
+        }
+    }
 }

@@ -4,7 +4,7 @@
     >
         <v-toolbar
             dark
-            color="secondary"
+            color="primary"
             class="toolBar"
         >
             {{ new Date().getFullYear() }} — <strong>feedibus</strong>

@@ -148,6 +148,7 @@
                 <v-chip
                     v-for="category in item.categories"
                     :key="category"
+                    @click:close="close"
                 >
                     {{ category }}
                 </v-chip>
@@ -193,8 +194,8 @@ export default {
         itemsPerPage: 10,
         dialog: false,
         dialogDelete: false,
-        types: ['RSS', 'YouTube', 'Twitter'],
-        categories: ['Unterhaltung', 'Leitmedien', 'Politik', 'Corona', 'Technik', 'Medien', 'Nachrichten'],
+        types: [],
+        categories: [],
         headers: [
             {
                 text: 'Feedname',
@@ -257,10 +258,7 @@ export default {
     methods: {
         initialize () {
             this.feeds = [
-                { name: 'Tagesschau', type: 'RSS', id: '1', link: 'tagesschau.de', categories: ['Nachrichten', 'Medien'] },
-                { name: 'Zeit', type: 'RSS', id: '2', link: 'zeit.de', categories: ['Nachrichten', 'Politik'] },
-                { name: 'Alexibexi', type: 'YouTube', id: '3', link: 'youtube.com/alexibexi', categories: ['Technik', 'Unterhaltung'] }
-
+                { name: 'Tagesschau', type: 'RSS', id: '1', link: 'tagesschau.de', categories: ['Nachrichten', 'Medien'] }
             ];
         },
 

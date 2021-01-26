@@ -73,7 +73,8 @@ export default {
             items: [
                 { title: 'Startseite', icon: 'mdi-home', to: '/' },
                 { title: 'Einstellungen', icon: 'mdi-settings', to: '/settings' },
-                { title: 'Meine Feeds', icon: 'mdi-rss', to: '/feeds' }
+                { title: 'Meine Feeds', icon: 'mdi-rss', to: '/feeds' },
+                { title: 'Kategorien verwalten', icon: 'mdi-playlist-plus', to: '/kategorie' }
             ]
         };
     }

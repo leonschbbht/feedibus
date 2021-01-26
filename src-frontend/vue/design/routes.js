@@ -1,6 +1,7 @@
-import Home from './Home.vue'
-import FeedManagement from './FeedManagement.vue'
-import Settings from './Settings.vue'
+import Home from './page/Home.vue'
+import FeedManagement from './page/FeedManagement.vue'
+import Settings from './page/Settings.vue'
+import Kategorie from './page/KategorieManagement.vue';
 
 export default [
     {
@@ -22,6 +23,10 @@ export default [
     {
         path: '/settings',
         component: Settings
+    },
+    {
+        path: '/kategorie',
+        component: Kategorie
     }
 
 ]
