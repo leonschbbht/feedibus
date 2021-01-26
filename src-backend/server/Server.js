@@ -92,6 +92,16 @@ module.exports = class Server {
             this.deleteSubscription(req, res);
         });
 
+        this.app.get('/tag-attachments', this.jsonBodyParser, (req, res) => {
+            this.getCategorisations(req, res);
+        });
+        this.app.post('/tag-attachments', this.jsonBodyParser, (req, res) => {
+            this.createCategorisation(req, res);
+        });
+        this.app.delete('/tag-attachments', this.jsonBodyParser, (req, res) => {
+            this.deleteCategorisation(req, res);
+        });
+
         this.app.get('/jobs', this.jsonBodyParser, (req, res) => {
             this.getJobs(req, res);
         });
@@ -179,17 +189,14 @@ module.exports = class Server {
 
         if (
             'name' in req.body && typeof req.body.name === 'string' &&
-            'color' in req.body && typeof req.body.color === 'string' &&
-            'subscriptionId' in req.body && typeof req.body.subscriptionId === 'number'
+            'color' in req.body && typeof req.body.color === 'string'
         ) {
             const name = req.body.name;
             const color = req.body.color;
             const userId = req.user.id;
-            const subscriptionId = req.body.subscriptionId;
 
             const newTag = await db.createTag(name, color, userId);
             if (newTag instanceof Tag) {
-                db.createCategorisation(subscriptionId, newTag.id);
                 responseUtils.sendCreated(res, 'Created tag with id: ' + newTag.id);
                 return;
             } else {
@@ -289,7 +296,7 @@ module.exports = class Server {
             return;
         }
 
-        const subscriptions = await db.getTableRowsByUserId('subscription', req.user.id);
+        const subscriptions = await db.getSubscriptionsByUserId(req.user.id);
         res.send(subscriptions);
     }
 
@@ -358,13 +365,20 @@ module.exports = class Server {
             'type' in req.body && typeof req.body.type === 'string' &&
             'url' in req.body && typeof req.body.url === 'string' &&
             'name' in req.body && typeof req.body.name === 'string' &&
+            'tags' in req.body && Array.isArray(req.body.tags) && req.body.tags.every(elem => typeof elem === 'number') &&
             'user' in req && req.user instanceof User
         ) {
             const user = req.user;
             const type = req.body.type;
             const url = req.body.url;
             const name = req.body.name;
+            const tags = req.body.tags;
 
+            const tagsAreValid = await this.validateTags(tags, user.id);
+            if (!tagsAreValid) {
+                responseUtils.sendConflict(res, "At least one tag id doesn't exist.");
+                return;
+            }
             if (!Object.keys(runnerMap).includes(type)) {
                 responseUtils.sendConflict(res, "Job type '" + type + "' doesn't exist.");
                 return;
@@ -375,13 +389,13 @@ module.exports = class Server {
                 if (job !== null) {
                     this._newJobCallback(job.id);
                 }
-            }
-            if (job !== null) {
+            } else {
                 let subscription = await db.getSubscriptionByUserIdAndJobId(user.id, job.id);
                 if (subscription === null) {
                     subscription = await db.createSubscription(user.id, job.id, name);
                 }
                 if (subscription !== null) {
+                    db.createMutipleCategorisations(subscription.id, tags);
                     res.json({
                         id: subscription.id
                     });
@@ -390,5 +404,75 @@ module.exports = class Server {
             }
         }
         responseUtils.sendBadRequest(res);
+    }
+
+    async getCategorisations (req, res) {
+        if (!req.user) {
+            responseUtils.sendForbidden(res, 'You are not logged in');
+            return;
+        }
+
+        const categorisations = await db.getCategorisationsByUserId(req.user.id);
+        res.send(categorisations);
+    }
+
+    async createCategorisation (req, res) {
+        if (!req.user) {
+            responseUtils.sendForbidden(res, 'You are not logged in');
+            return;
+        }
+
+        if (
+            'subscriptionId' in req.body && typeof req.body.subscriptionId === 'number' &&
+            'tagId' in req.body && typeof req.body.tagId === 'number'
+        ) {
+            const subscriptionId = req.body.subscriptionId;
+            const tagId = req.body.tagId;
+
+            const categorisation = await db.getCategorisationBySubscriptionIdAndTagId(subscriptionId, tagId);
+            if (categorisation !== null) {
+                responseUtils.sendConflict(res, 'Tag with ID "' + tagId + '" is already attached to subscription with ID "' + subscriptionId + '"');
+                return;
+            }
+            const categorisationId = await db.createCategorisation(subscriptionId, tagId);
+            if (categorisationId != null) {
+                res.json({
+                    id: categorisationId
+                });
+                return;
+            }
+        }
+        responseUtils.sendBadRequest(res);
+    }
+
+    async deleteCategorisation (req, res) {
+        if (!req.user) {
+            responseUtils.sendForbidden(res, 'You are not logged in');
+            return;
+        }
+
+        if (
+            'subscriptionId' in req.query && typeof req.query.subscriptionId === 'string' &&
+            'tagId' in req.query && typeof req.query.tagId === 'string'
+        ) {
+            const subscriptionId = req.query.subscriptionId;
+            const tagId = req.query.tagId;
+            db.deleteCategorisationBySubscriptionIdAndTagId(subscriptionId, tagId);
+            responseUtils.sendNoContent(res, "Deleted tag attachmment with tagID '" + tagId + "' successfully.");
+            return;
+        }
+        responseUtils.sendBadRequest(res);
+    }
+
+    async validateTags (tagIds, userId) {
+        if (!tagIds || tagIds.length === 0) {
+            return true;
+        }
+        const dbTags = await db.getTableRowsByUserId('tag', userId);
+        if (!dbTags || dbTags.length === 0) {
+            return false;
+        }
+        const dbTagIds = dbTags.map(tag => tag.id);
+        return tagIds.every(id => dbTagIds.includes(id))
     }
 }

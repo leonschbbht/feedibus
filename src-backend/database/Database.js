@@ -1,6 +1,7 @@
 const User = require('../model/User');
 const Tag = require('../model/Tag');
 const Subscription = require('../model/Subscription');
+const Categorisation = require('../model/Categorisation');
 const dbConfig = require('../../knexfile');
 const Job = require('../model/Job');
 const Message = require('../model/Message');
@@ -335,6 +336,35 @@ class Database {
             .del();
     }
 
+    async getSubscriptionsByUserId (userId) {
+        const subscriptionArray = await this._con
+            .distinct()
+            .select('subscription.id', 'subscription.userId', 'subscription.jobId', 'subscription.name')
+            .from('subscription')
+            .leftJoin('categorisation', 'categorisation.subscriptionId', 'subscription.id')
+            .where({
+                'subscription.userId': userId
+            })
+            .catch(() => null);
+        if (subscriptionArray && Array.isArray(subscriptionArray) && subscriptionArray.length > 0) {
+            let userTagsArray = await this._con
+                .select('tag.id', 'tag.userId', 'tag.color', 'tag.name', 'categorisation.subscriptionId')
+                .from('tag')
+                .innerJoin('categorisation', 'categorisation.tagId', 'tag.id')
+                .where({
+                    'tag.userId': userId
+                })
+                .catch(() => null);
+            userTagsArray = userTagsArray || [];
+            for (const subscription of subscriptionArray) {
+                const subscriptionTags = userTagsArray.filter(tag => tag.subscriptionId === subscription.id);
+                subscription.tags = subscriptionTags.map(tag => { return { id: tag.id, userId: tag.userId, color: tag.color, name: tag.name } });
+            }
+            return subscriptionArray;
+        }
+        return null;
+    }
+
     /**
      *
      * @param {message} message
@@ -450,6 +480,62 @@ class Database {
         if (resultArray && Array.isArray(resultArray) && resultArray.length === 1) {
             const row = resultArray.pop();
             return row.id;
+        }
+        return null;
+    }
+
+    async getCategorisationsByUserId (userId) {
+        const resultArray = await this._con
+            .select('*')
+            .from('categorisation')
+            .innerJoin('tag', 'tag.id', 'categorisation.tagId')
+            .where('tag.userId', userId)
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray.map(row => new Categorisation(row.id, row.subscriptionId, row.tagId));
+        }
+        return [];
+    }
+
+    async getCategorisationBySubscriptionIdAndTagId (subscriptionId, tagId) {
+        const resultArray = await this._con
+            .select('*')
+            .from('categorisation')
+            .where({
+                subscriptionId: subscriptionId,
+                tagId: tagId
+            })
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            const row = resultArray.pop();
+            if (!row) {
+                return null;
+            }
+            return new Categorisation(row.id, row.subscriptionId, row.tagId);
+        }
+        return null;
+    }
+
+    async deleteCategorisationBySubscriptionIdAndTagId (subscriptionId, tagId) {
+        await this._con('categorisation')
+            .where({
+                subscriptionId: subscriptionId,
+                tagId: tagId
+            })
+            .del();
+    }
+
+    async createMutipleCategorisations (subscriptionId, tagIds) {
+        const categorisations = [];
+        for (const id of tagIds) {
+            categorisations.push({ subscriptionId: subscriptionId, tagId: id });
+        }
+        const resultArray = await this._con('categorisation')
+            .insert(categorisations)
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray;
         }
         return null;
     }
