@@ -466,13 +466,13 @@ module.exports = class Server {
 
     async validateTags (tagIds, userId) {
         if (!tagIds || tagIds.length === 0) {
-           return true;
+            return true;
         }
         const dbTags = await db.getTableRowsByUserId('tag', userId);
-        if (!dbTags || dbTags.length == 0) {
-           return false;
+        if (!dbTags || dbTags.length === 0) {
+            return false;
         }
-        let dbTagIds = dbTags.map(tag => tag.id);
+        const dbTagIds = dbTags.map(tag => tag.id);
         return tagIds.every(id => dbTagIds.includes(id))
     }
 }
