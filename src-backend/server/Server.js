@@ -365,7 +365,7 @@ module.exports = class Server {
             'type' in req.body && typeof req.body.type === 'string' &&
             'url' in req.body && typeof req.body.url === 'string' &&
             'name' in req.body && typeof req.body.name === 'string' &&
-            'tags' in req.body && Array.isArray(req.body.tags) && req.body.tags.every(elem => typeof elem === "number") &&
+            'tags' in req.body && Array.isArray(req.body.tags) && req.body.tags.every(elem => typeof elem === 'number') &&
             'user' in req && req.user instanceof User
         ) {
             const user = req.user;
@@ -464,16 +464,15 @@ module.exports = class Server {
         responseUtils.sendBadRequest(res);
     }
 
-    
-    async validateTags(tagIds, userId) {
-       if (!tagIds || tagIds.length === 0) {
+    async validateTags (tagIds, userId) {
+        if (!tagIds || tagIds.length === 0) {
            return true;
-       }
-       const dbTags = await db.getTableRowsByUserId('tag', userId);
-       if (!dbTags || dbTags.length == 0) {
+        }
+        const dbTags = await db.getTableRowsByUserId('tag', userId);
+        if (!dbTags || dbTags.length == 0) {
            return false;
-       }
-       let dbTagIds = dbTags.map(tag => tag.id);
-       return tagIds.every(id => dbTagIds.includes(id))
+        }
+        let dbTagIds = dbTags.map(tag => tag.id);
+        return tagIds.every(id => dbTagIds.includes(id))
     }
 }
