@@ -72,6 +72,17 @@
                     </v-dialog>
                 </v-row>
             </template>
+            <v-dialog v-model="dialogDelete" max-width="500px">
+                <v-card>
+                    <v-card-title class="headline">Diese Kategorie löschen?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" text @click="dialogDelete=false">Abbrechen</v-btn>
+                        <v-btn color="error" text @click="confirmDelete()">Löschen</v-btn>
+                        <v-spacer></v-spacer>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-toolbar>
         <v-card
             class="mx-auto card justify-center"
@@ -98,9 +109,13 @@
                         </v-chip>
                     </template>
                     <template #[`item.actions`]="{ item }">
-                        <v-icon>
-                            mdi-delete
-                        </v-icon>
+                        <v-btn>
+                            <v-icon
+                                @click="deleteKategorie(item.id)"
+                            >
+                                mdi-delete
+                            </v-icon>
+                        </v-btn>
                     </template>
                 </v-data-table>
             </template>
@@ -131,9 +146,11 @@ export default {
             }
         ],
         kategorieElemente: [],
-        dialog: false,
         name: '',
-        color: ''
+        color: '',
+        dialog: false,
+        dialogDelete: false,
+        deleteableItem: -1
     }),
     created () {
         this.loadData();
@@ -148,10 +165,23 @@ export default {
             }
             await this.loadData();
         },
-
+        async deleteKategorie (itemIndex) {
+            this.deleteableItem = itemIndex;
+            console.log('Lösche Item mit der ID: ' + this.deleteableItem);
+            this.dialogDelete = true;
+        },
+        async confirmDelete () {
+            const response = await Api.deleteTag(this.deleteableItem);
+            if (response) {
+                console.log(response);
+            } else {
+                this.dialogDelete = false;
+            }
+            await this.loadData();
+            this.deleteableItem = -1
+        },
         async loadData () {
-            const response = await Api.tags();
-            this.kategorieElemente = response;
+            this.kategorieElemente = await Api.tags();
         }
     }
 }

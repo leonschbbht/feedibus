@@ -28,4 +28,13 @@ export default class api {
             return response.data;
         }
     }
+
+    static async deleteTag (id) {
+        const response = await Axios.delete('/tags?id=' + id);
+        if (response.status === 200) {
+            return ''
+        } else if (typeof response.data === 'string') {
+            return response.data;
+        }
+    }
 }
