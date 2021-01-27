@@ -20,27 +20,20 @@
                     <v-stepper-content step="1">
                         <v-card
                             class="mb-12"
-                            height="200px"
+                            height="350px"
                             elevation="6"
                             color="accent"
                         >
+                            <v-card-title class="white--text primary">
+                                Wilkommen bei Feedibus!
+                            </v-card-title>
                             <v-row
                                 align="center"
                                 justify="center"
                             >
-                                <v-col
-                                    class="text-center"
-                                    cols="12"
-                                >
-                                    <h1 class="display-1 font-weight-thin mb-4">
-                                        Wilkommen bei Feedibus!
-                                    </h1>
-                                    <h4 class="subheading">
-                                        Im folgenden werden wir dich durch die Accounterstellung leiten
-                                    </h4>
-                                </v-col>
+                                <h3 class="ma-8">Im Folgenden werden wir dich durch die Accounterstellung leiten</h3>
                             </v-row>
-                            <v-rov
+                            <v-row
                                 align="center"
                                 justify="center"
                             >
@@ -62,7 +55,7 @@
                                             </template>
 
                                             <v-card>
-                                                <v-card-title class="headline grey lighten-2">
+                                                <v-card-title class="white--text primary">
                                                     Was ist Feedibus?
                                                 </v-card-title>
 
@@ -86,7 +79,7 @@
                                         </v-dialog>
                                     </div>
                                 </template>
-                            </v-rov>
+                            </v-row>
                         </v-card>
                         <v-btn
                             color="primary"
@@ -107,32 +100,31 @@
                         step="2"
                     >
                         Dein Name
-                        <small>Dein Name wird nur zur Personalisierung verwendet</small>
                     </v-stepper-step>
 
                     <v-stepper-content step="2">
                         <v-card
-                            class="mb-12"
                             height="200px"
                             elevation="6"
                             color="accent"
+                            class="mb-12"
                         >
-                            <v-container>
-                                <v-card-title
-                                >
-                                    Bitte gib hier deinen Namen ein
-                                </v-card-title>
-                                <v-row>
-                                    <v-spacer />
-                                    <v-text-field
-                                        v-model="name"
-                                        label="Name"
-                                        placeholder="Dein Name"
-                                        solo
-                                    />
-                                    <v-spacer />
-                                </v-row>
-                            </v-container>
+                            <v-card-title
+                                class="white--text primary">
+                                Bitte gib hier deinen Namen ein
+                            </v-card-title>
+                            <v-row
+                                align="center"
+                                justify="center">
+                                <v-spacer />
+                                <v-text-field
+                                    v-model="name"
+                                    label="Dein Name"
+                                    placeholder="optional"
+                                    class="ma-12"
+                                />
+                                <v-spacer />
+                            </v-row>
                         </v-card>
                         <v-btn
                             color="primary"
@@ -153,7 +145,6 @@
                         step="3"
                     >
                         Deine E-Mail Adresse
-                        <small>Die E-Mail benötigst du bei der Anmeldung</small>
                     </v-stepper-step>
 
                     <v-stepper-content step="3">
@@ -163,7 +154,11 @@
                             elevation="6"
                             height="200px"
                         >
-                            <v-card-title>Deine E-Mail Adresse</v-card-title>
+                            <v-card-title
+                                class="white--text primary"
+                                :class="{info: submitGeneralDisabledEmail}">
+                                Deine E-Mail Adresse
+                            </v-card-title>
                             <v-row></v-row>
                             <v-row>
                                 <v-spacer />
@@ -172,14 +167,14 @@
                                     label="E-Mail"
                                     :rules="[rules.required, rules.email]"
                                     placeholder="E-Mail Adresse"
-                                    solo
+                                    class="ma-12"
                                 />
                                 <v-spacer />
                             </v-row>
                         </v-card>
                         <v-btn
                             color="primary"
-                            :disabled="true"
+                            :disabled="submitGeneralDisabledEmail"
                             @click="e6 = 4"
                         >
                             Weiter
@@ -197,17 +192,47 @@
                         :complete="e6 > 4"
                     >
                         Passwort vergeben
-                        <small>Das Passwort wird nach modernen Sicherheitsstandards in unserer Datenbank abgelegt</small>
                     </v-stepper-step>
                     <v-stepper-content step="4">
                         <v-card
                             color="accent"
                             class="mb-12"
-                            height="200px"
                             elevation="6"
-                        ></v-card>
+                        >
+                            <v-card-title class="white--text primary" v-bind:class="{info: submitGeneralDisabledPassword}">
+                                Passwort vergeben
+                            </v-card-title>
+                            <v-card-text>
+                                <v-row>
+                                    <v-spacer />
+                                    <v-text-field
+                                        v-model="password"
+                                        label="Passwort"
+                                        :rules="[rules.required]"
+                                        placeholder="Dein Passwort"
+                                        :append-icon="showPw ? 'mdi-eye' : 'mdi-eye-off'"
+                                        :type="showPw ? 'text' : 'password'"
+                                        @click:append="showPw = !showPw"
+                                    />
+                                    <v-spacer />
+                                </v-row>
+                                <v-row>
+                                    <v-spacer />
+                                    <v-text-field
+                                        v-model="passwordRepeat"
+                                        label="Passwort wiederholen"
+                                        :rules="[rules.required, rules.pwMatches]"
+                                        :append-icon="showPw ? 'mdi-eye' : 'mdi-eye-off'"
+                                        :type="showPw ? 'text' : 'password'"
+                                        @click:append="showPw = !showPw"
+                                    />
+                                    <v-spacer />
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
                         <v-btn
                             color="primary"
+                            :disabled="submitGeneralDisabledPassword"
                             @click="e6 = e6+1"
                         >
                             Weiter
@@ -228,15 +253,20 @@
                             class="mb-12"
                             height="200px"
                             elevation="6"
-                        ></v-card>
+                        >
+                            <v-card-title class="white--text primary">
+                                Wir haben alles was wir wissen müssen
+                            </v-card-title>
+                        </v-card>
                         <v-btn
-                            color="success"
+                            color="primary"
+                            @click="submitGeneral()"
                         >
                             Account erstellen
                         </v-btn>
                         <v-btn
                             text
-                            @click="e6=e6-1"
+                            @click="e6--"
                         >
                             Zurück
                         </v-btn>
@@ -244,66 +274,6 @@
                 </v-stepper>
             </v-card>
         </template>
-        <!--
-        <v-card
-            class="mx-auto card"
-            :max-width="$vuetify.breakpoint.mobile ? '100%' : '60%'"
-        >
-            <v-card-title class="white--text secondary">
-                Herzlich Willkommen!
-            </v-card-title>
-            <v-card-text>
-                <v-text-field
-                    v-model="name"
-                    label="Name"
-                />
-                <v-text-field
-                    v-model="email"
-                    label="E-Mail"
-                    :rules="[rules.required, rules.email]"
-                />
-                <v-text-field
-                    v-model="password"
-                    label="Passwort"
-                    :rules="[rules.required]"
-
-                    :append-icon="showPw ? 'mdi-eye' : 'mdi-eye-off'"
-                    :type="showPw ? 'text' : 'password'"
-                    @click:append="showPw = !showPw"
-                />
-                <v-text-field
-                    v-model="passwordRepeat"
-                    label="Passwort wiederholen"
-                    :rules="[rules.required, rules.pwMatches]"
-                    :append-icon="showPw ? 'mdi-eye' : 'mdi-eye-off'"
-                    :type="showPw ? 'text' : 'password'"
-                    @click:append="showPw = !showPw"
-                />
-            </v-card-text>
-            <v-card-actions>
-                <v-btn
-                    color="success"
-                    :disabled="submitGeneralDisabled"
-                    @click="submitGeneral"
-                >
-                    Registrieren
-                </v-btn>
-                <v-btn
-                    color="warning"
-                    text
-                    @click="resetGeneral"
-                >
-                    Zurücksetzen
-                </v-btn>
-                <v-btn
-                    color="info"
-                    text
-                    to="/"
-                >
-                    Zurück
-                </v-btn>
-            </v-card-actions>
-        </v-card>
         <v-snackbar
             v-model="snackbarData.enabled"
             text
@@ -322,7 +292,6 @@
                 </v-btn>
             </template>
         </v-snackbar>
-        -->
     </div>
 </template>
 <script>
@@ -365,18 +334,18 @@ export default {
                 this.password !== this.passwordRepeat ||
                 !this.password;
         },
-        submitGeneral
+        submitGeneralDisabledEmail: function () {
+            const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            return !pattern.test(this.email)
+        },
+        submitGeneralDisabledPassword: function () {
+            return this.password !== this.passwordRepeat || !this.password;
+        }
     },
     methods: {
-        resetGeneral () {
-            this.name = '';
-            this.email = '';
-            this.password = '';
-            this.passwordRepeat = '';
-        },
         async submitGeneral () {
             const response = await api.register(this.name, this.email, this.password);
-            if (response) {
+            if (response !== '') {
                 this.snackbarData.text = response
                 this.snackbarData.color = 'error'
                 this.snackbarData.enabled = true;
