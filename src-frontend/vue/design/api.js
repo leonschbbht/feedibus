@@ -37,4 +37,13 @@ export default class api {
             return response.data;
         }
     }
+
+    static async feeds () {
+        const response = await Axios.get('/subscriptions')
+        if (response.status === 200) {
+            return '';
+        } else if (typeof response.data === 'string') {
+            return response.data;
+        }
+    }
 }

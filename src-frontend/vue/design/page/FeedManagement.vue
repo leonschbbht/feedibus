@@ -188,6 +188,8 @@
     </div>
 </template>
 <script>
+import Api from '../api';
+
 export default {
     data: () => ({
         page: 1,
@@ -204,7 +206,7 @@ export default {
                 value: 'name'
             },
             { text: 'Feedtyp', value: 'type' },
-            { text: 'Link', value: 'link' },
+            { text: 'Adresse', value: 'link' },
             { text: 'Kategorien', value: 'categories' },
             { text: 'Aktionen', value: 'actions', sortable: false }
 
@@ -256,11 +258,6 @@ export default {
     },
 
     methods: {
-        initialize () {
-            this.feeds = [
-                { name: 'Tagesschau', type: 'RSS', id: '1', link: 'tagesschau.de', categories: ['Nachrichten', 'Medien'] }
-            ];
-        },
 
         editItem (item) {
             this.editedIndex = this.feeds.indexOf(item);

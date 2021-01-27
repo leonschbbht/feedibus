@@ -72,14 +72,31 @@
                     </v-dialog>
                 </v-row>
             </template>
-            <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-dialog
+                v-model="dialogDelete"
+                max-width="500px"
+            >
                 <v-card>
-                    <v-card-title class="headline">Diese Kategorie löschen?</v-card-title>
+                    <v-card-title class="headline">
+                        Diese Kategorie löschen?
+                    </v-card-title>
                     <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="primary" text @click="dialogDelete=false">Abbrechen</v-btn>
-                        <v-btn color="error" text @click="confirmDelete()">Löschen</v-btn>
-                        <v-spacer></v-spacer>
+                        <v-spacer />
+                        <v-btn
+                            color="primary"
+                            text
+                            @click="dialogDelete=false"
+                        >
+                            Abbrechen
+                        </v-btn>
+                        <v-btn
+                            color="error"
+                            text
+                            @click="confirmDelete()"
+                        >
+                            Löschen
+                        </v-btn>
+                        <v-spacer />
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -109,7 +126,9 @@
                         </v-chip>
                     </template>
                     <template #[`item.actions`]="{ item }">
-                        <v-btn>
+                        <v-btn
+                            icon
+                        >
                             <v-icon
                                 @click="deleteKategorie(item.id)"
                             >
@@ -150,7 +169,7 @@ export default {
         color: '',
         dialog: false,
         dialogDelete: false,
-        deleteableItem: -1
+        selectedToDeleteID: -1
     }),
     created () {
         this.loadData();
@@ -166,19 +185,19 @@ export default {
             await this.loadData();
         },
         async deleteKategorie (itemIndex) {
-            this.deleteableItem = itemIndex;
-            console.log('Lösche Item mit der ID: ' + this.deleteableItem);
+            this.selectedToDeleteID = itemIndex;
+            console.log('Lösche Item mit der ID: ' + this.selectedToDeleteID);
             this.dialogDelete = true;
         },
         async confirmDelete () {
-            const response = await Api.deleteTag(this.deleteableItem);
+            const response = await Api.deleteTag(this.selectedToDeleteID);
             if (response) {
                 console.log(response);
             } else {
                 this.dialogDelete = false;
             }
             await this.loadData();
-            this.deleteableItem = -1
+            this.selectedToDeleteID = -1
         },
         async loadData () {
             this.kategorieElemente = await Api.tags();
