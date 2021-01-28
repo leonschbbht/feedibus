@@ -46,4 +46,14 @@ export default class api {
             return response.data;
         }
     }
+
+    static async createFeed (type, url, category) {
+        const data = {
+            name: name,
+            type: type,
+            category: category,
+            url: url
+        };
+        const response = await Axios.post('/subscriptions', data);
+    }
 }

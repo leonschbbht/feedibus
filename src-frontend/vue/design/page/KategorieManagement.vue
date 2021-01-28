@@ -7,7 +7,6 @@
             <v-toolbar-title class="white--text">
                 Kategorien verwalten
             </v-toolbar-title>
-            <v-spacer />
             <template>
                 <v-row justify="center">
                     <v-dialog
@@ -101,6 +100,14 @@
                 </v-card>
             </v-dialog>
         </v-toolbar>
+        <v-alert
+            v-if="categoryModified"
+            type="success"
+            outlined
+            transition="expand-transition"
+        >
+            {{ infoDialogText }}
+        </v-alert>
         <v-card
             class="mx-auto card justify-center"
             :max-width="$vuetify.breakpoint.mobile ? '97%' : '60%'"
@@ -139,6 +146,34 @@
                 </v-data-table>
             </template>
         </v-card>
+        <template>
+            <div class="text-center">
+                <v-bottom-sheet v-model="sheet">
+                    <v-sheet
+                        class="text-center"
+                        height="200px"
+                    >
+                        <h3 class="warning">
+                            Hilfe zu Kategorien
+                        </h3>
+                        <div class="py-3">
+                            Auf dieser Seite kannst du Kategorien hinzufügen um die von dir abonnierten Feeds zu sortieren
+                        </div>
+                        <div class="py-2">
+                            Klicke einfach auf <strong>Kategorie hinzufügen</strong> und vergieb einen passenden Namen
+                        </div>
+                        <v-btn
+                            color="warning"
+                            dark
+                            @click="dialog = true"
+                            class="pa-3"
+                        >
+                            Kategorie hinzufügen...
+                        </v-btn>
+                    </v-sheet>
+                </v-bottom-sheet>
+            </div>
+        </template>
     </div>
 </template>
 <script>
@@ -167,12 +202,16 @@ export default {
         kategorieElemente: [],
         name: '',
         color: '',
+        categoryModified: false,
+        infoDialogText: '',
         dialog: false,
         dialogDelete: false,
-        selectedToDeleteID: -1
+        selectedToDeleteID: -1,
+        sheet: false
     }),
-    created () {
-        this.loadData();
+    async created () {
+        await this.loadData();
+        await this.checkIfCategoriesExist();
     },
     methods: {
         async submit () {
@@ -182,11 +221,15 @@ export default {
             } else {
                 this.dialog = false;
             }
+            this.categoryModified = true;
+            this.infoDialogText = 'Kategorie wurde hinzugefügt!'
+            this.sheet = false
+            this.name = '';
+            this.color = '';
             await this.loadData();
         },
         async deleteKategorie (itemIndex) {
             this.selectedToDeleteID = itemIndex;
-            console.log('Lösche Item mit der ID: ' + this.selectedToDeleteID);
             this.dialogDelete = true;
         },
         async confirmDelete () {
@@ -195,12 +238,22 @@ export default {
                 console.log(response);
             } else {
                 this.dialogDelete = false;
+                this.infoDialogText = 'Die Kategorie wurde gelöscht!';
+                this.categoryModified = true;
             }
             await this.loadData();
             this.selectedToDeleteID = -1
         },
         async loadData () {
             this.kategorieElemente = await Api.tags();
+        },
+        checkIfCategoriesExist () {
+            console.log(this.kategorieElemente.length)
+            if (this.kategorieElemente.length === 0) {
+                this.sheet = true;
+            } else {
+                this.sheet = false
+            }
         }
     }
 }

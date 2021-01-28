@@ -1,6 +1,7 @@
 <template>
     <v-footer
         padless
+        fixed
     >
         <v-toolbar
             dark

@@ -44,7 +44,7 @@
                                         <v-col
                                             cols="12"
                                             sm="6"
-                                            md="4"
+                                            md="7"
                                         >
                                             <v-text-field
                                                 v-model="editedItem.name"
@@ -67,7 +67,7 @@
                                         <v-col
                                             cols="12"
                                             sm="6"
-                                            md="4"
+                                            md="7"
                                         >
                                             <v-text-field
                                                 v-model="editedItem.link"
@@ -78,15 +78,27 @@
                                         <v-col
                                             cols="12"
                                             sm="6"
-                                            md="4"
+                                            md="7"
                                         >
-                                            <v-combobox
+                                            <v-select
                                                 v-model="editedItem.categories"
                                                 :items="categories"
                                                 multiple
                                                 chips
                                                 label="Kategorien"
-                                            />
+                                            >
+                                                <template #selection="{ item, index }">
+                                                    <v-chip v-if="index === 0">
+                                                        <span>{{ item }}</span>
+                                                    </v-chip>
+                                                    <span
+                                                        v-if="index === 1"
+                                                        class="grey--text caption"
+                                                    >
+                                                        (+{{ editedItem.categories.length-1 }} andere)
+                                                    </span>
+                                                </template>
+                                            </v-select>
                                         </v-col>
                                     </v-row>
                                 </v-container>
@@ -196,8 +208,13 @@ export default {
         itemsPerPage: 10,
         dialog: false,
         dialogDelete: false,
-        types: [],
+        types: [
+            'RSS',
+            'Twitter',
+            'YouTube'
+        ],
         categories: [],
+        categoriesApiResponse: [],
         headers: [
             {
                 text: 'Feedname',
@@ -254,7 +271,8 @@ export default {
     },
 
     created () {
-        this.initialize();
+        this.loadData();
+        console.log(this.categories)
     },
 
     methods: {
@@ -299,6 +317,13 @@ export default {
                 this.feeds.push(this.editedItem);
             }
             this.close();
+        },
+        async loadData () {
+            const response = await Api.tags();
+            response.forEach(category => {
+                const name = category.name;
+                this.categories.push(name);
+            })
         }
     }
 };
