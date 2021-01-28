@@ -57,6 +57,38 @@ class Database {
         return null;
     }
 
+    async updateUser (userId, name, email, password) {
+        const user = new User(userId, name, email, '', '');
+        if (password) {
+            await user.setNewPassword(password);
+        }
+
+        const attributesToUpdate = {};
+        if (name) {
+            attributesToUpdate.name = user.name;
+        }
+        if (email) {
+            attributesToUpdate.email = user.email;
+        }
+        if (password) {
+            attributesToUpdate.password = user.password;
+        }
+        if (user.salt) {
+            attributesToUpdate.salt = user.salt;
+        }
+
+        const resultArray = await this._con('user')
+            .update(attributesToUpdate)
+            .where('id', user.id)
+            .returning('id')
+            .catch(e => {
+                console.log(e);
+                return null
+            })
+            ;
+        return resultArray;
+    }
+
     /**
      * @param {number} id
      * @returns {Promise<User|undefined>}
