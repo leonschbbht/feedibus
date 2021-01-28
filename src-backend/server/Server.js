@@ -71,6 +71,9 @@ module.exports = class Server {
         this.app.get('/user', this.jsonBodyParser, (req, res) => {
             this.getSessionUser(req, res);
         });
+        this.app.put('/user', this.jsonBodyParser, (req, res) => {
+            this.updateUser(req, res);
+        });
 
         this.app.get('/tags', this.jsonBodyParser, (req, res) => {
             this.getTags(req, res);
@@ -343,6 +346,38 @@ module.exports = class Server {
                 });
         }
         responseUtils.sendNotFound(res, 'No user is currently logged in.');
+    }
+
+    async updateUser (req, res) {
+        if (!req.user) {
+            responseUtils.sendForbidden(res, 'You are not logged in');
+            return;
+        }
+
+        if (
+            ('email' in req.body && typeof req.body.email === 'string') ||
+            ('name' in req.body && typeof req.body.name === 'string') ||
+            ('password' in req.body && typeof req.body.password === 'string')
+        ) {
+            const email = req.body.email;
+            const name = req.body.name;
+            const password = req.body.password;
+            const result = db.updateUser(req.user.id, name, email, password);
+            if (result) {
+                if (name) {
+                    req.user.name = name;
+                }
+                if (email) {
+                    req.user.email = email;
+                }
+                responseUtils.sendOK(res, 'Updated user with id: ' + req.user.id);
+                return;
+            } else {
+                responseUtils.sendConflict(res, 'User could not be updated.');
+                return;
+            }
+        }
+        responseUtils.sendBadRequest(res);
     }
 
     async loadUserFromSession (req, res, next) {
