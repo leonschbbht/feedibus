@@ -47,13 +47,20 @@ export default class api {
         }
     }
 
-    static async createFeed (type, url, category) {
+    static async createFeed (type, url, name, tags) {
         const data = {
-            name: name,
             type: type,
-            category: category,
-            url: url
+            url: url,
+            name: name,
+            tags: tags
         };
+        console.log('Erstelle ' + JSON.stringify(data, null, 2))
         const response = await Axios.post('/subscriptions', data);
+        console.log(JSON.stringify(response, null, 2))
+        if (response.status === 200) {
+            return '';
+        } else if (typeof response.data === 'string') {
+            return response.data;
+        }
     }
 }

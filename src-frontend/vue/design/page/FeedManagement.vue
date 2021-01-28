@@ -209,11 +209,12 @@ export default {
         dialog: false,
         dialogDelete: false,
         types: [
-            'RSS',
-            'Twitter',
-            'YouTube'
+            'rss',
+            'twitter',
+            'youtube'
         ],
         categories: [],
+        categoriesJSON: [],
         categoriesApiResponse: [],
         headers: [
             {
@@ -272,7 +273,6 @@ export default {
 
     created () {
         this.loadData();
-        console.log(this.categories)
     },
 
     methods: {
@@ -310,20 +310,36 @@ export default {
             });
         },
 
-        save () {
-            if (this.editedIndex > -1) {
-                Object.assign(this.feeds[this.editedIndex], this.editedItem);
-            } else {
-                this.feeds.push(this.editedItem);
+        async save () {
+            console.log(JSON.stringify(this.categoriesJSON, null, 2));
+            const ids = [];
+            for (let i = 0; i < this.editedItem.categories.length; i++) {
+                for (const category in this.categoriesJSON) {
+                    if (category.name === this.editedItem.categories[i]) {
+                        ids.push(category.id)
+                    }
+                }
             }
+            await Api.createFeed(this.editedItem.type, this.editedItem.link, this.editedItem.name, ids);
+            await this.loadData();
             this.close();
         },
         async loadData () {
             const response = await Api.tags();
+            this.categoriesJSON = response;
             response.forEach(category => {
                 const name = category.name;
                 this.categories.push(name);
             })
+        },
+        getTagIdByName (tagName) {
+            for (let i = 0; i < this.categories.length; i++) {
+                if (this.categories[i].name === tagName) {
+                    console.log(this.categories[i].name + ' -- ' + this.categories[i].id)
+                    return this.categories[i].id;
+                }
+            }
+            return null;
         }
     }
 };
