@@ -336,8 +336,8 @@ class Database {
             .del();
     }
 
-    async getSubscriptionsByUserId(userId) {
-        let subscriptionArray = await this._con
+    async getSubscriptionsByUserId (userId) {
+        const subscriptionArray = await this._con
             .distinct()
             .select('subscription.id', 'subscription.userId', 'subscription.jobId', 'subscription.name')
             .from('subscription')
@@ -356,9 +356,9 @@ class Database {
                 })
                 .catch(() => null);
             userTagsArray = userTagsArray || [];
-            for (let subscription of subscriptionArray) {
-                let subscriptionTags = userTagsArray.filter(tag => tag.subscriptionId === subscription.id);
-                subscription.tags = subscriptionTags.map(tag => {return {id: tag.id, userId: tag.userId, color: tag.color, name: tag.name}});
+            for (const subscription of subscriptionArray) {
+                const subscriptionTags = userTagsArray.filter(tag => tag.subscriptionId === subscription.id);
+                subscription.tags = subscriptionTags.map(tag => { return { id: tag.id, userId: tag.userId, color: tag.color, name: tag.name } });
             }
             return subscriptionArray;
         }
@@ -525,15 +525,15 @@ class Database {
             .del();
     }
 
-    async createMutipleCategorisations(subscriptionId, tagIds) {
-        let categorisations = [];
-        for (let id of tagIds) {
-            categorisations.push({subscriptionId: subscriptionId, tagId: id});
+    async createMutipleCategorisations (subscriptionId, tagIds) {
+        const categorisations = [];
+        for (const id of tagIds) {
+            categorisations.push({ subscriptionId: subscriptionId, tagId: id });
         }
         const resultArray = await this._con('categorisation')
-        .insert(categorisations)
-        .returning('*')
-        .catch(() => null);
+            .insert(categorisations)
+            .returning('*')
+            .catch(() => null);
         if (resultArray && Array.isArray(resultArray)) {
             return resultArray;
         }
