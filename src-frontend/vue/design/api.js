@@ -40,12 +40,7 @@ export default class api {
 
     static async feeds () {
         const response = await Axios.get('/subscriptions')
-        console.log(JSON.stringify(response, null, 2))
-        if (response.status === 200) {
-            return '';
-        } else if (typeof response.data === 'string') {
-            return response.data;
-        }
+        return response.data;
     }
 
     static async createFeed (type, url, name, tags) {
@@ -55,13 +50,6 @@ export default class api {
             name: name,
             tags: tags
         };
-        console.log('Erstelle ' + JSON.stringify(data, null, 2))
-        const response = await Axios.post('/subscriptions', data);
-        console.log(JSON.stringify(response, null, 2))
-        if (response.status === 200) {
-            return '';
-        } else if (typeof response.data === 'string') {
-            return response.data;
-        }
+        await Axios.post('/subscriptions', data);
     }
 }

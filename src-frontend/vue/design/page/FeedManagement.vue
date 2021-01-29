@@ -70,7 +70,7 @@
                                             md="7"
                                         >
                                             <v-text-field
-                                                v-model="editedItem.link"
+                                                v-model="editedItem.url"
                                                 label="Link"
                                                 :rules="[rules.required]"
                                             />
@@ -224,7 +224,7 @@ export default {
                 value: 'name'
             },
             { text: 'Feedtyp', value: 'type' },
-            { text: 'Adresse', value: 'link' },
+            { text: 'Adresse', value: 'url' },
             { text: 'Kategorien', value: 'categories' },
             { text: 'Aktionen', value: 'actions', sortable: false }
 
@@ -238,14 +238,14 @@ export default {
             name: '',
             type: '',
             id: 0,
-            link: '',
+            url: '',
             categories: []
         },
         defaultItem: {
             name: '',
             type: '',
             id: 0,
-            link: '',
+            url: '',
             categories: []
         }
     }),
@@ -258,7 +258,7 @@ export default {
             return Math.ceil(this.feeds.length / this.itemsPerPage);
         },
         saveDisabled () {
-            return !(this.editedItem.name && this.editedItem.type && this.editedItem.link)
+            return !(this.editedItem.name && this.editedItem.type && this.editedItem.url)
         }
 
     },
@@ -311,30 +311,37 @@ export default {
         },
 
         async save () {
-            // console.log('JSON - ' + JSON.stringify(this.categoriesJSON, null, 2));
-            console.log('Array - ' + this.editedItem.categories)
-            let ids = [];
+            const ids = [];
             for (let i = 0; i < this.categoriesJSON.length; i++) {
                 for (let j = 0; j < this.editedItem.categories.length; j++) {
                     if (this.categoriesJSON[i].name === this.editedItem.categories[j]) {
                         ids.push(this.categoriesJSON[i].id);
-                        console.log(this.categoriesJSON[i].id)
                     }
                 }
             }
-            console.log(ids);
-            await Api.createFeed(this.editedItem.type, this.editedItem.link, this.editedItem.name, ids);
+            await Api.createFeed(this.editedItem.type, this.editedItem.url, this.editedItem.name, ids);
             await this.loadData();
             this.close();
         },
         async loadData () {
+            await this.convertFeeds();
             const response = await Api.tags();
             this.categoriesJSON = response;
             response.forEach(category => {
                 const name = category.name;
                 this.categories.push(name);
-            })
-            this.feeds = await Api.feeds().data;
+            });
+        },
+        async convertFeeds () {
+            const feeds = await Api.feeds();
+            for (let index = 0; index < feeds.length; index++) {
+                const nameArray = [];
+                for (let i = 0; i < feeds[index].tags.length; i++) {
+                    nameArray.push(feeds[index].tags[i].name);
+                }
+                feeds[index].tags = nameArray;
+            }
+            this.feeds = feeds;
         }
     }
 };
