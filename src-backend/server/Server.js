@@ -400,8 +400,7 @@ module.exports = class Server {
             'type' in req.body && typeof req.body.type === 'string' &&
             'url' in req.body && typeof req.body.url === 'string' &&
             'name' in req.body && typeof req.body.name === 'string' &&
-            'tags' in req.body && Array.isArray(req.body.tags) && req.body.tags.every(elem => typeof elem === 'number') &&
-            'user' in req && req.user
+            'tags' in req.body && Array.isArray(req.body.tags) && req.body.tags.every(elem => typeof elem === 'number')
         ) {
             const user = req.user;
             const type = req.body.type;

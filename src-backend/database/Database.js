@@ -371,8 +371,9 @@ class Database {
     async getSubscriptionsByUserId (userId) {
         const subscriptionArray = await this._con
             .distinct()
-            .select('subscription.id', 'subscription.userId', 'subscription.jobId', 'subscription.name')
+            .select('subscription.id', 'subscription.userId', 'subscription.jobId', 'subscription.name', 'job.url', 'job.type')
             .from('subscription')
+            .innerJoin('job', 'job.id', 'subscription.jobId')
             .leftJoin('categorisation', 'categorisation.subscriptionId', 'subscription.id')
             .where({
                 'subscription.userId': userId
