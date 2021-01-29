@@ -16,8 +16,6 @@ jobs:
           uses: actions/checkout@v2
         - name: Abhängigkeiten installieren
           run: npm install
-        - name: Lint Code
-          run: npm run fix
         - name: Test Lint
           run: npm run lint
         - name: Unit Tests ausführen

@@ -8,8 +8,8 @@ module.exports = {
         password: process.env.POSTGRES_PASSWORD ? process.env.POSTGRES_PASSWORD : 'roottoor'
     },
     pool: {
-        min: 2,
-        max: 30
+        min: 1,
+        max: 7
     },
     migrations: {
         tableName: 'knex_migrations'

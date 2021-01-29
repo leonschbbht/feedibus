@@ -1,11 +1,30 @@
-const dbConfig = require('../../knexfile');
 const User = require('../model/User');
-const Job = require('../model/Job');
+const Tag = require('../model/Tag');
 const Subscription = require('../model/Subscription');
+const Categorisation = require('../model/Categorisation');
+const dbConfig = require('../../knexfile');
+const Job = require('../model/Job');
 const Message = require('../model/Message');
 
 class Database {
     constructor () {
+        this._con = require('knex')(dbConfig);
+    }
+
+    async migrateKnex () {
+        await this._con.migrate.up();
+    }
+
+    async isConnected () {
+        const result = await this._con
+            .distinct()
+            .select('table_catalog')
+            .from('information_schema.tables')
+            .catch(() => null);
+        return !!result;
+    }
+
+    async reconnect () {
         this._con = require('knex')(dbConfig);
     }
 
@@ -30,12 +49,44 @@ class Database {
                 console.log(e);
                 return null
             })
-        ;
+            ;
         if (resultArray && Array.isArray(resultArray)) {
             user.id = resultArray.pop();
             return user;
         }
         return null;
+    }
+
+    async updateUser (userId, name, email, password) {
+        const user = new User(userId, name, email, '', '');
+        if (password) {
+            await user.setNewPassword(password);
+        }
+
+        const attributesToUpdate = {};
+        if (name) {
+            attributesToUpdate.name = user.name;
+        }
+        if (email) {
+            attributesToUpdate.email = user.email;
+        }
+        if (password) {
+            attributesToUpdate.password = user.password;
+        }
+        if (user.salt) {
+            attributesToUpdate.salt = user.salt;
+        }
+
+        const resultArray = await this._con('user')
+            .update(attributesToUpdate)
+            .where('id', user.id)
+            .returning('id')
+            .catch(e => {
+                console.log(e);
+                return null
+            })
+            ;
+        return resultArray;
     }
 
     /**
@@ -95,6 +146,87 @@ class Database {
         return false;
     }
 
+    async getAllTableRows (tableName) {
+        const resultArray = await this._con
+            .select('*')
+            .from(tableName)
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray;
+        }
+        return undefined;
+    }
+
+    async deleteTableRowById (tableName, id) {
+        await this._con(tableName)
+            .where({
+                id: id
+            })
+            .del();
+    }
+
+    async deleteTableRowByIdAndUserId (tableName, id, userId) {
+        await this._con(tableName)
+            .where({
+                id: id,
+                userId: userId
+            })
+            .del();
+    }
+
+    async getTableRowsById (tableName, id) {
+        const resultArray = await this._con
+            .select('*')
+            .from(tableName)
+            .where({
+                id: id
+            })
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray;
+        }
+        return undefined;
+    }
+
+    async getTableRowsByUserId (tableName, userId) {
+        const resultArray = await this._con
+            .select('*')
+            .from(tableName)
+            .where({
+                userId: userId
+            })
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray;
+        }
+        return undefined;
+    }
+
+    /**
+ * @param {string} name
+ * @param {string} color
+ * @param {string} userId
+ * @returns {Promise<null|Tag>}
+ */
+    async createTag (name, color, userId) {
+        const tag = new Tag(0, userId, name, color);
+        const id = await this._con('tag')
+            .insert({
+                userId: tag.userId,
+                color: tag.color,
+                name: tag.name
+            })
+            .returning('id')
+            .catch(() => null);
+        if (id && Array.isArray(id)) {
+            tag.id = id.pop();
+            return tag;
+        }
+    }
+
     /**
      * @return {Promise<Job[]>}
      */
@@ -103,6 +235,21 @@ class Database {
             .select('*')
             .from('job')
             .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray.map(row => new Job(row.id, row.type, row.url));
+        }
+        return [];
+    }
+
+    async getJobsByUserId (userId) {
+        const resultArray = await this._con
+            .select('*')
+            .from('job')
+            .innerJoin('subscription', 'subscription.jobId', 'job.id')
+            .innerJoin('user', 'user.id', 'subscription.userId')
+            .where('user.id', userId)
+            .returning(['job.id', 'job.type', 'job.url'])
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray)) {
             return resultArray.map(row => new Job(row.id, row.type, row.url));
@@ -187,7 +334,7 @@ class Database {
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray) && resultArray.length > 0) {
             const row = resultArray.pop();
-            return new Subscription(row.id, row.userId, row.jobId);
+            return new Subscription(row.id, row.userId, row.jobId, row.name);
         }
         return null;
     }
@@ -197,17 +344,55 @@ class Database {
      * @param {number} jobId
      * @return {Promise<Subscription|null>}
      */
-    async createSubscription (userId, jobId) {
+    async createSubscription (userId, jobId, name) {
         const resultArray = await this._con('subscription')
             .insert({
                 userId: userId,
-                jobId: jobId
+                jobId: jobId,
+                name: name
             })
             .returning('*')
             .catch(() => null);
         if (resultArray && Array.isArray(resultArray) && resultArray.length === 1) {
             const row = resultArray.pop();
-            return new Subscription(row.id, row.userId, row.jobId);
+            return new Subscription(row.id, row.userId, row.jobId, row.name);
+        }
+        return null;
+    }
+
+    async deleteSubscriptionByJobId (jobId) {
+        await this._con('subscription')
+            .where({
+                jobId: jobId
+            })
+            .del();
+    }
+
+    async getSubscriptionsByUserId (userId) {
+        const subscriptionArray = await this._con
+            .distinct()
+            .select('subscription.id', 'subscription.userId', 'subscription.jobId', 'subscription.name')
+            .from('subscription')
+            .leftJoin('categorisation', 'categorisation.subscriptionId', 'subscription.id')
+            .where({
+                'subscription.userId': userId
+            })
+            .catch(() => null);
+        if (subscriptionArray && Array.isArray(subscriptionArray) && subscriptionArray.length > 0) {
+            let userTagsArray = await this._con
+                .select('tag.id', 'tag.userId', 'tag.color', 'tag.name', 'categorisation.subscriptionId')
+                .from('tag')
+                .innerJoin('categorisation', 'categorisation.tagId', 'tag.id')
+                .where({
+                    'tag.userId': userId
+                })
+                .catch(() => null);
+            userTagsArray = userTagsArray || [];
+            for (const subscription of subscriptionArray) {
+                const subscriptionTags = userTagsArray.filter(tag => tag.subscriptionId === subscription.id);
+                subscription.tags = subscriptionTags.map(tag => { return { id: tag.id, userId: tag.userId, color: tag.color, name: tag.name } });
+            }
+            return subscriptionArray;
         }
         return null;
     }
@@ -269,8 +454,124 @@ class Database {
         }
         return null;
     }
-}
 
+    async getMessagesByUserId (userId) {
+        const messageSubscriptionArray = await this._con
+            .select(['message.*', 'subscription.id as subscriptionId', 'subscription.name as subscriptionName', 'job.type'])
+            .from('message')
+            .innerJoin('subscription', 'subscription.jobId', 'message.jobId')
+            .innerJoin('job', 'subscription.jobId', 'job.id')
+            .where('subscription.userId', userId)
+            .returning('*')
+            .catch(() => null);
+        if (messageSubscriptionArray && Array.isArray(messageSubscriptionArray) && messageSubscriptionArray.length > 0) {
+            const tagSubscriptionIdArray = await this._con
+                .select(['tag.*', 'categorisation.subscriptionId'])
+                .from('tag')
+                .innerJoin('categorisation', 'categorisation.tagId', 'tag.id')
+                .where('tag.userId', userId)
+                .returning('*')
+                .catch(() => null);
+
+            const subscriptionIdTagsMap = new Map();
+            tagSubscriptionIdArray.forEach(elem => {
+                const tags = subscriptionIdTagsMap.get(elem.subscriptionId);
+                if (tags) {
+                    tags.push(elem);
+                    subscriptionIdTagsMap.set(elem.subscriptionId, tags)
+                } else {
+                    subscriptionIdTagsMap.set(elem.subscriptionId, [elem])
+                }
+            });
+
+            const messageIdTagsMap = new Map();
+            for (const element of messageSubscriptionArray) {
+                const tags = subscriptionIdTagsMap.get(element.subscriptionId);
+                if (tags != null) {
+                    messageIdTagsMap.set(element.id, tags);
+                }
+            }
+
+            for (const element of messageSubscriptionArray) {
+                const tags = messageIdTagsMap.get(element.id);
+                element.tags = tags || [];
+            }
+            return messageSubscriptionArray;
+        }
+        return [];
+    }
+
+    async createCategorisation (subscriptionId, tagId) {
+        const resultArray = await this._con('categorisation')
+            .insert({
+                subscriptionId: subscriptionId,
+                tagId: tagId
+            })
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray) && resultArray.length === 1) {
+            const row = resultArray.pop();
+            return row.id;
+        }
+        return null;
+    }
+
+    async getCategorisationsByUserId (userId) {
+        const resultArray = await this._con
+            .select('*')
+            .from('categorisation')
+            .innerJoin('tag', 'tag.id', 'categorisation.tagId')
+            .where('tag.userId', userId)
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray.map(row => new Categorisation(row.id, row.subscriptionId, row.tagId));
+        }
+        return [];
+    }
+
+    async getCategorisationBySubscriptionIdAndTagId (subscriptionId, tagId) {
+        const resultArray = await this._con
+            .select('*')
+            .from('categorisation')
+            .where({
+                subscriptionId: subscriptionId,
+                tagId: tagId
+            })
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            const row = resultArray.pop();
+            if (!row) {
+                return null;
+            }
+            return new Categorisation(row.id, row.subscriptionId, row.tagId);
+        }
+        return null;
+    }
+
+    async deleteCategorisationBySubscriptionIdAndTagId (subscriptionId, tagId) {
+        await this._con('categorisation')
+            .where({
+                subscriptionId: subscriptionId,
+                tagId: tagId
+            })
+            .del();
+    }
+
+    async createMutipleCategorisations (subscriptionId, tagIds) {
+        const categorisations = [];
+        for (const id of tagIds) {
+            categorisations.push({ subscriptionId: subscriptionId, tagId: id });
+        }
+        const resultArray = await this._con('categorisation')
+            .insert(categorisations)
+            .returning('*')
+            .catch(() => null);
+        if (resultArray && Array.isArray(resultArray)) {
+            return resultArray;
+        }
+        return null;
+    }
+}
 // Die Datenbankverbindung sollte ein Singleton sein
 const db = new Database();
 module.exports = db;

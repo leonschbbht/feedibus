@@ -24,6 +24,7 @@ exports.up = function (knex) {
             table.increments('id').primary();
             table.integer('userId').references('user.id');
             table.integer('jobId').references('job.id');
+            table.string('name');
         }).createTable('tag', function (table) {
             table.increments('id').primary();
             table.integer('userId').references('user.id');
