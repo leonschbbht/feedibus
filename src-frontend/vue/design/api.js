@@ -40,6 +40,7 @@ export default class api {
 
     static async feeds () {
         const response = await Axios.get('/subscriptions')
+        console.log(JSON.stringify(response, null, 2))
         if (response.status === 200) {
             return '';
         } else if (typeof response.data === 'string') {

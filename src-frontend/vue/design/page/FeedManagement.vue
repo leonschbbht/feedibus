@@ -311,15 +311,18 @@ export default {
         },
 
         async save () {
-            console.log(JSON.stringify(this.categoriesJSON, null, 2));
-            const ids = [];
-            for (let i = 0; i < this.editedItem.categories.length; i++) {
-                for (const category in this.categoriesJSON) {
-                    if (category.name === this.editedItem.categories[i]) {
-                        ids.push(category.id)
+            // console.log('JSON - ' + JSON.stringify(this.categoriesJSON, null, 2));
+            console.log('Array - ' + this.editedItem.categories)
+            let ids = [];
+            for (let i = 0; i < this.categoriesJSON.length; i++) {
+                for (let j = 0; j < this.editedItem.categories.length; j++) {
+                    if (this.categoriesJSON[i].name === this.editedItem.categories[j]) {
+                        ids.push(this.categoriesJSON[i].id);
+                        console.log(this.categoriesJSON[i].id)
                     }
                 }
             }
+            console.log(ids);
             await Api.createFeed(this.editedItem.type, this.editedItem.link, this.editedItem.name, ids);
             await this.loadData();
             this.close();
@@ -331,15 +334,7 @@ export default {
                 const name = category.name;
                 this.categories.push(name);
             })
-        },
-        getTagIdByName (tagName) {
-            for (let i = 0; i < this.categories.length; i++) {
-                if (this.categories[i].name === tagName) {
-                    console.log(this.categories[i].name + ' -- ' + this.categories[i].id)
-                    return this.categories[i].id;
-                }
-            }
-            return null;
+            this.feeds = await Api.feeds().data;
         }
     }
 };
