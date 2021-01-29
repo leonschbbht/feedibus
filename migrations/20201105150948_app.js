@@ -32,8 +32,8 @@ exports.up = function (knex) {
             table.string('color');
         }).createTable('categorisation', function (table) {
             table.increments('id').primary();
-            table.integer('subscriptionId').references('subscription.id');
-            table.integer('tagId').references('tag.id');
+            table.integer('subscriptionId').references('subscription.id').onDelete('CASCADE');
+            table.integer('tagId').references('tag.id').onDelete('CASCADE');
         })
 };
 
