@@ -40,6 +40,7 @@ export default class api {
 
     static async feeds () {
         const response = await Axios.get('/subscriptions')
+        console.log(JSON.stringify(response, null, 2))
         return response.data;
     }
 
@@ -51,5 +52,9 @@ export default class api {
             tags: tags
         };
         await Axios.post('/subscriptions', data);
+    }
+
+    static async deleteFeed (feedId) {
+        await Axios.delete('/subscriptions?id=' + feedId);
     }
 }

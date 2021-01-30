@@ -158,21 +158,13 @@
             </template>
             <template #[`item.categories`]="{ item }">
                 <v-chip
-                    v-for="category in item.categories"
+                    v-for="category in item.tags"
                     :key="category"
-                    @click:close="close"
                 >
                     {{ category }}
                 </v-chip>
             </template>
             <template #[`item.actions`]="{ item }">
-                <v-icon
-                    small
-                    class="mr-2"
-                    @click="editItem(item)"
-                >
-                    mdi-pencil
-                </v-icon>
                 <v-icon
                     small
                     @click="deleteItem(item)"
@@ -197,6 +189,24 @@
                 />
             </template>
         </v-data-table>
+        <v-snackbar
+            v-model="snackbarData.enabled"
+            text
+            :color="snackbarData.color"
+        >
+            {{ snackbarData.text }}
+
+            <template #action="{ attrs }">
+                <v-btn
+                    :color="snackbarData.color"
+                    outlined
+                    v-bind="attrs"
+                    @click="snackbarData.enabled = false"
+                >
+                    Schließen
+                </v-btn>
+            </template>
+        </v-snackbar>
     </div>
 </template>
 <script>
@@ -247,6 +257,11 @@ export default {
             id: 0,
             url: '',
             categories: []
+        },
+        snackbarData: {
+            enabled: false,
+            text: '',
+            color: ''
         }
     }),
 
@@ -289,9 +304,13 @@ export default {
             this.dialogDelete = true;
         },
 
-        deleteItemConfirm () {
+        async deleteItemConfirm () {
             this.feeds.splice(this.editedIndex, 1);
+            await Api.deleteFeed(this.editedItem.id);
             this.closeDelete();
+            this.snackbarData.enabled = true
+            this.snackbarData.color = 'warning'
+            this.snackbarData.text = 'Feed wurde gelöscht'
         },
 
         close () {
@@ -321,6 +340,9 @@ export default {
             }
             await Api.createFeed(this.editedItem.type, this.editedItem.url, this.editedItem.name, ids);
             await this.loadData();
+            this.snackbarData.enabled = true
+            this.snackbarData.color = 'warning'
+            this.snackbarData.text = 'Feed wurde hinzugefügt'
             this.close();
         },
         async loadData () {
@@ -334,14 +356,18 @@ export default {
         },
         async convertFeeds () {
             const feeds = await Api.feeds();
-            for (let index = 0; index < feeds.length; index++) {
-                const nameArray = [];
-                for (let i = 0; i < feeds[index].tags.length; i++) {
-                    nameArray.push(feeds[index].tags[i].name);
+            if (feeds !== '') {
+                for (let index = 0; index < feeds.length; index++) {
+                    const nameArray = [];
+                    for (let i = 0; i < feeds[index].tags.length; i++) {
+                        nameArray.push(feeds[index].tags[i].name);
+                    }
+                    feeds[index].tags = nameArray;
                 }
-                feeds[index].tags = nameArray;
+                this.feeds = feeds;
+            } else {
+                this.feeds = [];
             }
-            this.feeds = feeds;
         }
     }
 };
