@@ -31,7 +31,9 @@
                                 align="center"
                                 justify="center"
                             >
-                                <h3 class="ma-8">Im Folgenden werden wir dich durch die Accounterstellung leiten</h3>
+                                <h3 class="ma-8">
+                                    Im Folgenden werden wir dich durch die Accounterstellung leiten
+                                </h3>
                             </v-row>
                             <v-row
                                 align="center"
@@ -43,12 +45,12 @@
                                             v-model="aboutFeedibus"
                                             width="500"
                                         >
-                                            <template v-slot:activator="{ on, attrs }">
+                                            <template #activator="{ on, attrs }">
                                                 <v-btn
                                                     dark
                                                     v-bind="attrs"
-                                                    v-on="on"
                                                     color="primary"
+                                                    v-on="on"
                                                 >
                                                     Was ist Feedibus?
                                                 </v-btn>
@@ -63,10 +65,10 @@
                                                     Feedibus ist eine Webanwendung mit der du Feeds von verschiedenen Seiten zentral abonnieren kannst. Somit musst du nicht mehr auf verschiedenen Seiten nach Neuerungen suchen sondern kannst mithilfe von Feedibus Nachrichten, Twitter, YoutTube und viele andere Seiten auf einen Blick erfassen
                                                 </v-card-text>
 
-                                                <v-divider></v-divider>
+                                                <v-divider />
 
                                                 <v-card-actions>
-                                                    <v-spacer></v-spacer>
+                                                    <v-spacer />
                                                     <v-btn
                                                         color="primary"
                                                         text
@@ -110,12 +112,14 @@
                             class="mb-12"
                         >
                             <v-card-title
-                                class="white--text primary">
+                                class="white--text primary"
+                            >
                                 Bitte gib hier deinen Namen ein
                             </v-card-title>
                             <v-row
                                 align="center"
-                                justify="center">
+                                justify="center"
+                            >
                                 <v-spacer />
                                 <v-text-field
                                     v-model="name"
@@ -156,10 +160,11 @@
                         >
                             <v-card-title
                                 class="white--text primary"
-                                :class="{info: submitGeneralDisabledEmail}">
+                                :class="{info: submitGeneralDisabledEmail}"
+                            >
                                 Deine E-Mail Adresse
                             </v-card-title>
-                            <v-row></v-row>
+                            <v-row />
                             <v-row>
                                 <v-spacer />
                                 <v-text-field
@@ -199,7 +204,10 @@
                             class="mb-12"
                             elevation="6"
                         >
-                            <v-card-title class="white--text primary" v-bind:class="{info: submitGeneralDisabledPassword}">
+                            <v-card-title
+                                class="white--text primary"
+                                :class="{info: submitGeneralDisabledPassword}"
+                            >
                                 Passwort vergeben
                             </v-card-title>
                             <v-card-text>

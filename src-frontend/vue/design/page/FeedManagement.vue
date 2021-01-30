@@ -207,6 +207,32 @@
                 </v-btn>
             </template>
         </v-snackbar>
+        <div class="text-center">
+            <v-bottom-sheet v-model="sheet">
+                <v-sheet
+                    class="text-center"
+                    height="200px"
+                >
+                    <h3 class="warning">
+                        Hilfe zu Feeds
+                    </h3>
+                    <div class="py-3">
+                        Auf dieser Seite kannst du einstellen, welchen Feeds du folgen möchtest
+                    </div>
+                    <div class="py-2">
+                        Klicke einfach auf <strong>Feed hinzufügen</strong> und vergebe einen passenden Namen
+                    </div>
+                    <v-btn
+                        color="warning"
+                        dark
+                        class="pa-3"
+                        @click="dialog = true"
+                    >
+                        Feed hinzufügen...
+                    </v-btn>
+                </v-sheet>
+            </v-bottom-sheet>
+        </div>
     </div>
 </template>
 <script>
@@ -262,7 +288,8 @@ export default {
             enabled: false,
             text: '',
             color: ''
-        }
+        },
+        sheet: false
     }),
 
     computed: {
@@ -286,8 +313,9 @@ export default {
         }
     },
 
-    created () {
-        this.loadData();
+    async created () {
+        await this.loadData();
+        await this.checkIfCategoriesExist();
     },
 
     methods: {
@@ -343,6 +371,7 @@ export default {
             this.snackbarData.enabled = true
             this.snackbarData.color = 'warning'
             this.snackbarData.text = 'Feed wurde hinzugefügt'
+            this.sheet = false;
             this.close();
         },
         async loadData () {
@@ -367,6 +396,13 @@ export default {
                 this.feeds = feeds;
             } else {
                 this.feeds = [];
+            }
+        },
+        checkIfCategoriesExist () {
+            if (this.feeds.length === 0) {
+                this.sheet = true;
+            } else {
+                this.sheet = false
             }
         }
     }
