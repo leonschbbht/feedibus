@@ -44,7 +44,7 @@
                                         <v-col
                                             cols="12"
                                             sm="6"
-                                            md="4"
+                                            md="7"
                                         >
                                             <v-text-field
                                                 v-model="editedItem.name"
@@ -67,10 +67,10 @@
                                         <v-col
                                             cols="12"
                                             sm="6"
-                                            md="4"
+                                            md="7"
                                         >
                                             <v-text-field
-                                                v-model="editedItem.link"
+                                                v-model="editedItem.url"
                                                 label="Link"
                                                 :rules="[rules.required]"
                                             />
@@ -78,15 +78,27 @@
                                         <v-col
                                             cols="12"
                                             sm="6"
-                                            md="4"
+                                            md="7"
                                         >
-                                            <v-combobox
+                                            <v-select
                                                 v-model="editedItem.categories"
                                                 :items="categories"
                                                 multiple
                                                 chips
                                                 label="Kategorien"
-                                            />
+                                            >
+                                                <template #selection="{ item, index }">
+                                                    <v-chip v-if="index === 0">
+                                                        <span>{{ item }}</span>
+                                                    </v-chip>
+                                                    <span
+                                                        v-if="index === 1"
+                                                        class="grey--text caption"
+                                                    >
+                                                        (+{{ editedItem.categories.length-1 }} andere)
+                                                    </span>
+                                                </template>
+                                            </v-select>
                                         </v-col>
                                     </v-row>
                                 </v-container>
@@ -146,20 +158,13 @@
             </template>
             <template #[`item.categories`]="{ item }">
                 <v-chip
-                    v-for="category in item.categories"
+                    v-for="category in item.tags"
                     :key="category"
                 >
                     {{ category }}
                 </v-chip>
             </template>
             <template #[`item.actions`]="{ item }">
-                <v-icon
-                    small
-                    class="mr-2"
-                    @click="editItem(item)"
-                >
-                    mdi-pencil
-                </v-icon>
                 <v-icon
                     small
                     @click="deleteItem(item)"
@@ -184,17 +189,69 @@
                 />
             </template>
         </v-data-table>
+        <v-snackbar
+            v-model="snackbarData.enabled"
+            text
+            :color="snackbarData.color"
+        >
+            {{ snackbarData.text }}
+
+            <template #action="{ attrs }">
+                <v-btn
+                    :color="snackbarData.color"
+                    outlined
+                    v-bind="attrs"
+                    @click="snackbarData.enabled = false"
+                >
+                    Schließen
+                </v-btn>
+            </template>
+        </v-snackbar>
+        <div class="text-center">
+            <v-bottom-sheet v-model="sheet">
+                <v-sheet
+                    class="text-center"
+                    height="200px"
+                >
+                    <h3 class="warning">
+                        Hilfe zu Feeds
+                    </h3>
+                    <div class="py-3">
+                        Auf dieser Seite kannst du einstellen, welchen Feeds du folgen möchtest
+                    </div>
+                    <div class="py-2">
+                        Klicke einfach auf <strong>Feed hinzufügen</strong> und vergebe einen passenden Namen
+                    </div>
+                    <v-btn
+                        color="warning"
+                        dark
+                        class="pa-3"
+                        @click="dialog = true"
+                    >
+                        Feed hinzufügen...
+                    </v-btn>
+                </v-sheet>
+            </v-bottom-sheet>
+        </div>
     </div>
 </template>
 <script>
+import Api from '../api';
+
 export default {
     data: () => ({
         page: 1,
         itemsPerPage: 10,
         dialog: false,
         dialogDelete: false,
-        types: ['RSS', 'YouTube', 'Twitter'],
-        categories: ['Unterhaltung', 'Leitmedien', 'Politik', 'Corona', 'Technik', 'Medien', 'Nachrichten'],
+        types: [
+            'rss',
+            'twitter',
+            'youtube'
+        ],
+        categories: [],
+        categoriesJSON: [],
+        categoriesApiResponse: [],
         headers: [
             {
                 text: 'Feedname',
@@ -203,7 +260,7 @@ export default {
                 value: 'name'
             },
             { text: 'Feedtyp', value: 'type' },
-            { text: 'Link', value: 'link' },
+            { text: 'Adresse', value: 'url' },
             { text: 'Kategorien', value: 'categories' },
             { text: 'Aktionen', value: 'actions', sortable: false }
 
@@ -217,16 +274,22 @@ export default {
             name: '',
             type: '',
             id: 0,
-            link: '',
+            url: '',
             categories: []
         },
         defaultItem: {
             name: '',
             type: '',
             id: 0,
-            link: '',
+            url: '',
             categories: []
-        }
+        },
+        snackbarData: {
+            enabled: false,
+            text: '',
+            color: ''
+        },
+        sheet: false
     }),
 
     computed: {
@@ -237,7 +300,7 @@ export default {
             return Math.ceil(this.feeds.length / this.itemsPerPage);
         },
         saveDisabled () {
-            return !(this.editedItem.name && this.editedItem.type && this.editedItem.link)
+            return !(this.editedItem.name && this.editedItem.type && this.editedItem.url)
         }
 
     },
@@ -250,19 +313,12 @@ export default {
         }
     },
 
-    created () {
-        this.initialize();
+    async created () {
+        await this.loadData();
+        await this.checkIfCategoriesExist();
     },
 
     methods: {
-        initialize () {
-            this.feeds = [
-                { name: 'Tagesschau', type: 'RSS', id: '1', link: 'tagesschau.de', categories: ['Nachrichten', 'Medien'] },
-                { name: 'Zeit', type: 'RSS', id: '2', link: 'zeit.de', categories: ['Nachrichten', 'Politik'] },
-                { name: 'Alexibexi', type: 'YouTube', id: '3', link: 'youtube.com/alexibexi', categories: ['Technik', 'Unterhaltung'] }
-
-            ];
-        },
 
         editItem (item) {
             this.editedIndex = this.feeds.indexOf(item);
@@ -276,9 +332,13 @@ export default {
             this.dialogDelete = true;
         },
 
-        deleteItemConfirm () {
+        async deleteItemConfirm () {
             this.feeds.splice(this.editedIndex, 1);
+            await Api.deleteFeed(this.editedItem.id);
             this.closeDelete();
+            this.snackbarData.enabled = true
+            this.snackbarData.color = 'warning'
+            this.snackbarData.text = 'Feed wurde gelöscht'
         },
 
         close () {
@@ -297,13 +357,53 @@ export default {
             });
         },
 
-        save () {
-            if (this.editedIndex > -1) {
-                Object.assign(this.feeds[this.editedIndex], this.editedItem);
-            } else {
-                this.feeds.push(this.editedItem);
+        async save () {
+            const ids = [];
+            for (let i = 0; i < this.categoriesJSON.length; i++) {
+                for (let j = 0; j < this.editedItem.categories.length; j++) {
+                    if (this.categoriesJSON[i].name === this.editedItem.categories[j]) {
+                        ids.push(this.categoriesJSON[i].id);
+                    }
+                }
             }
+            await Api.createFeed(this.editedItem.type, this.editedItem.url, this.editedItem.name, ids);
+            await this.loadData();
+            this.snackbarData.enabled = true
+            this.snackbarData.color = 'warning'
+            this.snackbarData.text = 'Feed wurde hinzugefügt'
+            this.sheet = false;
             this.close();
+        },
+        async loadData () {
+            await this.convertFeeds();
+            const response = await Api.tags();
+            this.categoriesJSON = response;
+            response.forEach(category => {
+                const name = category.name;
+                this.categories.push(name);
+            });
+        },
+        async convertFeeds () {
+            const feeds = await Api.feeds();
+            if (feeds !== '') {
+                for (let index = 0; index < feeds.length; index++) {
+                    const nameArray = [];
+                    for (let i = 0; i < feeds[index].tags.length; i++) {
+                        nameArray.push(feeds[index].tags[i].name);
+                    }
+                    feeds[index].tags = nameArray;
+                }
+                this.feeds = feeds;
+            } else {
+                this.feeds = [];
+            }
+        },
+        checkIfCategoriesExist () {
+            if (this.feeds.length === 0) {
+                this.sheet = true;
+            } else {
+                this.sheet = false
+            }
         }
     }
 };

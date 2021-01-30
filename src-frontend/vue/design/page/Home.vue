@@ -116,8 +116,8 @@
 </template>
 
 <script>
-import Card from './components/Card.vue';
-import Api from './api.js';
+import Card from '../components/Card.vue';
+import Api from '../api.js';
 export default {
     name: 'Home',
     components: {
