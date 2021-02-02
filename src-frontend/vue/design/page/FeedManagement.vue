@@ -160,6 +160,7 @@
                 <v-chip
                     v-for="category in item.tags"
                     :key="category"
+                    :color="item.color"
                 >
                     {{ category }}
                 </v-chip>
