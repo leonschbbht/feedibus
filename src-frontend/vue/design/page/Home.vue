@@ -2,11 +2,9 @@
     <div>
         <v-data-iterator
             :items="filteredNews"
-            :items-per-page.sync="itemsPerPage"
-            :page="page"
             :sort-by="sortBy"
             :sort-desc="sortDesc"
-            hide-default-footer
+            disable-pagination
         >
             <template #header>
                 <v-toolbar
@@ -55,6 +53,7 @@
                                 <v-chip
                                     v-if="index === 0"
                                     :input-value="selected"
+                                    :color="item.color"
                                 >
                                     <span>{{ item }}</span>
                                 </v-chip>
@@ -99,19 +98,22 @@
                     :date="item.formattedDate"
                     :text="item.text"
                     :link="item.sourceUrl"
-                    :categories="item.tags.map((a) => a.name).flat()"
+                    :categories="item.tags"
                     class="newsCard"
                 />
             </template>
-            <template #footer>
-                <v-pagination
-                    v-model="page"
-                    color="secondary"
-                    :length="maxPages"
-                    :total-visible="10"
-                />
-            </template>
         </v-data-iterator>
+        <template>
+            <div class="text-center">
+                <v-overlay :value="overlay">
+                    <h1>Lade Feeds...</h1>
+                    <v-progress-linear
+                        indeterminate
+                        color="white"
+                    ></v-progress-linear>
+                </v-overlay>
+            </div>
+        </template>
     </div>
 </template>
 
@@ -126,11 +128,10 @@ export default {
     emits: { changed: null },
     data () {
         return {
+            overlay: true,
             search: '',
             filter: [],
             sortDesc: true,
-            page: 1,
-            itemsPerPage: 10,
             sortBy: 'utcTime',
             keys: [
                 { text: 'Titel', value: 'Title' },
@@ -151,9 +152,6 @@ export default {
                     return filter.includes(e.name);
                 })
             );
-        },
-        maxPages () {
-            return Math.ceil(this.filteredNews.length / this.itemsPerPage);
         }
     },
     created () {
@@ -170,6 +168,7 @@ export default {
         },
         async loadData () {
             const news = await Api.messages();
+            this.overlay = false;
             this.news = news.map((newsItem) => {
                 newsItem.date = new Date(newsItem.time);
                 newsItem.formattedDate = newsItem.date.toLocaleDateString('de-DE', { hour: '2-digit', minute: '2-digit' });

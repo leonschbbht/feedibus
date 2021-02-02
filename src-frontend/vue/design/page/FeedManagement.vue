@@ -5,9 +5,9 @@
             :items="feeds"
             :items-per-page.sync="itemsPerPage"
             :page="page"
-            sort-by="calories"
             class="elevation-1"
             hide-default-footer
+            light
         >
             <template #top>
                 <v-toolbar
@@ -25,7 +25,6 @@
                         <template #activator="{ on, attrs }">
                             <v-btn
                                 color="primary"
-                                dark
                                 class="mb-2"
                                 v-bind="attrs"
                                 v-on="on"
@@ -73,6 +72,7 @@
                                                 v-model="editedItem.url"
                                                 label="Link"
                                                 :rules="[rules.required]"
+                                                color="dynamic"
                                             />
                                         </v-col>
                                         <v-col
@@ -93,7 +93,7 @@
                                                     </v-chip>
                                                     <span
                                                         v-if="index === 1"
-                                                        class="grey--text caption"
+                                                        class="caption"
                                                     >
                                                         (+{{ editedItem.categories.length-1 }} andere)
                                                     </span>
@@ -160,12 +160,14 @@
                 <v-chip
                     v-for="category in item.tags"
                     :key="category"
+                    :color="item.color"
                 >
                     {{ category }}
                 </v-chip>
             </template>
             <template #[`item.actions`]="{ item }">
                 <v-icon
+                    large
                     small
                     @click="deleteItem(item)"
                 >
@@ -224,7 +226,6 @@
                     </div>
                     <v-btn
                         color="warning"
-                        dark
                         class="pa-3"
                         @click="dialog = true"
                     >
@@ -233,6 +234,17 @@
                 </v-sheet>
             </v-bottom-sheet>
         </div>
+        <template>
+            <div class="text-center">
+                <v-overlay :value="overlay">
+                    <h1>Lade Feeds...</h1>
+                    <v-progress-linear
+                        indeterminate
+                        color="white"
+                    ></v-progress-linear>
+                </v-overlay>
+            </div>
+        </template>
     </div>
 </template>
 <script>
@@ -240,8 +252,9 @@ import Api from '../api';
 
 export default {
     data: () => ({
+        overlay: true,
         page: 1,
-        itemsPerPage: 10,
+        itemsPerPage: 5,
         dialog: false,
         dialogDelete: false,
         types: [
@@ -382,6 +395,7 @@ export default {
                 const name = category.name;
                 this.categories.push(name);
             });
+            this.overlay = false;
         },
         async convertFeeds () {
             const feeds = await Api.feeds();

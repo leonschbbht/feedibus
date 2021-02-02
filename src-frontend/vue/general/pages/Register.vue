@@ -22,7 +22,6 @@
                             class="mb-12"
                             height="350px"
                             elevation="6"
-                            color="accent"
                         >
                             <v-card-title class="white--text primary">
                                 Wilkommen bei Feedibus!
@@ -108,7 +107,6 @@
                         <v-card
                             height="200px"
                             elevation="6"
-                            color="accent"
                             class="mb-12"
                         >
                             <v-card-title
@@ -153,7 +151,6 @@
 
                     <v-stepper-content step="3">
                         <v-card
-                            color="accent"
                             class="mb-12"
                             elevation="6"
                             height="200px"
@@ -200,7 +197,6 @@
                     </v-stepper-step>
                     <v-stepper-content step="4">
                         <v-card
-                            color="accent"
                             class="mb-12"
                             elevation="6"
                         >
@@ -257,7 +253,6 @@
                     </v-stepper-step>
                     <v-stepper-content step="5">
                         <v-card
-                            color="accent"
                             class="mb-12"
                             height="200px"
                             elevation="6"

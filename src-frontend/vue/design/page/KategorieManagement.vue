@@ -35,15 +35,22 @@
                                             v-model="name"
                                             label="Bezeichnung*"
                                             hint="Bezeichnung der neuen Kategorie"
-                                            required
+                                            :rules="[rules.required]"
                                         />
                                     </v-col>
                                     <v-col>
-                                        <v-text-field
+                                        <v-color-picker
+                                            dot-size="16"
+                                            hide-inputs
+                                            hide-sliders
+                                            hide-canvas
+                                            hide-mode-switch
+                                            elevation="7"
+                                            mode="hexa"
+                                            show-swatches
                                             v-model="color"
-                                            label="Farbe"
-                                            hint="Anzeigefarbe der neuen Kategorie"
-                                        />
+                                            swatches-max-height="100"
+                                        ></v-color-picker>
                                     </v-col>
                                 </v-row>
                             </v-container>
@@ -126,17 +133,13 @@
             >
                 <template #[`item.name`]="{ item }">
                     <v-chip
-                        light
+                        :color="item.color"
+                        label
                     >
+                        <v-icon left>
+                            mdi-label
+                        </v-icon>
                         {{ item.name }}
-                    </v-chip>
-                </template>
-                <template #[`item.color`]="{ item }">
-                    <v-chip
-                        v-if="item.color !== ''"
-                        light
-                    >
-                        {{ item.color }}
                     </v-chip>
                 </template>
                 <template #[`item.actions`]="{ item }">
@@ -178,6 +181,17 @@
                 </v-sheet>
             </v-bottom-sheet>
         </div>
+        <template>
+            <div class="text-center">
+                <v-overlay :value="overlay">
+                    <h1>Lade Kategorien...</h1>
+                    <v-progress-linear
+                        indeterminate
+                        color="white"
+                    ></v-progress-linear>
+                </v-overlay>
+            </div>
+        </template>
     </div>
 </template>
 <script>
@@ -185,6 +199,7 @@ import Api from '../api'
 
 export default {
     name: 'Kategorie',
+    overlay: true,
     components: {
     },
     data: () => ({
@@ -193,10 +208,6 @@ export default {
                 text: 'Kategorie',
                 align: 'start',
                 value: 'name'
-            },
-            {
-                text: 'Farbe',
-                value: 'color'
             },
             {
                 text: 'Aktionen',
@@ -214,6 +225,9 @@ export default {
             enabled: false,
             text: '',
             color: ''
+        },
+        rules: {
+            required: value => !!value || 'Pflichtfeld'
         }
     }),
     async created () {
@@ -254,6 +268,7 @@ export default {
         },
         async loadData () {
             this.kategorieElemente = await Api.tags();
+            this.overlay = false;
         },
         checkIfCategoriesExist () {
             if (this.kategorieElemente.length === 0) {

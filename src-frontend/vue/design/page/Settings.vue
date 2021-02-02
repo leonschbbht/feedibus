@@ -5,7 +5,7 @@
             :max-width="$vuetify.breakpoint.mobile ? '100%' : '60%'"
         >
             <v-card-title class="white--text secondary">
-                Allgemeine Einstellungen
+                Benutzer Einstellungen
             </v-card-title>
             <v-card-text>
                 <v-text-field
@@ -79,6 +79,24 @@
                     Änderungen absenden
                 </v-btn>
             </v-card-actions>
+        </v-card>
+        <v-card
+            class="mx-auto card"
+            :max-width="$vuetify.breakpoint.mobile ? '100%' : '60%'"
+        >
+            <v-card-title class="white--text secondary">
+                Sonstige Einstellungen
+            </v-card-title>
+            <v-card-text>
+                <v-switch
+                    v-model="$vuetify.theme.dark"
+                    hint="Der Dunkle-Modus wird nach dem ausloggen zurückgesetzt"
+                    inset
+                    label="Dunkler Modus"
+                    persistent-hint
+                    @click="writeDarkModeCooke($vuetify.theme.dark)"
+                />
+            </v-card-text>
         </v-card>
         <v-snackbar
             v-model="snackbarData.enabled"
@@ -166,6 +184,9 @@ export default {
             this.snackbarData.text = 'Daten übernommen!'
             this.snackbarData.color = 'success'
             this.snackbarData.enabled = true;
+        },
+        writeDarkModeCooke (isDarkmodeActive) {
+            document.cookie = 'darkmodeActive=' + isDarkmodeActive + '; path=/';
         }
     }
 }
