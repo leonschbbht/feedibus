@@ -5,9 +5,9 @@
             :items="feeds"
             :items-per-page.sync="itemsPerPage"
             :page="page"
-            sort-by="calories"
             class="elevation-1"
             hide-default-footer
+            light
         >
             <template #top>
                 <v-toolbar
@@ -25,7 +25,6 @@
                         <template #activator="{ on, attrs }">
                             <v-btn
                                 color="primary"
-                                dark
                                 class="mb-2"
                                 v-bind="attrs"
                                 v-on="on"
@@ -73,6 +72,7 @@
                                                 v-model="editedItem.url"
                                                 label="Link"
                                                 :rules="[rules.required]"
+                                                color="dynamic"
                                             />
                                         </v-col>
                                         <v-col
@@ -93,7 +93,7 @@
                                                     </v-chip>
                                                     <span
                                                         v-if="index === 1"
-                                                        class="grey--text caption"
+                                                        class="caption"
                                                     >
                                                         (+{{ editedItem.categories.length-1 }} andere)
                                                     </span>
@@ -167,6 +167,7 @@
             </template>
             <template #[`item.actions`]="{ item }">
                 <v-icon
+                    large
                     small
                     @click="deleteItem(item)"
                 >
@@ -225,7 +226,6 @@
                     </div>
                     <v-btn
                         color="warning"
-                        dark
                         class="pa-3"
                         @click="dialog = true"
                     >

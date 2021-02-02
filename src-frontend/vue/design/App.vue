@@ -20,7 +20,31 @@ export default {
         Footer
     },
     data () {
-        return {};
+        return {
+            darkmodeActive: false
+        };
+    },
+    created () {
+        if (this.readDarkModeCooke() === 'true') {
+            this.$vuetify.theme.dark = true;
+        }
+    },
+    methods: {
+        readDarkModeCooke () {
+            const name = 'darkmodeActive=';
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const allCookies = decodedCookie.split(';');
+            for (let i = 0; i < allCookies.length; i++) {
+                let cookie = allCookies[i];
+                while (cookie.charAt(0) === ' ') {
+                    cookie = cookie.substring(1);
+                }
+                if (cookie.indexOf(name) === 0) {
+                    return cookie.substring(name.length, cookie.length);
+                }
+            }
+            return '';
+        }
     }
 };
 </script>
