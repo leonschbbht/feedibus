@@ -94,6 +94,7 @@ export default {
     methods: {
         async submitGeneral () {
             const response = await api.login(this.email, this.password);
+            console.log(response)
             if (response) {
                 this.snackbarData.text = response;
                 this.snackbarData.color = 'error';

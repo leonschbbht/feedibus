@@ -13,13 +13,16 @@ export default class api {
             email: email,
             password: password
         };
-        const response = await Axios.post('/register', data);
-        if (response.status === 201) {
-            return '';
-        } else if (typeof response.data === 'string') {
-            return response.data;
+        try {
+            const response = await Axios.post('/register', data);
+            if (response.status === 201) {
+                return '';
+            } else if (typeof response.data === 'string') {
+                return response.data;
+            }
+        } catch (error) {
+            return 'Registrierung fehlgeschlagen. Existiert der Benutzer bereits?'
         }
-        return 'Error'
     }
 
     /**
@@ -32,12 +35,16 @@ export default class api {
             email: email,
             password: password
         };
-        const response = await Axios.post('/login', data);
-        if (response.status === 200) {
-            return '';
-        } else if (typeof response.data === 'string') {
-            return response.data;
+        try {
+            const response = await Axios.post('/login', data);
+            if (response.status === 200) {
+                return '';
+            } else if (typeof response.data === 'string') {
+                return response.data;
+            }
+            return 'Error'
+        } catch (err) {
+            return 'Der Benutzer existiert nicht oder das angegebene Passwort ist falsch.'
         }
-        return 'Error'
     }
 }
