@@ -330,7 +330,7 @@ module.exports = class Server {
         if (messages && messages.length > 0) {
             res.send(messages);
         } else {
-            responseUtils.sendNotFound(res, 'Could not find any message for the specified user.');
+            res.send('')
         }
     }
 
