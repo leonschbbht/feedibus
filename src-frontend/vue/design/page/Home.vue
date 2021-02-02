@@ -1,6 +1,7 @@
 <template>
     <div>
         <v-data-iterator
+            v-if="news.length > 0"
             :items="filteredNews"
             :sort-by="sortBy"
             :sort-desc="sortDesc"
@@ -110,10 +111,44 @@
                     <v-progress-linear
                         indeterminate
                         color="white"
-                    ></v-progress-linear>
+                    />
                 </v-overlay>
             </div>
         </template>
+        <v-alert
+            prominent
+            type="info"
+            v-if="onboarding"
+        >
+            <v-row align="center">
+                <v-col class="grow">
+                    Keine Feeds vorhanden. Du kannst einen Feed unter <strong>meine Feeds</strong> anlegen
+                </v-col>
+                <v-col class="shrink">
+                    <v-btn
+                        to="/feeds"
+                    >
+                        Meine Feeds
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </v-alert>
+        <v-row class="justify-center align-center" v-if="onboarding">
+            <v-spacer/>
+            <v-col class="justify-center align-center">
+                <v-card class="justify-center" flat width="500px">
+                    <v-card-title class="justify-center">
+                        Noch keine Nachrichten vorhanden
+                    </v-card-title>
+                    <v-img
+                        src="https://i.imgur.com/LQUQZvA.png"
+                        class="img"
+                        :class="{ inverted: $vuetify.theme.dark }"
+                    />
+                </v-card>
+            </v-col>
+            <v-spacer/>
+        </v-row>
     </div>
 </template>
 
@@ -129,6 +164,7 @@ export default {
     data () {
         return {
             overlay: true,
+            onboarding: false,
             search: '',
             filter: [],
             sortDesc: true,
@@ -154,8 +190,9 @@ export default {
             );
         }
     },
-    created () {
-        this.loadData();
+    async created () {
+        await this.loadData();
+        this.checkIfMessagesExist();
     },
     methods: {
         remove (id) {
@@ -169,12 +206,17 @@ export default {
         async loadData () {
             const news = await Api.messages();
             this.overlay = false;
-            this.news = news.map((newsItem) => {
-                newsItem.date = new Date(newsItem.time);
-                newsItem.formattedDate = newsItem.date.toLocaleDateString('de-DE', { hour: '2-digit', minute: '2-digit' });
-                newsItem.utcTime = newsItem.date.getTime();
-                return newsItem;
-            });
+            if (this.news.length !== 0) {
+                this.news = news.map((newsItem) => {
+                    newsItem.date = new Date(newsItem.time);
+                    newsItem.formattedDate = newsItem.date.toLocaleDateString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                    newsItem.utcTime = newsItem.date.getTime();
+                    return newsItem;
+                });
+            }
+        },
+        checkIfMessagesExist () {
+            this.onboarding = this.news.length === 0;
         }
     }
 };
@@ -188,5 +230,11 @@ export default {
 }
 .inactive {
   color: secondary;
+}
+.img {
+    opacity: 0.25;
+}
+.inverted {
+    filter: invert(1);
 }
 </style>
