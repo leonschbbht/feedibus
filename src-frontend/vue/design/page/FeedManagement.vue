@@ -260,7 +260,8 @@ export default {
         types: [
             'rss',
             'twitter',
-            'youtube'
+            'youtube',
+            'facebook'
         ],
         categories: [],
         categoriesJSON: [],
