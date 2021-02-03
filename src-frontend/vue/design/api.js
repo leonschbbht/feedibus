@@ -59,7 +59,21 @@ export default class api {
     }
 
     static async getUser () {
-        const response = await Axios.get('/user')
-        return response
+        return await Axios.get('/user')
+    }
+
+    static async updatePassword (password) {
+        const data = {
+            password: password
+        };
+        await Axios.put('/user', data);
+    }
+
+    static async updateUserData (name, email) {
+        const data = {
+            name: name,
+            email: email
+        };
+        await Axios.put('/user', data);
     }
 }

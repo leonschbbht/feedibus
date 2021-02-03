@@ -10,16 +10,18 @@
             <v-card-text>
                 <v-text-field
                     v-model="userDataNew.name"
-                    :counter="10"
+                    :disabled="!editable"
                     label="Name"
                 />
                 <v-text-field
                     v-model="userDataNew.email"
+                    :disabled="!editable"
                     label="E-Mail"
                     :rules="[rules.required, rules.email]"
                 />
                 <v-text-field
                     v-model="userDataNew.emailRepeat"
+                    :disabled="!editable"
                     label="E-Mail wiederholen"
                     :rules="[rules.required, rules.email, rules.emailMatches]"
                 />
@@ -28,18 +30,26 @@
                 <v-btn
                     color="success"
                     text
-                    :disabled="submitGeneralDisabled"
+                    :disabled="submitGeneralDisabled || !editable"
                     @click="submitGeneral"
                 >
                     Änderungen absenden
                 </v-btn>
                 <v-btn
+                    class="mx-5"
                     color="warning"
                     text
+                    :disabled="!editable"
                     @click="resetGeneral"
                 >
                     Änderungen verwerfen
                 </v-btn>
+                <v-switch
+                    v-model="editable"
+                    inset
+                    label="Daten bearbeiten?"
+                >
+                </v-switch>
             </v-card-actions>
         </v-card>
         <v-card
@@ -129,6 +139,7 @@ export default {
         return {
             userData: { name: 'Jan', email: 'jan@huemmelinkcloud.de' },
             userDataNew: { name: '', email: '', emailRepeat: '' },
+            editable: false,
             passwordData: {
                 password: '',
                 passwordRepeat: '',
@@ -178,15 +189,26 @@ export default {
             this.userDataNew.email = this.userData.email;
             this.userDataNew.emailRepeat = this.userData.email;
         },
-        submitGeneral () {
-            this.snackbarData.text = 'Daten übernommen!'
-            this.snackbarData.color = 'success'
-            this.snackbarData.enabled = true;
+        async submitGeneral () {
+            try {
+                await Api.updateUserData(this.userDataNew.name, this.userDataNew.email)
+                this.snackbarData.text = 'Daten übernommen!'
+                this.snackbarData.color = 'success'
+                this.snackbarData.enabled = true;
+            } catch (err) {
+                console.log(err)
+            }
         },
-        submitPassword () {
-            this.snackbarData.text = 'Daten übernommen!'
-            this.snackbarData.color = 'success'
-            this.snackbarData.enabled = true;
+        async submitPassword () {
+            try {
+                console.log(this.passwordData.password)
+                await Api.updatePassword(this.passwordData.password);
+                this.snackbarData.text = 'Daten übernommen!'
+                this.snackbarData.color = 'success'
+                this.snackbarData.enabled = true;
+            } catch (err) {
+                console.log(err)
+            }
         },
         writeDarkModeCooke (isDarkmodeActive) {
             document.cookie = 'darkmodeActive=' + isDarkmodeActive + '; path=/';
