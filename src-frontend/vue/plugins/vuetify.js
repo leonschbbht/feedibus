@@ -24,11 +24,11 @@ export default new Vuetify({
             },
             dark: {
                 primary: '#546E7A',
-                accent: '#26A69A',
+                accent: '#A7FFEB',
                 secondary: '#546E7A',
-                success: '#004D40',
+                success: '#A7FFEB',
                 info: '#546E7A',
-                warning: '#F57F17',
+                warning: '#FFCC80',
                 error: '#DD2C00'
             }
         }

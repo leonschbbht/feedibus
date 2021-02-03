@@ -14,7 +14,8 @@ module.exports = async () => {
             defaultViewport: {
                 height: 1080,
                 width: 1920
-            }
+            },
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
     }
     return browser;
