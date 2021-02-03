@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-data-iterator
-            v-if="news.length > 0"
+            v-if="!onboarding"
             :items="filteredNews"
             :sort-by="sortBy"
             :sort-desc="sortDesc"
@@ -95,7 +95,7 @@
                     :key="item.messageId"
                     :title="item.headline"
                     :img="item.imageUrl"
-                    :source="item.type"
+                    :source=" item.type"
                     :date="item.formattedDate"
                     :text="item.text"
                     :link="item.sourceUrl"
@@ -117,8 +117,8 @@
         </template>
         <v-alert
             prominent
-            type="info"
             v-if="onboarding"
+            type="info"
         >
             <v-row align="center">
                 <v-col class="grow">
@@ -206,17 +206,24 @@ export default {
         async loadData () {
             const news = await Api.messages();
             this.overlay = false;
-            if (this.news.length !== 0) {
+            try {
                 this.news = news.map((newsItem) => {
                     newsItem.date = new Date(newsItem.time);
-                    newsItem.formattedDate = newsItem.date.toLocaleDateString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                    newsItem.formattedDate = newsItem.date.toLocaleDateString('de-DE',
+                        { hour: '2-digit', minute: '2-digit' });
                     newsItem.utcTime = newsItem.date.getTime();
                     return newsItem;
                 });
+            } catch (err) {
+                console.log(err)
             }
         },
         checkIfMessagesExist () {
-            this.onboarding = this.news.length === 0;
+            if (this.news === [] || this.news.length === 0 || this.news === '') {
+                this.onboarding = true
+            } else {
+                this.onboarding = false
+            }
         }
     }
 };

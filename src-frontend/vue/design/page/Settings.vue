@@ -119,6 +119,8 @@
     </div>
 </template>
 <script>
+import Api from '../api.js'
+
 export default {
     name: 'Settings',
     components: {
@@ -166,7 +168,8 @@ export default {
             return this.passwordData.password !== this.passwordData.passwordRepeat || !this.passwordData.password;
         }
     },
-    created () {
+    async created () {
+        await this.getUserData();
         this.resetGeneral();
     },
     methods: {
@@ -187,6 +190,10 @@ export default {
         },
         writeDarkModeCooke (isDarkmodeActive) {
             document.cookie = 'darkmodeActive=' + isDarkmodeActive + '; path=/';
+        },
+        async getUserData () {
+            const response = await Api.getUser();
+            this.userData = response.data.user;
         }
     }
 }
