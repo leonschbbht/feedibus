@@ -57,4 +57,23 @@ export default class api {
     static async deleteFeed (feedId) {
         await Axios.delete('/subscriptions?id=' + feedId);
     }
+
+    static async getUser () {
+        return await Axios.get('/user')
+    }
+
+    static async updatePassword (password) {
+        const data = {
+            password: password
+        };
+        await Axios.put('/user', data);
+    }
+
+    static async updateUserData (name, email) {
+        const data = {
+            name: name,
+            email: email
+        };
+        await Axios.put('/user', data);
+    }
 }

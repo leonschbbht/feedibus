@@ -344,8 +344,9 @@ module.exports = class Server {
                         email: user.email
                     }
                 });
+        } else {
+            responseUtils.sendNotFound(res, 'No user is currently logged in.');
         }
-        responseUtils.sendNotFound(res, 'No user is currently logged in.');
     }
 
     async updateUser (req, res) {
