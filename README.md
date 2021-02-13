@@ -1,3 +1,6 @@
+# HINWEIS!
+> Das Projekt Feedibus wurde am 13. Februar 2021 abgeschossen und wir ab diesem Zeitpunkt nicht weitergeführt...
+
 # Feedibus
 
 _Projekt von:_
